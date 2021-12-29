@@ -1,5 +1,6 @@
 import logo from './kin.svg';
-import './App.css';
+import Kin from './Kin'
+import './App.scss';
 
 function App() {
   return (
@@ -7,19 +8,21 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit
-          <code>src/App.tsx</code>
-          and save to reload.
+          Node SDK Demo
+
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://developer.kin.org/tutorials/node/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Kin Docs
         </a>
       </header>
+      <main className="App-body">
+        <Kin />
+      </main>
     </div>
   );
 }

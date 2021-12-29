@@ -1,0 +1,42 @@
+@import './constants.scss';
+
+.Kin {
+  margin: auto;
+  padding: 20px 0;
+  text-align: left;
+
+  .Kin-status {
+    width: 100%;
+    border-radius: 5px;
+    margin: 0 auto 20px;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+
+    &.up {
+      background-color: $kin;
+    }
+
+    &.down {
+      background-color: $red;
+    }
+  }
+  
+  .Kin-action-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .Kin-action {
+    border-radius: 5px;
+    margin: auto auto 20px;
+    width: calc(100% - 40px);
+    padding: 20px;
+    background-color: $background;
+  }
+}
+
+
+
+
+
