@@ -35,6 +35,22 @@
     background-color: $background;
   }
 
+  .Kin-action-input-container {
+    margin: auto auto 20px;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .Kin-action-label {
+    margin: auto 10px auto 0;
+    min-width: 100px;
+  }
+  
+  .Kin-action-input {
+    margin: auto auto auto 0;
+    min-width: 200px;
+  }
+
   .Kin-action-button {
     background-color: $kin;
     color: $white;
