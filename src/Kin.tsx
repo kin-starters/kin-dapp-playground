@@ -146,8 +146,7 @@ function Kin() {
     return (
       <div className="Kin">
         <div className={`Kin-status ${serverRunning ? 'up' : 'down'}`}>
-          {serverRunning ? 'Server Running' : 'Server Not Running'}
-          {serverAppIndex ? ` - appIndex ${serverAppIndex}` : ' but Client not instantiated :('}
+          {serverRunning ? `Server Running ${serverAppIndex ? ` - Kin App Index = ${serverAppIndex}` : ' but Client not instantiated :('}` : 'Server Not Running'}
         </div>
         {serverRunning ? (
           <>
