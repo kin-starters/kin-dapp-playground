@@ -48,7 +48,6 @@
   
   .Kin-action-input {
     margin: auto auto auto 0;
-    min-width: 200px;
   }
 
   .Kin-action-button {
@@ -62,6 +61,11 @@
 
     &:hover {
         background-color: $kin_dark;
+    }
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.6;
     }
   }
 }

@@ -14,12 +14,16 @@ interface KinActionProps{
     actionName: string;
     action: () => void;
     inputs?: Input[];
+    displayValue?: string;
+    disabled?: boolean
 }
 function KinAction({
     title,
     actionName,
     action,
-    inputs ,
+    inputs,
+    displayValue,
+    disabled = false,
 }:KinActionProps) {
     return (
       <>
@@ -35,14 +39,15 @@ function KinAction({
                 {name}
               </label>
               {options?.length ? (
-                <select id={`Kin-action-for-${name}`} className="Kin-action-input">
+                <select id={`Kin-action-for-${name}`} className="Kin-action-input" value={value} onChange={(event) => onChange(event.target.value)}>
                   {options.map((option) => <option key={option} value={option}>{option}</option>)}
                 </select>
-) : (<input onChange={(event) => onChange(event.target.value)} type={type} value={value} id={`Kin-action-for-${name}`} />)}
+) : (<input onChange={(event) => onChange(event.target.value)} type={type} value={value} id={`Kin-action-for-${name}`} className="Kin-action-input" />)}
 
             </div>
           )) : null}
-          <button type="button" className="Kin-action-button" onClick={action}>
+          {displayValue ? (<p>{displayValue}</p>) : null}
+          <button type="button" className={`Kin-action-button ${disabled ? 'disabled' : 'enabled'}`} onClick={action}>
             {actionName}
           </button>
         </div>
@@ -53,16 +58,20 @@ interface Response{
     data: string;
     status: number;
 }
-
-interface ClientReponse {
-  status: number;
-  data: {
-    appIndex?: number
-  }
+interface StatusResponse{
+    data: {
+      appIndex: number,
+      users: string[]
+    };
+    status: number;
+}
+interface BalanceResponse{
+    data: number;
+    status: number;
 }
 
 interface CheckServerRunning{
-    onSuccess: (arg: ClientReponse) => void;
+    onSuccess: (arg: StatusResponse) => void;
     onFailure: (arg: any) => void;
   }
   async function checkServerRunning({ onSuccess, onFailure }:CheckServerRunning) {
@@ -70,8 +79,8 @@ interface CheckServerRunning{
       const baseUrl = process.env.REACT_APP_SERVER_URL
       if(!baseUrl) throw new Error("No URL");
 
-      const url = `${baseUrl}/healthcheck`
-      const response:ClientReponse = await axios.get(url)
+      const url = `${baseUrl}/status`
+      const response:StatusResponse = await axios.get(url)
       onSuccess(response)
     } catch (error) {
       onFailure(error)
@@ -104,17 +113,36 @@ interface HandleSetupKinClient{
   }
 
   interface HandleCreateAccount{
-      onSuccess: (arg: string) => void;
+      name: string,
+      onSuccess: () => void;
       onFailure: (arg: any) => void;
   }
 
-  async function handleCreateAccount({ onSuccess, onFailure }:HandleCreateAccount) {
+  async function handleCreateAccount({ onSuccess, onFailure, name }:HandleCreateAccount) {
       try {
           const baseUrl = process.env.REACT_APP_SERVER_URL
           if(!baseUrl) throw new Error("No URL");
 
-          const url = `${baseUrl}/account`
-          const response:Response = await axios.post(url)
+          const url = `${baseUrl}/account?name=${name}`
+          await axios.post(url)
+          onSuccess()
+      } catch (error) {
+          onFailure(error)
+      }
+  }
+  interface HandleGetBalance{
+      name: string,
+      onSuccess: (arg: number) => void;
+      onFailure: (arg: any) => void;
+  }
+
+  async function handleGetBalance({ onSuccess, onFailure, name }:HandleGetBalance) {
+      try {
+          const baseUrl = process.env.REACT_APP_SERVER_URL
+          if(!baseUrl) throw new Error("No URL");
+
+          const url = `${baseUrl}/balance?name=${name}`
+          const response: BalanceResponse = await axios.get(url)
           onSuccess(response.data)
       } catch (error) {
           onFailure(error)
@@ -124,13 +152,16 @@ interface HandleSetupKinClient{
 function Kin() {
     const [serverRunning, setServerRunning] = useState(false)
     const [serverAppIndex, setServerAppIndex] = useState(0)
+    const [userAccounts, setUserAccounts] = useState<string[]>([])
     const [shouldUpdate, setShouldUpdate] = useState(true)
     useEffect(() => {
       if(shouldUpdate) {
         checkServerRunning({
               onSuccess: ({ status, data }) => {
+              console.log("🚀 ~ status, data", status, data)
                 setServerRunning(status === 200)
-                setServerAppIndex(data?.appIndex || 0)
+                setServerAppIndex(data.appIndex)
+                setUserAccounts(data.users)
               },
               onFailure: () => setServerRunning(false),
           })
@@ -140,47 +171,94 @@ function Kin() {
     }, [shouldUpdate])
     const [kinEnvironment, setKinEnvironment] = useState('Test')
     const [appIndex, setAppIndex] = useState('')
-
-    // const [users, setUsers] = useState([])
+    const [newUserName, setNewUserName] = useState('')
+    const [balanceUser, setBalanceUser] = useState('')
+    const [displayBalance, setDisplayBalance] = useState('')
 
     return (
       <div className="Kin">
         <div className={`Kin-status ${serverRunning ? 'up' : 'down'}`}>
-          {serverRunning ? `Server Running ${serverAppIndex ? ` - Kin App Index = ${serverAppIndex}` : ' but Client not instantiated :('}` : 'Server Not Running'}
+          {serverRunning ? `Server Running ${serverAppIndex ? ` : App Index - ${serverAppIndex}` : ' but Client not instantiated :('}` : 'Server Not Running'}
         </div>
-        {serverRunning ? (
-          <>
-            <KinAction
-              title="Setup Your Kin Client"
-              actionName="Setup"
-              action={() => { handleSetupKinClient({
+        {(() => {
+          if(serverRunning) {
+            return (
+              <KinAction
+                title="Setup Your Kin Client"
+                actionName="Setup"
+                action={() => { handleSetupKinClient({
                   onSuccess: () => setShouldUpdate(true),
                   onFailure: (error) => console.log(error),
                   kinEnvironment,
                   appIndex,
               }) }}
-              inputs={[
+                inputs={[
                 {
                   name: 'Environment', value: kinEnvironment, options: ['Test', 'Prod'], onChange: setKinEnvironment,
                 },
-               {
+                {
                   name: 'App Index', value: appIndex, type: 'number', onChange: setAppIndex,
-                }]}
-            />
-            {serverAppIndex ? (
+                },
+              ]}
+              />
+            )
+          }
+            return null
+        })()}
+
+        {(() => {
+          if(serverAppIndex) {
+            return (
+              <KinAction
+                title="Create a Kin Account"
+                actionName="Create"
+                action={() => { handleCreateAccount({
+                  name: newUserName,
+                      onSuccess: () => {
+                        setShouldUpdate(true)
+                        setNewUserName('')
+                      },
+                      onFailure: (error) => console.log(error),
+                  }) }}
+                inputs={[
+                    {
+                      name: 'Name', value: newUserName, onChange: setNewUserName,
+                    },
+                  ]}
+              />
+            )
+          }
+            return null
+        })()}
+
+        {(() => {
+          if(serverAppIndex && userAccounts.length > 0) {
+            console.log("🚀 ~ balanceUser", balanceUser)
+            return (
               <>
-                <KinAction
-                  title="Create a Kin Account"
-                  actionName="Create"
-                  action={() => { handleCreateAccount({
-                  onSuccess: (data) => console.log(data),
-                  onFailure: (error) => console.log(error),
-              }) }}
-                />
                 <KinAction
                   title="Get Account Balance"
                   actionName="Get"
-                  action={() => { console.log('click!') }}
+                  action={() => { handleGetBalance({
+                      name: balanceUser || userAccounts[0],
+                      onSuccess: (balance) => {
+                        setDisplayBalance((balance.toString()))
+                      },
+                      onFailure: (error) => console.log(error),
+                  }) }}
+                  inputs={[
+                    {
+                      name: 'User',
+                      value: balanceUser || userAccounts[0],
+                      options: userAccounts,
+                      onChange: (user) => {
+                          setBalanceUser(user)
+                          setDisplayBalance('')
+                      },
+                    },
+                  ]}
+                  displayValue={displayBalance ? `${balanceUser || userAccounts[0]} has ${displayBalance} Kin` : ''}
+                  disabled={!balanceUser && !userAccounts[0]}
                 />
                 <KinAction
                   title="Request Airdrop"
@@ -193,9 +271,10 @@ function Kin() {
                   action={() => { console.log('click!') }}
                 />
               </>
-) : null}
-          </>
-) : null}
+            )
+          }
+            return null
+        })()}
 
       </div>
     )
