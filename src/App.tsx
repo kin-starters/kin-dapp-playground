@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { ToastContainer, toast } from "react-toastify"
 import Loader from "react-loader-spinner"
 
+import { colors } from './constants'
 import { MakeToast } from './interfaces'
 
 import logo from './kin.svg';
@@ -33,7 +34,7 @@ function App() {
         <div className="LoaderFullScreen">
           <Loader
             type="Audio"
-            color="#00BFFF"
+            color={colors.kin_light}
             height={100}
             width={100}
           />
