@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+
+import { MakeToast } from './interfaces'
 import './Kin.scss'
 
 interface Input{
@@ -148,8 +150,33 @@ interface HandleSetupKinClient{
           onFailure(error)
       }
   }
+  interface HandleRequestAirdrop{
+      name: string,
+      amount: string,
+      onSuccess: () => void;
+      onFailure: (arg: any) => void;
+  }
 
-function Kin() {
+  async function handleRequestAirdrop({
+ onSuccess, onFailure, name, amount,
+}:HandleRequestAirdrop) {
+      try {
+          const baseUrl = process.env.REACT_APP_SERVER_URL
+          if(!baseUrl) throw new Error("No URL");
+
+          const url = `${baseUrl}/airdrop?name=${name}&amount=${amount}`
+          await axios.post(url)
+          onSuccess()
+      } catch (error) {
+          onFailure(error)
+      }
+  }
+
+  interface KinProps{
+     makeToast: (arg:MakeToast) => void;
+     setLoading: (arg: boolean) => void;
+  }
+function Kin({ makeToast, setLoading }: KinProps) {
     const [serverRunning, setServerRunning] = useState(false)
     const [serverAppIndex, setServerAppIndex] = useState(0)
     const [userAccounts, setUserAccounts] = useState<string[]>([])
@@ -158,7 +185,6 @@ function Kin() {
       if(shouldUpdate) {
         checkServerRunning({
               onSuccess: ({ status, data }) => {
-              console.log("🚀 ~ status, data", status, data)
                 setServerRunning(status === 200)
                 setServerAppIndex(data.appIndex)
                 setUserAccounts(data.users)
@@ -174,11 +200,13 @@ function Kin() {
     const [newUserName, setNewUserName] = useState('')
     const [balanceUser, setBalanceUser] = useState('')
     const [displayBalance, setDisplayBalance] = useState('')
+    const [airdropAmount, setAirdropAmount] = useState('')
+    const [airdropUser, setAirdropUser] = useState('')
 
     return (
       <div className="Kin">
         <div className={`Kin-status ${serverRunning ? 'up' : 'down'}`}>
-          {serverRunning ? `Server Running ${serverAppIndex ? ` : App Index - ${serverAppIndex}` : ' but Client not instantiated :('}` : 'Server Not Running'}
+          {serverRunning ? `Server Running ${serverAppIndex ? ` : App Index ${serverAppIndex}` : ' but Client not instantiated :('}` : 'Server Not Running'}
         </div>
         {(() => {
           if(serverRunning) {
@@ -186,9 +214,16 @@ function Kin() {
               <KinAction
                 title="Setup Your Kin Client"
                 actionName="Setup"
-                action={() => { handleSetupKinClient({
-                  onSuccess: () => setShouldUpdate(true),
-                  onFailure: (error) => console.log(error),
+                action={() => {
+                  setLoading(true)
+                  handleSetupKinClient({
+                  onSuccess: () => {
+                    setLoading(false)
+                    makeToast({ text: `Connected to App Index ${serverAppIndex}!`, happy: false })
+                    setShouldUpdate(true) },
+                  onFailure: (error) => {
+                    setLoading(false)
+                    console.log(error) },
                   kinEnvironment,
                   appIndex,
               }) }}
@@ -212,13 +247,20 @@ function Kin() {
               <KinAction
                 title="Create a Kin Account"
                 actionName="Create"
-                action={() => { handleCreateAccount({
-                  name: newUserName,
+                action={() => {
+                  setLoading(true)
+                  handleCreateAccount({
+                      name: newUserName,
                       onSuccess: () => {
+                        setLoading(false)
+                        makeToast({ text: 'Account Creation Successful!', happy: true })
                         setShouldUpdate(true)
                         setNewUserName('')
                       },
-                      onFailure: (error) => console.log(error),
+                      onFailure: (error) => {
+                        setLoading(false)
+                        makeToast({ text: 'Account Creation Failed!', happy: false })
+                        console.log(error) },
                   }) }}
                 inputs={[
                     {
@@ -233,18 +275,22 @@ function Kin() {
 
         {(() => {
           if(serverAppIndex && userAccounts.length > 0) {
-            console.log("🚀 ~ balanceUser", balanceUser)
             return (
               <>
                 <KinAction
                   title="Get Account Balance"
                   actionName="Get"
-                  action={() => { handleGetBalance({
+                  action={() => {
+                    setLoading(true)
+                    handleGetBalance({
                       name: balanceUser || userAccounts[0],
                       onSuccess: (balance) => {
+                        setLoading(false)
                         setDisplayBalance((balance.toString()))
                       },
-                      onFailure: (error) => console.log(error),
+                      onFailure: (error) => {
+                        setLoading(false)
+                        console.log(error) },
                   }) }}
                   inputs={[
                     {
@@ -260,15 +306,69 @@ function Kin() {
                   displayValue={displayBalance ? `${balanceUser || userAccounts[0]} has ${displayBalance} Kin` : ''}
                   disabled={!balanceUser && !userAccounts[0]}
                 />
-                <KinAction
-                  title="Request Airdrop"
-                  actionName="Request"
-                  action={() => { console.log('click!') }}
-                />
+                {kinEnvironment === 'Test' ? (
+                  <KinAction
+                    title="Request Airdrop (Test Network Only)"
+                    actionName="Request"
+                    action={() => {
+                      setLoading(true)
+                      handleRequestAirdrop({
+                      name: airdropUser || userAccounts[0],
+                      amount: airdropAmount,
+                      onSuccess: () => {
+                        setLoading(false)
+                        makeToast({ text: 'Airdrop Successful!', happy: true })
+                      },
+                      onFailure: (error) => {
+                        setLoading(false)
+                        makeToast({ text: 'Airdrop Failed!', happy: false })
+                        console.log(error) },
+                  }) }}
+                    inputs={[
+                    {
+                      name: 'User',
+                      value: airdropUser || userAccounts[0],
+                      options: userAccounts,
+                      onChange: (user) => {
+                          setAirdropUser(user)
+                      },
+                    },
+                    {
+                  name: 'Requested Amount', value: airdropAmount, type: 'number', onChange: setAirdropAmount,
+                },
+                  ]}
+                  />
+                ) : null}
                 <KinAction
                   title="Send Kin"
                   actionName="Send"
-                  action={() => { console.log('click!') }}
+                  action={() => {
+                      setLoading(true)
+                      handleRequestAirdrop({
+                      name: airdropUser || userAccounts[0],
+                      amount: airdropAmount,
+                      onSuccess: () => {
+                        setLoading(false)
+                        makeToast({ text: 'Airdrop Successful!', happy: true })
+                      },
+                      onFailure: (error) => {
+                        setLoading(false)
+                        makeToast({ text: 'Airdrop Failed!', happy: false })
+                        console.log(error) },
+                  }) }}
+                  inputs={[
+                    {
+                      name: 'User',
+                      value: airdropUser || userAccounts[0],
+                      options: userAccounts,
+                      onChange: (user) => {
+                          setAirdropUser(user)
+                      },
+                    },
+                    {
+                  name: 'Requested Amount', value: airdropAmount, type: 'number', onChange: setAirdropAmount,
+                },
+                  ]}
                 />
               </>
             )
