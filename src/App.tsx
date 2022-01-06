@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import { ToastContainer, toast } from "react-toastify"
-import Loader from "react-loader-spinner"
+import { ToastContainer, toast } from 'react-toastify';
+import Loader from 'react-loader-spinner';
 
-import { colors } from './constants'
-import { MakeToast } from './interfaces'
+import { colors } from './constants';
+import { MakeToast } from './helpers';
 
 import logo from './kin.svg';
-import Kin from './Kin'
+import Kin from './Kin';
 
-import "react-toastify/dist/ReactToastify.css"
+import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 const makeToast = ({ text, happy }: MakeToast) => {
@@ -19,13 +19,13 @@ const makeToast = ({ text, happy }: MakeToast) => {
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
-  }
+  };
 
-  return happy ? toast.success(text, options) : toast.error(text, options)
-}
+  return happy ? toast.success(text, options) : toast.error(text, options);
+};
 
 function App() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="App">
@@ -43,10 +43,7 @@ function App() {
 
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Node SDK Demo
-
-        </p>
+        <p>Node SDK Demo</p>
         <a
           className="App-link"
           href="https://developer.kin.org/tutorials/node/"
