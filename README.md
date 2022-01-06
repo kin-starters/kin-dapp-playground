@@ -1,4 +1,4 @@
-# Kin SDK Demo
+# Kin SDK Demo Front End
 
 ## Requirements
 
