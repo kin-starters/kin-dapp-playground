@@ -1,5 +1,10 @@
 # Kin SDK Demo Front End
 
+This app is designed to work with the following Kin Server Demos:
+
+- [Node](https://github.com/kinecosystem/node-sdk-demo-server)
+- More to come!
+
 ## Requirements
 
 ### 1) Environment variable for server URL
