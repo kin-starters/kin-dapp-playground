@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 
+import { KinAction } from './KinAction';
+import { Links } from './Links';
+
+import { kinLinks } from './constants';
+
 import {
   MakeToast,
   checkServerRunning,
@@ -11,83 +16,6 @@ import {
 } from './helpers';
 
 import './Kin.scss';
-
-interface Input {
-  name: string;
-  value: string;
-  options?: string[];
-  type?: string;
-  onChange: (arg: string) => void;
-}
-interface KinActionProps {
-  title: string;
-  subTitle?: string;
-  actionName: string;
-  action: () => void;
-  inputs?: Input[];
-  displayValue?: string;
-  disabled?: boolean;
-}
-function KinAction({
-  title,
-  subTitle,
-  actionName,
-  action,
-  inputs,
-  displayValue,
-  disabled = false,
-}: KinActionProps) {
-  return (
-    <>
-      <div className="Kin-action-title">{title}</div>
-      {subTitle ? <div className="Kin-action-subTitle">{subTitle}</div> : null}
-      <div className="Kin-action">
-        {inputs?.length
-          ? inputs.map(({ type = 'text', name, value, options, onChange }) => (
-              <div key={name} className="Kin-action-input-container">
-                <label
-                  htmlFor={`Kin-action-for-${name}`}
-                  className="Kin-action-label"
-                >
-                  {name}
-                </label>
-                {options?.length ? (
-                  <select
-                    id={`Kin-action-for-${name}`}
-                    className="Kin-action-input"
-                    value={value}
-                    onChange={(event) => onChange(event.target.value)}
-                  >
-                    {options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    onChange={(event) => onChange(event.target.value)}
-                    type={type}
-                    value={value}
-                    id={`Kin-action-for-${name}`}
-                    className="Kin-action-input"
-                  />
-                )}
-              </div>
-            ))
-          : null}
-        {displayValue ? <p>{displayValue}</p> : null}
-        <button
-          type="button"
-          className={`Kin-action-button ${disabled ? 'disabled' : 'enabled'}`}
-          onClick={action}
-        >
-          {actionName}
-        </button>
-      </div>
-    </>
-  );
-}
 
 interface KinProps {
   makeToast: (arg: MakeToast) => void;
@@ -139,18 +67,42 @@ function Kin({ makeToast, setLoading }: KinProps) {
   return (
     <div className="Kin">
       <div className={`Kin-status ${serverRunning ? 'up' : 'down'}`}>
-        {serverRunning
-          ? `Server Running ${
-              serverAppIndex
-                ? ` : App Index ${serverAppIndex}`
-                : ' but Client not instantiated :('
-            }`
-          : 'Server Not Running'}
+        {serverRunning ? (
+          <span>
+            Server Running{' '}
+            {serverAppIndex ? (
+              <>
+                <br />
+                App Index {serverAppIndex}
+              </>
+            ) : (
+              <>
+                <br />
+                <span>
+                  Please set up your App on the{` `}
+                  <Links links={kinLinks.devPortal} />
+                </span>
+              </>
+            )}
+          </span>
+        ) : (
+          <span>
+            {`Server not running`}
+            <br />
+            <Links
+              links={kinLinks.serverRepos}
+              linksTitle="Example Servers: "
+            />
+          </span>
+        )}
+        {/* : 'Server Not Running'} */}
       </div>
 
       {serverRunning ? (
         <KinAction
           title="Setup Your Kin Client with your App Index"
+          linksTitle={`Server code examples: `}
+          links={kinLinks.setupClient}
           actionName="Setup"
           action={() => {
             setLoading(true);
@@ -197,6 +149,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
         <>
           <KinAction
             title="Get Account Balance"
+            linksTitle={`Server code examples: `}
+            links={kinLinks.getBalance}
             actionName="Get"
             action={() => {
               setLoading(true);
@@ -231,6 +185,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
           {kinEnvironment === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
+              linksTitle={`Server code examples: `}
+              links={kinLinks.requestAirdrop}
               actionName="Request"
               action={() => {
                 setLoading(true);
@@ -270,6 +226,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
 
           <KinAction
             title="Create a Kin Account"
+            linksTitle={`Server code examples: `}
+            links={kinLinks.createAccount}
             actionName="Create"
             action={() => {
               setLoading(true);
@@ -307,6 +265,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
             <>
               <KinAction
                 title="Pay Kin from App To User - Earn Transaction"
+                linksTitle={`Server code examples: `}
+                links={kinLinks.makePayment}
                 actionName="Pay"
                 action={() => {
                   setLoading(true);
@@ -353,6 +313,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
               />
               <KinAction
                 title="Pay Kin from User To App - Spend Transaction"
+                linksTitle={`Server code examples: `}
+                links={kinLinks.makePayment}
                 subTitle="Requires 'sign_transaction' Webhook"
                 actionName="Pay"
                 action={() => {
@@ -400,6 +362,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
               />
               <KinAction
                 title="Send Kin from User to User -  P2P Transaction"
+                linksTitle={`Server code examples: `}
+                links={kinLinks.makePayment}
                 subTitle="Requires 'sign_transaction' Webhook"
                 actionName="Send"
                 action={() => {

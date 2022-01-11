@@ -24,7 +24,8 @@
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
-    "@typescript-eslint/indent": "off"
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/comma-dangle": "off"
   },
   "plugins": ["@typescript-eslint", "react", "prettier"]
 }

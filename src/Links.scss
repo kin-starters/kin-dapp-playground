@@ -1,0 +1,19 @@
+@import './constants.scss';
+
+.Links {
+  .link {
+    color: $white;
+
+    &:visited {
+      color: $white;
+    }
+  }
+
+  .link.darkMode {
+    color: $kin_dark;
+
+    &:visited {
+      color: $kin_dark;
+    }
+  }
+}

@@ -3,11 +3,12 @@ import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
 
-import { colors } from './constants';
+import { colors, kinLinks } from './constants';
 import { MakeToast } from './helpers';
 
 import logo from './kin.svg';
 import Kin from './Kin';
+import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
@@ -43,15 +44,10 @@ function App() {
 
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Node SDK Demo</p>
-        <a
-          className="App-link"
-          href="https://developer.kin.org/tutorials/node/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Kin Docs
-        </a>
+        <p>Kin SDK Demo</p>
+        <p>
+          <Links links={kinLinks.docs} darkMode />
+        </p>
       </header>
       <main className="App-body">
         <Kin makeToast={makeToast} setLoading={setLoading} />

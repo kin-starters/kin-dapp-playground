@@ -2,7 +2,7 @@
 
 .Kin {
   margin: auto;
-  padding: 20px 0;
+  padding: 0;
   text-align: left;
 
   .Kin-status {
@@ -19,6 +19,14 @@
 
     &.down {
       background-color: $red;
+    }
+  }
+
+  .Kin-link {
+    color: white;
+
+    &:visited {
+      color: white;
     }
   }
 
@@ -39,6 +47,10 @@
     width: calc(100% - 40px);
     padding: 20px;
     background-color: $background;
+
+    .links {
+      margin: 0 0 20px;
+    }
   }
 
   .Kin-action-input-container {
