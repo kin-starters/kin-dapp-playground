@@ -29,7 +29,7 @@ const kinLinks = {
     { name: 'Kin Developer Portal', link: 'https://portal.kin.org/' },
     {
       name: 'How to Register Your App',
-      link: 'https://developer.kin.org/tutorials/#how-to-register-your-app',
+      link: 'https://developer.kin.org/tutorials/#why-register-your-app',
     },
   ],
   serverRepos: [
