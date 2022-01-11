@@ -101,7 +101,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
       {serverRunning ? (
         <KinAction
           title="Setup Your Kin Client with your App Index"
-          linksTitle={`Server code examples: `}
+          linksTitle={kinLinks.title}
           links={kinLinks.setupClient}
           actionName="Setup"
           action={() => {
@@ -149,7 +149,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
         <>
           <KinAction
             title="Get Account Balance"
-            linksTitle={`Server code examples: `}
+            linksTitle={kinLinks.title}
             links={kinLinks.getBalance}
             actionName="Get"
             action={() => {
@@ -185,7 +185,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
           {kinEnvironment === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
-              linksTitle={`Server code examples: `}
+              linksTitle={kinLinks.title}
               links={kinLinks.requestAirdrop}
               actionName="Request"
               action={() => {
@@ -226,7 +226,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
 
           <KinAction
             title="Create a Kin Account"
-            linksTitle={`Server code examples: `}
+            linksTitle={kinLinks.title}
             links={kinLinks.createAccount}
             actionName="Create"
             action={() => {
@@ -265,7 +265,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
             <>
               <KinAction
                 title="Pay Kin from App To User - Earn Transaction"
-                linksTitle={`Server code examples: `}
+                linksTitle={kinLinks.title}
                 links={kinLinks.makePayment}
                 actionName="Pay"
                 action={() => {
@@ -313,7 +313,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
               />
               <KinAction
                 title="Pay Kin from User To App - Spend Transaction"
-                linksTitle={`Server code examples: `}
+                linksTitle={kinLinks.title}
                 links={kinLinks.makePayment}
                 subTitle="Requires 'sign_transaction' Webhook"
                 actionName="Pay"
@@ -362,7 +362,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
               />
               <KinAction
                 title="Send Kin from User to User -  P2P Transaction"
-                linksTitle={`Server code examples: `}
+                linksTitle={kinLinks.title}
                 links={kinLinks.makePayment}
                 subTitle="Requires 'sign_transaction' Webhook"
                 actionName="Send"
