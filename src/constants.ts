@@ -27,6 +27,10 @@ const kinLinks = {
   sdkRepos: [],
   devPortal: [
     { name: 'Kin Developer Portal', link: 'https://portal.kin.org/' },
+    {
+      name: 'How to Register Your App',
+      link: 'https://developer.kin.org/tutorials/#how-to-register-your-app',
+    },
   ],
   serverRepos: [
     {

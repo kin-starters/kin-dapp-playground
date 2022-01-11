@@ -13,16 +13,19 @@ export function Links({ links, linksTitle, darkMode }: LinkProps) {
   return (
     <span className="Links">
       {linksTitle || null}
-      {links.map(({ name, link }) => (
-        <a
-          key={name}
-          className={`link ${darkMode ? 'darkMode' : ''}`}
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {name}
-        </a>
+      {links.map(({ name, link }, index) => (
+        <>
+          {index > 0 ? ' | ' : ''}
+          <a
+            key={name}
+            className={`link ${darkMode ? 'darkMode' : ''}`}
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {name}
+          </a>
+        </>
       ))}
     </span>
   );

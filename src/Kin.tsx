@@ -79,9 +79,10 @@ function Kin({ makeToast, setLoading }: KinProps) {
               <>
                 <br />
                 <span>
-                  Please set up your App on the{` `}
-                  <Links links={kinLinks.devPortal} />
+                  {`If you don't have an App Index, please register your App.`}
                 </span>
+                <br />
+                <Links links={kinLinks.devPortal} />
               </>
             )}
           </span>
