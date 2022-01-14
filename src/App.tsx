@@ -6,7 +6,7 @@ import Loader from 'react-loader-spinner';
 import { colors, kinLinks } from './constants';
 import { MakeToast } from './helpers';
 
-import logo from './kin.svg';
+import logo from './kin-white.svg';
 import Kin from './Kin';
 import { Links } from './Links';
 
@@ -42,15 +42,21 @@ function App() {
         </div>
       ) : null}
 
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Kin SDK Demo</p>
-        <p>
-          <Links links={kinLinks.docs} darkMode />
-        </p>
-      </header>
+      <nav className="App-nav">
+        <div className="App-nav-container">
+          <div className="App-logo-container">
+            <img src={logo} className="App-logo" alt="logo" />
+          </div>
+          <span>SDK Demo</span>
+          <span>
+            <Links links={kinLinks.docs} />
+          </span>
+        </div>
+      </nav>
       <main className="App-body">
-        <Kin makeToast={makeToast} setLoading={setLoading} />
+        <div className="App-body-container">
+          <Kin makeToast={makeToast} setLoading={setLoading} />
+        </div>
       </main>
     </div>
   );

@@ -14,11 +14,12 @@
     padding: 20px;
 
     &.up {
-      background-color: $kin;
+      background-color: $kin_dark;
     }
 
     &.down {
       background-color: $red;
+      margin-bottom: 0;
     }
   }
 
@@ -31,14 +32,12 @@
   }
 
   .Kin-action-title {
-    font-size: 20px;
+    font-size: calc(12px + 1.2vmin);
     margin-bottom: 10px;
   }
 
   .Kin-action-subTitle {
-    font-size: 16px;
-    margin-top: -10px;
-    margin-bottom: 10px;
+    margin: -5px 0 10px;
   }
 
   .Kin-action {
@@ -69,7 +68,7 @@
   }
 
   .Kin-action-button {
-    background-color: $kin;
+    background-color: $kin_dark;
     color: $white;
     padding: 10px;
     border-radius: 5px;
@@ -78,7 +77,7 @@
     transition: all 0.2s;
 
     &:hover {
-      background-color: $kin_dark;
+      background-color: $kin;
     }
 
     &.disabled {

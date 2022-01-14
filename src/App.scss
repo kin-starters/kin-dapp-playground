@@ -3,46 +3,83 @@
 .App {
   font-family: 'Open Sans', sans-serif;
   text-align: center;
-  color: $black;
+  color: $kin_dark;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  font-size: calc(8px + 1.2vmin);
+}
+
+.App-nav {
+  margin: 0 auto;
+  width: 100vw;
+  padding: 20px 0;
+
+  .App-nav-container {
+    margin: auto;
+    max-width: 800px;
+    display: flex;
+    flex-direction: row;
+
+    .App-logo-container {
+      padding-top: 3px;
+      height: calc(10px + 2vmin);
+      margin: auto 0;
+    }
+
+    .App-logo {
+      height: 80%;
+      pointer-events: none;
+      margin: auto 0;
+    }
+
+    span {
+      margin: auto auto auto 10px;
+      padding: none;
+      font-size: calc(10px + 2vmin);
+      color: $white;
+    }
+
+    span:last-of-type {
+      margin: auto 0 auto auto;
+    }
+
+    a.link {
+      text-decoration: none;
+    }
+  }
 }
 
 @media only screen and (max-width: $small-screen-breakpoint) {
-  .App {
-    padding: 0 20px;
-  }
-}
-
-.App-logo {
-  height: 10vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  margin: 50px auto 0;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-
-  p {
-    margin: 10px auto 0;
+  .App-nav {
+    width: calc(100% - 40px);
   }
 
-  p:last-of-type {
-    margin: 0 auto 10px;
+  .App-nav-container {
+    padding: 0 5px;
   }
 }
 
 .App-link {
-  color: $kin;
+  color: $kin_dark;
 }
 
 .App-body {
-  margin: auto;
-  min-height: calc(100vh - 300px);
-  max-width: 800px;
+  padding: 30px;
+  flex-grow: 1;
+  background-color: $white;
+
+  .App-body-container {
+    margin: auto;
+    max-width: 800px;
+  }
+}
+
+@media only screen and (max-width: $small-screen-breakpoint) {
+  .App-body {
+    padding: 20px;
+  }
 }
 
 .LoaderFullScreen {
@@ -54,7 +91,7 @@
   position: fixed;
   top: 0;
   z-index: 999;
-  color: $kin;
+  color: $kin_dark;
 
   div {
     margin: auto;

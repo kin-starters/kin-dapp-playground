@@ -79,10 +79,8 @@ function Kin({ makeToast, setLoading }: KinProps) {
               <>
                 <br />
                 <span>
-                  {`If you don't have an App Index, please register your App.`}
+                  {`Register on the Kin Developer Portal to get your App Index`}
                 </span>
-                <br />
-                <Links links={kinLinks.devPortal} />
               </>
             )}
           </span>
@@ -102,6 +100,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
       {serverRunning ? (
         <KinAction
           title="Setup Your Kin Client with your App Index"
+          subTitleLinks={kinLinks.devPortal}
           linksTitle={kinLinks.title}
           links={kinLinks.setupClient}
           actionName="Setup"

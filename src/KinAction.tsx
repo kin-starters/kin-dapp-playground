@@ -10,6 +10,7 @@ interface Input {
 interface KinActionProps {
   title: string;
   subTitle?: string;
+  subTitleLinks?: Link[];
   actionName: string;
   action: () => void;
   inputs?: Input[];
@@ -21,6 +22,7 @@ interface KinActionProps {
 export function KinAction({
   title,
   subTitle,
+  subTitleLinks,
   actionName,
   action,
   inputs,
@@ -33,6 +35,11 @@ export function KinAction({
     <>
       <div className="Kin-action-title">{title}</div>
       {subTitle ? <div className="Kin-action-subTitle">{subTitle}</div> : null}
+      {subTitleLinks ? (
+        <div className="Kin-action-subTitle">
+          <Links links={subTitleLinks} darkMode />
+        </div>
+      ) : null}
       <div className="Kin-action">
         {links.length ? (
           <p className="links">
