@@ -26,6 +26,12 @@ const kinLinks = {
   sdkRepos: [
     { name: 'Node', link: 'https://github.com/kinecosystem/kin-node' },
   ],
+  KRE: [
+    {
+      name: 'Kin Rewards Engine Explained',
+      link: 'https://developer.kin.org/docs/the-kre-explained/',
+    },
+  ],
   devPortal: [
     { name: 'Kin Developer Portal', link: 'https://portal.kin.org/' },
     {

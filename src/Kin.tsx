@@ -210,55 +210,54 @@ function Kin({ makeToast, setLoading }: KinProps) {
       </div>
 
       {serverRunning ? (
-        <KinAction
-          title="Setup Your Kin Client with your App Index"
-          subTitleLinks={kinLinks.devPortal}
-          linksTitle={kinLinks.title}
-          links={kinLinks.setupClient}
-          actionName="Setup"
-          action={() => {
-            setLoading(true);
-            handleSetupKinClient({
-              onSuccess: () => {
-                setLoading(false);
-                makeToast({
-                  text: `Connected to App Index ${appIndex}!`,
-                  happy: true,
-                });
-                setShouldUpdate(true);
-              },
-              onFailure: (error) => {
-                setLoading(false);
-                makeToast({
-                  text: `Couldn't connect to App Index ${serverAppIndex}!`,
-                  happy: false,
-                });
-                console.log(error);
-              },
-              kinEnvironment,
-              appIndex,
-            });
-          }}
-          inputs={[
-            {
-              name: 'Environment',
-              value: kinEnvironment,
-              options: ['Test', 'Prod'],
-              onChange: setKinEnvironment,
-            },
-            {
-              name: 'App Index',
-              value: appIndex,
-              type: 'number',
-              onChange: setAppIndex,
-            },
-          ]}
-          disabled={!appIndex || appIndex === serverAppIndex.toString()}
-        />
-      ) : null}
-
-      {serverAppIndex ? (
         <>
+          <KinAction
+            title="Setup Your Kin Client with your App Index"
+            subTitleLinks={kinLinks.devPortal}
+            linksTitle={kinLinks.title}
+            links={kinLinks.setupClient}
+            actionName="Setup"
+            action={() => {
+              setLoading(true);
+              handleSetupKinClient({
+                onSuccess: () => {
+                  setLoading(false);
+                  makeToast({
+                    text: `Connected to App Index ${appIndex}!`,
+                    happy: true,
+                  });
+                  setShouldUpdate(true);
+                },
+                onFailure: (error) => {
+                  setLoading(false);
+                  makeToast({
+                    text: `Couldn't connect to App Index ${serverAppIndex}!`,
+                    happy: false,
+                  });
+                  console.log(error);
+                },
+                kinEnvironment,
+                appIndex,
+              });
+            }}
+            inputs={[
+              {
+                name: 'Environment',
+                value: kinEnvironment,
+                options: ['Test', 'Prod'],
+                onChange: setKinEnvironment,
+              },
+              {
+                name: 'App Index',
+                value: appIndex,
+                type: 'number',
+                onChange: setAppIndex,
+              },
+            ]}
+            disabled={!appIndex || appIndex === serverAppIndex.toString()}
+          />
+
+          <h3>{`SDK Actions that don't require registering your App Index:`}</h3>
           <KinAction
             title="Create a Kin Account"
             linksTitle={kinLinks.title}
@@ -333,6 +332,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
           {kinEnvironment === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
+              subTitle="Get some kin so you can start testing your code."
               linksTitle={kinLinks.title}
               links={kinLinks.requestAirdrop}
               actionName="Request"
@@ -374,7 +374,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
           ) : null}
 
           <KinAction
-            title="Get Transaction"
+            title="Get Transaction Details"
             subTitle="Transactions may take a little time to appear."
             linksTitle={kinLinks.title}
             links={kinLinks.getTransaction}
@@ -425,282 +425,305 @@ function Kin({ makeToast, setLoading }: KinProps) {
             displayOutput={gotTransaction ? gotTransaction : null}
           />
 
-          {userAccounts.length > 0 ? (
-            <>
-              <KinAction
-                title="Pay Kin from App To User - Earn Transaction"
-                linksTitle={kinLinks.title}
-                links={kinLinks.submitPayment}
-                actionName="Pay"
-                action={() => {
-                  setLoading(true);
+          <h3>{`These SDK Actions require registering your App Index so you can take advantage of the KRE:`}</h3>
+          <p className="KRELinks">
+            <Links links={kinLinks.KRE} darkMode />
+          </p>
 
-                  const sendKinOptions: HandleSendKin = {
-                    from: 'App',
-                    to: payToUserEarn || userAccounts[0],
-                    amount: payAmountEarn,
-                    memo: payMemoEarn,
-                    type: 'Earn',
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Successful!', happy: true });
-                      setPayAmountEarn('');
-                      setPayMemoEarn('');
-                      setPayInvoiceEarnTitle('');
-                      setPayInvoiceEarnDescription('');
-                      setPayInvoiceEarnAmount('');
-                      setPayInvoiceEarnSku('');
-                      setShouldUpdate(true);
-                    },
-                    onFailure: (error: string) => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
-                    },
-                  };
+          {(() => {
+            if (!serverAppIndex && !userAccounts.length) {
+              return (
+                <h4>Why not register your App Index and add some users?</h4>
+              );
+            }
+            if (!serverAppIndex) {
+              return <h4>Why not register your App Index?</h4>;
+            }
+            if (!userAccounts.length) {
+              return <h4>Why not add some users?</h4>;
+            }
 
-                  if (payInvoiceEarn) {
-                    sendKinOptions.invoice = payInvoiceEarn;
-                  }
+            return null;
+          })()}
 
-                  handleSendKin(sendKinOptions);
-                }}
-                inputs={[
-                  {
-                    name: 'To',
-                    value: payToUserEarn || userAccounts[0],
-                    options: userAccounts,
-                    onChange: (user) => {
-                      setPayToUserEarn(user);
-                    },
-                  },
-                  {
-                    name: 'Amount to Pay',
-                    value: payAmountEarn,
-                    type: 'number',
-                    onChange: setPayAmountEarn,
-                  },
-                  {
-                    name: 'Memo',
-                    value: payMemoEarn,
-                    onChange: setPayMemoEarn,
-                    disabledInput: !!payInvoiceEarn,
-                  },
-                  {
-                    name: 'Invoice',
-                    inputs: [
-                      {
-                        name: 'Title (Required)',
-                        value: payInvoiceEarnTitle,
-                        onChange: setPayInvoiceEarnTitle,
-                      },
-                      {
-                        name: 'Description',
-                        value: payInvoiceEarnDescription,
-                        onChange: setPayInvoiceEarnDescription,
-                      },
-                      {
-                        name: 'Amount',
-                        value: payInvoiceEarnAmount,
-                        onChange: setPayInvoiceEarnAmount,
-                      },
-                      {
-                        name: 'Sku',
-                        value: payInvoiceEarnSku,
-                        onChange: setPayInvoiceEarnSku,
-                      },
-                    ],
-                    disabledInput: !!payMemoEarn,
-                  },
-                ]}
-              />
-              <KinAction
-                title="Pay Kin from User To App - Spend Transaction"
-                linksTitle={kinLinks.title}
-                links={kinLinks.submitPayment}
-                subTitle="Requires 'sign_transaction' Webhook"
-                actionName="Pay"
-                action={() => {
-                  setLoading(true);
+          <div
+            className={`${
+              !serverAppIndex || !userAccounts.length ? 'disabled' : ''
+            }`}
+          >
+            <KinAction
+              title="Pay Kin from App To User - Earn Transaction"
+              linksTitle={kinLinks.title}
+              links={kinLinks.submitPayment}
+              actionName="Pay"
+              action={() => {
+                setLoading(true);
 
-                  const sendKinOptions: HandleSendKin = {
-                    from: payFromUserSpend || userAccounts[0],
-                    to: 'App',
-                    amount: payAmountSpend,
-                    memo: payMemoSpend,
-                    type: 'Spend',
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Successful!', happy: true });
-                      setPayAmountSpend('');
-                      setPayMemoSpend('');
-                      setPayInvoiceSpendTitle('');
-                      setPayInvoiceSpendDescription('');
-                      setPayInvoiceSpendAmount('');
-                      setPayInvoiceSpendSku('');
-                      setShouldUpdate(true);
-                    },
-                    onFailure: (error: string) => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
-                    },
-                  };
+                const sendKinOptions: HandleSendKin = {
+                  from: 'App',
+                  to: payToUserEarn || userAccounts[0],
+                  amount: payAmountEarn,
+                  memo: payMemoEarn,
+                  type: 'Earn',
+                  onSuccess: () => {
+                    setLoading(false);
+                    makeToast({ text: 'Send Successful!', happy: true });
+                    setPayAmountEarn('');
+                    setPayMemoEarn('');
+                    setPayInvoiceEarnTitle('');
+                    setPayInvoiceEarnDescription('');
+                    setPayInvoiceEarnAmount('');
+                    setPayInvoiceEarnSku('');
+                    setShouldUpdate(true);
+                  },
+                  onFailure: (error: string) => {
+                    setLoading(false);
+                    makeToast({ text: 'Send Failed!', happy: false });
+                    console.log(error);
+                  },
+                };
 
-                  if (payInvoiceSpend) {
-                    sendKinOptions.invoice = payInvoiceSpend;
-                  }
+                if (payInvoiceEarn) {
+                  sendKinOptions.invoice = payInvoiceEarn;
+                }
 
-                  handleSendKin(sendKinOptions);
-                }}
-                inputs={[
-                  {
-                    name: 'From',
-                    value: payFromUserSpend || userAccounts[0],
-                    options: userAccounts,
-                    onChange: (user) => {
-                      setPayFromUserSpend(user);
+                handleSendKin(sendKinOptions);
+              }}
+              inputs={[
+                {
+                  name: 'To',
+                  value: payToUserEarn || userAccounts[0],
+                  options: userAccounts,
+                  onChange: (user) => {
+                    setPayToUserEarn(user);
+                  },
+                },
+                {
+                  name: 'Amount to Pay',
+                  value: payAmountEarn,
+                  type: 'number',
+                  onChange: setPayAmountEarn,
+                },
+                {
+                  name: 'Memo',
+                  value: payMemoEarn,
+                  onChange: setPayMemoEarn,
+                  disabledInput: !!payInvoiceEarn,
+                },
+                {
+                  name: 'Invoice',
+                  inputs: [
+                    {
+                      name: 'Title (Required)',
+                      value: payInvoiceEarnTitle,
+                      onChange: setPayInvoiceEarnTitle,
                     },
-                  },
-                  {
-                    name: 'Amount to Pay',
-                    value: payAmountSpend,
-                    type: 'number',
-                    onChange: setPayAmountSpend,
-                  },
-                  {
-                    name: 'Memo',
-                    value: payMemoSpend,
-                    onChange: setPayMemoSpend,
-                    disabledInput: !!payInvoiceSpend,
-                  },
-                  {
-                    name: 'Invoice',
-                    inputs: [
-                      {
-                        name: 'Title (Required)',
-                        value: payInvoiceSpendTitle,
-                        onChange: setPayInvoiceSpendTitle,
-                      },
-                      {
-                        name: 'Description',
-                        value: payInvoiceSpendDescription,
-                        onChange: setPayInvoiceSpendDescription,
-                      },
-                      {
-                        name: 'Amount',
-                        value: payInvoiceSpendAmount,
-                        onChange: setPayInvoiceSpendAmount,
-                      },
-                      {
-                        name: 'Sku',
-                        value: payInvoiceSpendSku,
-                        onChange: setPayInvoiceSpendSku,
-                      },
-                    ],
-                    disabledInput: !!payMemoSpend,
-                  },
-                ]}
-              />
-              <KinAction
-                title="Send Kin from User to User -  P2P Transaction"
-                linksTitle={kinLinks.title}
-                links={kinLinks.submitPayment}
-                subTitle="Requires 'sign_transaction' Webhook"
-                actionName="Send"
-                action={() => {
-                  setLoading(true);
+                    {
+                      name: 'Description',
+                      value: payInvoiceEarnDescription,
+                      onChange: setPayInvoiceEarnDescription,
+                    },
+                    {
+                      name: 'Amount',
+                      value: payInvoiceEarnAmount,
+                      onChange: setPayInvoiceEarnAmount,
+                    },
+                    {
+                      name: 'Sku',
+                      value: payInvoiceEarnSku,
+                      onChange: setPayInvoiceEarnSku,
+                    },
+                  ],
+                  disabledInput: !!payMemoEarn,
+                },
+              ]}
+            />
+            <KinAction
+              title="Pay Kin from User To App - Spend Transaction"
+              linksTitle={kinLinks.title}
+              links={kinLinks.submitPayment}
+              subTitle="Requires 'sign_transaction' Webhook"
+              actionName="Pay"
+              action={() => {
+                setLoading(true);
 
-                  const sendKinOptions: HandleSendKin = {
-                    from: payFromUserP2P || userAccounts[0],
-                    to: payToUserP2P || userAccounts[0],
-                    amount: payAmountP2P,
-                    memo: payMemoP2P,
-                    type: 'P2P',
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Successful!', happy: true });
-                      setPayAmountP2P('');
-                      setPayMemoP2P('');
-                      setPayInvoiceP2PTitle('');
-                      setPayInvoiceP2PDescription('');
-                      setPayInvoiceP2PAmount('');
-                      setPayInvoiceP2PSku('');
-                      setShouldUpdate(true);
-                    },
-                    onFailure: (error: string) => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
-                    },
-                  };
+                const sendKinOptions: HandleSendKin = {
+                  from: payFromUserSpend || userAccounts[0],
+                  to: 'App',
+                  amount: payAmountSpend,
+                  memo: payMemoSpend,
+                  type: 'Spend',
+                  onSuccess: () => {
+                    setLoading(false);
+                    makeToast({ text: 'Send Successful!', happy: true });
+                    setPayAmountSpend('');
+                    setPayMemoSpend('');
+                    setPayInvoiceSpendTitle('');
+                    setPayInvoiceSpendDescription('');
+                    setPayInvoiceSpendAmount('');
+                    setPayInvoiceSpendSku('');
+                    setShouldUpdate(true);
+                  },
+                  onFailure: (error: string) => {
+                    setLoading(false);
+                    makeToast({ text: 'Send Failed!', happy: false });
+                    console.log(error);
+                  },
+                };
 
-                  if (payInvoiceP2P) {
-                    sendKinOptions.invoice = payInvoiceP2P;
-                  }
+                if (payInvoiceSpend) {
+                  sendKinOptions.invoice = payInvoiceSpend;
+                }
 
-                  handleSendKin(sendKinOptions);
-                }}
-                inputs={[
-                  {
-                    name: 'From',
-                    value: payFromUserP2P || userAccounts[0],
-                    options: userAccounts,
-                    onChange: (user) => {
-                      setPayFromUserP2P(user);
+                handleSendKin(sendKinOptions);
+              }}
+              inputs={[
+                {
+                  name: 'From',
+                  value: payFromUserSpend || userAccounts[0],
+                  options: userAccounts,
+                  onChange: (user) => {
+                    setPayFromUserSpend(user);
+                  },
+                },
+                {
+                  name: 'Amount to Pay',
+                  value: payAmountSpend,
+                  type: 'number',
+                  onChange: setPayAmountSpend,
+                },
+                {
+                  name: 'Memo',
+                  value: payMemoSpend,
+                  onChange: setPayMemoSpend,
+                  disabledInput: !!payInvoiceSpend,
+                },
+                {
+                  name: 'Invoice',
+                  inputs: [
+                    {
+                      name: 'Title (Required)',
+                      value: payInvoiceSpendTitle,
+                      onChange: setPayInvoiceSpendTitle,
                     },
-                  },
-                  {
-                    name: 'To',
-                    value: payToUserP2P || userAccounts[0],
-                    options: userAccounts,
-                    onChange: (user) => {
-                      setPayToUserP2P(user);
+                    {
+                      name: 'Description',
+                      value: payInvoiceSpendDescription,
+                      onChange: setPayInvoiceSpendDescription,
                     },
+                    {
+                      name: 'Amount',
+                      value: payInvoiceSpendAmount,
+                      onChange: setPayInvoiceSpendAmount,
+                    },
+                    {
+                      name: 'Sku',
+                      value: payInvoiceSpendSku,
+                      onChange: setPayInvoiceSpendSku,
+                    },
+                  ],
+                  disabledInput: !!payMemoSpend,
+                },
+              ]}
+            />
+            <KinAction
+              title="Send Kin from User to User -  P2P Transaction"
+              linksTitle={kinLinks.title}
+              links={kinLinks.submitPayment}
+              subTitle="Requires 'sign_transaction' Webhook"
+              actionName="Send"
+              action={() => {
+                setLoading(true);
+
+                const sendKinOptions: HandleSendKin = {
+                  from: payFromUserP2P || userAccounts[0],
+                  to: payToUserP2P || userAccounts[0],
+                  amount: payAmountP2P,
+                  memo: payMemoP2P,
+                  type: 'P2P',
+                  onSuccess: () => {
+                    setLoading(false);
+                    makeToast({ text: 'Send Successful!', happy: true });
+                    setPayAmountP2P('');
+                    setPayMemoP2P('');
+                    setPayInvoiceP2PTitle('');
+                    setPayInvoiceP2PDescription('');
+                    setPayInvoiceP2PAmount('');
+                    setPayInvoiceP2PSku('');
+                    setShouldUpdate(true);
                   },
-                  {
-                    name: 'Amount to Send',
-                    value: payAmountP2P,
-                    type: 'number',
-                    onChange: setPayAmountP2P,
+                  onFailure: (error: string) => {
+                    setLoading(false);
+                    makeToast({ text: 'Send Failed!', happy: false });
+                    console.log(error);
                   },
-                  {
-                    name: 'Memo',
-                    value: payMemoP2P,
-                    onChange: setPayMemoP2P,
-                    disabledInput: !!payInvoiceP2P,
+                };
+
+                if (payInvoiceP2P) {
+                  sendKinOptions.invoice = payInvoiceP2P;
+                }
+
+                handleSendKin(sendKinOptions);
+              }}
+              inputs={[
+                {
+                  name: 'From',
+                  value: payFromUserP2P || userAccounts[0],
+                  options: userAccounts,
+                  onChange: (user) => {
+                    setPayFromUserP2P(user);
                   },
-                  {
-                    name: 'Invoice',
-                    inputs: [
-                      {
-                        name: 'Title (Required)',
-                        value: payInvoiceP2PTitle,
-                        onChange: setPayInvoiceP2PTitle,
-                      },
-                      {
-                        name: 'Description',
-                        value: payInvoiceP2PDescription,
-                        onChange: setPayInvoiceP2PDescription,
-                      },
-                      {
-                        name: 'Amount',
-                        value: payInvoiceP2PAmount,
-                        onChange: setPayInvoiceP2PAmount,
-                      },
-                      {
-                        name: 'Sku',
-                        value: payInvoiceP2PSku,
-                        onChange: setPayInvoiceP2PSku,
-                      },
-                    ],
-                    disabledInput: !!payMemoP2P,
+                },
+                {
+                  name: 'To',
+                  value: payToUserP2P || userAccounts[0],
+                  options: userAccounts,
+                  onChange: (user) => {
+                    setPayToUserP2P(user);
                   },
-                ]}
-                disabled={payFromUserP2P === payToUserP2P}
-              />
-            </>
-          ) : null}
+                },
+                {
+                  name: 'Amount to Send',
+                  value: payAmountP2P,
+                  type: 'number',
+                  onChange: setPayAmountP2P,
+                },
+                {
+                  name: 'Memo',
+                  value: payMemoP2P,
+                  onChange: setPayMemoP2P,
+                  disabledInput: !!payInvoiceP2P,
+                },
+                {
+                  name: 'Invoice',
+                  inputs: [
+                    {
+                      name: 'Title (Required)',
+                      value: payInvoiceP2PTitle,
+                      onChange: setPayInvoiceP2PTitle,
+                    },
+                    {
+                      name: 'Description',
+                      value: payInvoiceP2PDescription,
+                      onChange: setPayInvoiceP2PDescription,
+                    },
+                    {
+                      name: 'Amount',
+                      value: payInvoiceP2PAmount,
+                      onChange: setPayInvoiceP2PAmount,
+                    },
+                    {
+                      name: 'Sku',
+                      value: payInvoiceP2PSku,
+                      onChange: setPayInvoiceP2PSku,
+                    },
+                  ],
+                  disabledInput: !!payMemoP2P,
+                },
+              ]}
+              disabled={payFromUserP2P === payToUserP2P}
+            />
+          </div>
         </>
       ) : null}
     </div>
