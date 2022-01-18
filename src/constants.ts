@@ -16,7 +16,7 @@ const breakpoints = {
 };
 
 const kinLinks = {
-  title: 'Server code: ',
+  title: 'Code Samples: ',
   docs: [
     {
       name: 'Kin Docs',
@@ -24,12 +24,16 @@ const kinLinks = {
     },
   ],
   sdkRepos: [
-    { name: 'Node', link: 'https://github.com/kinecosystem/kin-node' },
+    { name: 'Node SDK', link: 'https://github.com/kinecosystem/kin-node' },
   ],
   KRE: [
     {
       name: 'Kin Rewards Engine Explained',
       link: 'https://developer.kin.org/docs/the-kre-explained/',
+    },
+    {
+      name: 'KRE Checklist',
+      link: 'https://developer.kin.org/docs/transaction-guide/',
     },
   ],
   devPortal: [

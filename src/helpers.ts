@@ -143,18 +143,10 @@ export async function handleRequestAirdrop({
   }
 }
 
-export interface Invoice {
-  title: string;
-  description?: string;
-  amount?: string;
-  sku?: string;
-}
 export interface HandleSendKin {
   from: string;
   to: string;
   amount: string;
-  memo?: string;
-  invoice?: Invoice;
   type: string;
   onSuccess: () => void;
   onFailure: (arg: any) => void;
@@ -166,8 +158,7 @@ export async function handleSendKin({
   from,
   to,
   amount,
-  memo,
-  invoice,
+
   type,
 }: HandleSendKin) {
   try {
@@ -178,8 +169,6 @@ export async function handleSendKin({
       from: string;
       to: string;
       amount: string;
-      memo?: string;
-      invoiceItems?: Invoice[];
       type: string;
     } = {
       from,
@@ -187,14 +176,6 @@ export async function handleSendKin({
       amount,
       type,
     };
-
-    if (memo) {
-      data.memo = memo;
-    }
-
-    if (invoice?.title) {
-      data.invoiceItems = [invoice];
-    }
 
     const options = {
       headers: {

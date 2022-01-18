@@ -76,6 +76,7 @@
     padding: 5px;
     min-width: 200px;
     max-width: 500px;
+    font-size: calc(6px + 1.2vmin);
   }
 
   .Kin-action-input-option {
@@ -102,6 +103,7 @@
   .Kin-action-display {
     margin: 20px 0 0;
     pre {
+      font-size: calc(6px + 1vmin);
       white-space: pre-wrap;
       word-wrap: break-word;
     }

@@ -15,7 +15,6 @@ import {
   handleSendKin,
   handleGetTransaction,
   Transaction,
-  Invoice,
   HandleSendKin,
 } from './helpers';
 
@@ -66,115 +65,12 @@ function Kin({ makeToast, setLoading }: KinProps) {
   const [payFromUserP2P, setPayFromUserP2P] = useState('');
   const [payToUserP2P, setPayToUserP2P] = useState('');
   const [payAmountP2P, setPayAmountP2P] = useState('');
-  const [payMemoP2P, setPayMemoP2P] = useState('');
-  const [payInvoiceP2PTitle, setPayInvoiceP2PTitle] = useState('');
-  const [payInvoiceP2PDescription, setPayInvoiceP2PDescription] = useState('');
-  const [payInvoiceP2PAmount, setPayInvoiceP2PAmount] = useState('');
-  const [payInvoiceP2PSku, setPayInvoiceP2PSku] = useState('');
-  const [payInvoiceP2P, setPayInvoiceP2P] = useState<Invoice | null>(null);
-  useEffect(() => {
-    if (payInvoiceP2PTitle.length) {
-      setPayMemoP2P('');
-      const invoice: Invoice = { title: payInvoiceP2PTitle };
-      if (payInvoiceP2PDescription)
-        invoice.description = payInvoiceP2PDescription;
-      if (payInvoiceP2PDescription) invoice.amount = payInvoiceP2PAmount;
-      if (payInvoiceP2PDescription) invoice.sku = payInvoiceP2PSku;
-      setPayInvoiceP2P(invoice);
-    } else {
-      setPayInvoiceP2P(null);
-    }
-
-    if (payMemoP2P) {
-      setPayInvoiceP2PTitle('');
-      setPayInvoiceP2PDescription('');
-      setPayInvoiceP2PAmount('');
-      setPayInvoiceP2PSku('');
-      setPayInvoiceP2P(null);
-    }
-  }, [
-    payMemoP2P,
-    payInvoiceP2PTitle,
-    payInvoiceP2PDescription,
-    payInvoiceP2PAmount,
-    payInvoiceP2PSku,
-  ]);
 
   const [payFromUserSpend, setPayFromUserSpend] = useState('');
   const [payAmountSpend, setPayAmountSpend] = useState('');
-  const [payMemoSpend, setPayMemoSpend] = useState('');
-  const [payInvoiceSpendTitle, setPayInvoiceSpendTitle] = useState('');
-  const [payInvoiceSpendDescription, setPayInvoiceSpendDescription] = useState(
-    ''
-  );
-  const [payInvoiceSpendAmount, setPayInvoiceSpendAmount] = useState('');
-  const [payInvoiceSpendSku, setPayInvoiceSpendSku] = useState('');
-  const [payInvoiceSpend, setPayInvoiceSpend] = useState<Invoice | null>(null);
-  useEffect(() => {
-    if (payInvoiceSpendTitle.length) {
-      setPayMemoSpend('');
-      const invoice: Invoice = { title: payInvoiceSpendTitle };
-      if (payInvoiceSpendDescription)
-        invoice.description = payInvoiceSpendDescription;
-      if (payInvoiceSpendDescription) invoice.amount = payInvoiceSpendAmount;
-      if (payInvoiceSpendDescription) invoice.sku = payInvoiceSpendSku;
-      setPayInvoiceSpend(invoice);
-    } else {
-      setPayInvoiceSpend(null);
-    }
-
-    if (payMemoSpend) {
-      setPayInvoiceSpendTitle('');
-      setPayInvoiceSpendDescription('');
-      setPayInvoiceSpendAmount('');
-      setPayInvoiceSpendSku('');
-      setPayInvoiceSpend(null);
-    }
-  }, [
-    payMemoSpend,
-    payInvoiceSpendTitle,
-    payInvoiceSpendDescription,
-    payInvoiceSpendAmount,
-    payInvoiceSpendSku,
-  ]);
 
   const [payToUserEarn, setPayToUserEarn] = useState('');
   const [payAmountEarn, setPayAmountEarn] = useState('');
-  const [payMemoEarn, setPayMemoEarn] = useState('');
-  const [payInvoiceEarnTitle, setPayInvoiceEarnTitle] = useState('');
-  const [payInvoiceEarnDescription, setPayInvoiceEarnDescription] = useState(
-    ''
-  );
-  const [payInvoiceEarnAmount, setPayInvoiceEarnAmount] = useState('');
-  const [payInvoiceEarnSku, setPayInvoiceEarnSku] = useState('');
-  const [payInvoiceEarn, setPayInvoiceEarn] = useState<Invoice | null>(null);
-  useEffect(() => {
-    if (payInvoiceEarnTitle.length) {
-      setPayMemoEarn('');
-      const invoice: Invoice = { title: payInvoiceEarnTitle };
-      if (payInvoiceEarnDescription)
-        invoice.description = payInvoiceEarnDescription;
-      if (payInvoiceEarnDescription) invoice.amount = payInvoiceEarnAmount;
-      if (payInvoiceEarnDescription) invoice.sku = payInvoiceEarnSku;
-      setPayInvoiceEarn(invoice);
-    } else {
-      setPayInvoiceEarn(null);
-    }
-
-    if (payMemoEarn) {
-      setPayInvoiceEarnTitle('');
-      setPayInvoiceEarnDescription('');
-      setPayInvoiceEarnAmount('');
-      setPayInvoiceEarnSku('');
-      setPayInvoiceEarn(null);
-    }
-  }, [
-    payMemoEarn,
-    payInvoiceEarnTitle,
-    payInvoiceEarnDescription,
-    payInvoiceEarnAmount,
-    payInvoiceEarnSku,
-  ]);
 
   return (
     <div className="Kin">
@@ -254,12 +150,12 @@ function Kin({ makeToast, setLoading }: KinProps) {
                 onChange: setAppIndex,
               },
             ]}
-            disabled={!appIndex || appIndex === serverAppIndex.toString()}
+            disabled={!appIndex}
           />
 
           <h3>{`SDK Actions that don't require registering your App Index:`}</h3>
           <KinAction
-            title="Create a Kin Account"
+            title="Create a Kin Account for your User"
             linksTitle={kinLinks.title}
             links={kinLinks.createAccount}
             actionName="Create"
@@ -288,7 +184,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
             }}
             inputs={[
               {
-                name: 'Name',
+                name: 'Username',
                 value: newUserName,
                 onChange: setNewUserName,
               },
@@ -332,7 +228,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
           {kinEnvironment === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
-              subTitle="Get some kin so you can start testing your code."
+              subTitle="Get some kin so you can start testing your transaction code."
               linksTitle={kinLinks.title}
               links={kinLinks.requestAirdrop}
               actionName="Request"
@@ -463,17 +359,13 @@ function Kin({ makeToast, setLoading }: KinProps) {
                   from: 'App',
                   to: payToUserEarn || userAccounts[0],
                   amount: payAmountEarn,
-                  memo: payMemoEarn,
+
                   type: 'Earn',
                   onSuccess: () => {
                     setLoading(false);
                     makeToast({ text: 'Send Successful!', happy: true });
                     setPayAmountEarn('');
-                    setPayMemoEarn('');
-                    setPayInvoiceEarnTitle('');
-                    setPayInvoiceEarnDescription('');
-                    setPayInvoiceEarnAmount('');
-                    setPayInvoiceEarnSku('');
+
                     setShouldUpdate(true);
                   },
                   onFailure: (error: string) => {
@@ -482,10 +374,6 @@ function Kin({ makeToast, setLoading }: KinProps) {
                     console.log(error);
                   },
                 };
-
-                if (payInvoiceEarn) {
-                  sendKinOptions.invoice = payInvoiceEarn;
-                }
 
                 handleSendKin(sendKinOptions);
               }}
@@ -504,38 +392,6 @@ function Kin({ makeToast, setLoading }: KinProps) {
                   type: 'number',
                   onChange: setPayAmountEarn,
                 },
-                {
-                  name: 'Memo',
-                  value: payMemoEarn,
-                  onChange: setPayMemoEarn,
-                  disabledInput: !!payInvoiceEarn,
-                },
-                {
-                  name: 'Invoice',
-                  inputs: [
-                    {
-                      name: 'Title (Required)',
-                      value: payInvoiceEarnTitle,
-                      onChange: setPayInvoiceEarnTitle,
-                    },
-                    {
-                      name: 'Description',
-                      value: payInvoiceEarnDescription,
-                      onChange: setPayInvoiceEarnDescription,
-                    },
-                    {
-                      name: 'Amount',
-                      value: payInvoiceEarnAmount,
-                      onChange: setPayInvoiceEarnAmount,
-                    },
-                    {
-                      name: 'Sku',
-                      value: payInvoiceEarnSku,
-                      onChange: setPayInvoiceEarnSku,
-                    },
-                  ],
-                  disabledInput: !!payMemoEarn,
-                },
               ]}
             />
             <KinAction
@@ -551,17 +407,11 @@ function Kin({ makeToast, setLoading }: KinProps) {
                   from: payFromUserSpend || userAccounts[0],
                   to: 'App',
                   amount: payAmountSpend,
-                  memo: payMemoSpend,
                   type: 'Spend',
                   onSuccess: () => {
                     setLoading(false);
                     makeToast({ text: 'Send Successful!', happy: true });
                     setPayAmountSpend('');
-                    setPayMemoSpend('');
-                    setPayInvoiceSpendTitle('');
-                    setPayInvoiceSpendDescription('');
-                    setPayInvoiceSpendAmount('');
-                    setPayInvoiceSpendSku('');
                     setShouldUpdate(true);
                   },
                   onFailure: (error: string) => {
@@ -570,10 +420,6 @@ function Kin({ makeToast, setLoading }: KinProps) {
                     console.log(error);
                   },
                 };
-
-                if (payInvoiceSpend) {
-                  sendKinOptions.invoice = payInvoiceSpend;
-                }
 
                 handleSendKin(sendKinOptions);
               }}
@@ -592,38 +438,6 @@ function Kin({ makeToast, setLoading }: KinProps) {
                   type: 'number',
                   onChange: setPayAmountSpend,
                 },
-                {
-                  name: 'Memo',
-                  value: payMemoSpend,
-                  onChange: setPayMemoSpend,
-                  disabledInput: !!payInvoiceSpend,
-                },
-                {
-                  name: 'Invoice',
-                  inputs: [
-                    {
-                      name: 'Title (Required)',
-                      value: payInvoiceSpendTitle,
-                      onChange: setPayInvoiceSpendTitle,
-                    },
-                    {
-                      name: 'Description',
-                      value: payInvoiceSpendDescription,
-                      onChange: setPayInvoiceSpendDescription,
-                    },
-                    {
-                      name: 'Amount',
-                      value: payInvoiceSpendAmount,
-                      onChange: setPayInvoiceSpendAmount,
-                    },
-                    {
-                      name: 'Sku',
-                      value: payInvoiceSpendSku,
-                      onChange: setPayInvoiceSpendSku,
-                    },
-                  ],
-                  disabledInput: !!payMemoSpend,
-                },
               ]}
             />
             <KinAction
@@ -639,17 +453,11 @@ function Kin({ makeToast, setLoading }: KinProps) {
                   from: payFromUserP2P || userAccounts[0],
                   to: payToUserP2P || userAccounts[0],
                   amount: payAmountP2P,
-                  memo: payMemoP2P,
                   type: 'P2P',
                   onSuccess: () => {
                     setLoading(false);
                     makeToast({ text: 'Send Successful!', happy: true });
                     setPayAmountP2P('');
-                    setPayMemoP2P('');
-                    setPayInvoiceP2PTitle('');
-                    setPayInvoiceP2PDescription('');
-                    setPayInvoiceP2PAmount('');
-                    setPayInvoiceP2PSku('');
                     setShouldUpdate(true);
                   },
                   onFailure: (error: string) => {
@@ -658,10 +466,6 @@ function Kin({ makeToast, setLoading }: KinProps) {
                     console.log(error);
                   },
                 };
-
-                if (payInvoiceP2P) {
-                  sendKinOptions.invoice = payInvoiceP2P;
-                }
 
                 handleSendKin(sendKinOptions);
               }}
@@ -687,38 +491,6 @@ function Kin({ makeToast, setLoading }: KinProps) {
                   value: payAmountP2P,
                   type: 'number',
                   onChange: setPayAmountP2P,
-                },
-                {
-                  name: 'Memo',
-                  value: payMemoP2P,
-                  onChange: setPayMemoP2P,
-                  disabledInput: !!payInvoiceP2P,
-                },
-                {
-                  name: 'Invoice',
-                  inputs: [
-                    {
-                      name: 'Title (Required)',
-                      value: payInvoiceP2PTitle,
-                      onChange: setPayInvoiceP2PTitle,
-                    },
-                    {
-                      name: 'Description',
-                      value: payInvoiceP2PDescription,
-                      onChange: setPayInvoiceP2PDescription,
-                    },
-                    {
-                      name: 'Amount',
-                      value: payInvoiceP2PAmount,
-                      onChange: setPayInvoiceP2PAmount,
-                    },
-                    {
-                      name: 'Sku',
-                      value: payInvoiceP2PSku,
-                      onChange: setPayInvoiceP2PSku,
-                    },
-                  ],
-                  disabledInput: !!payMemoP2P,
                 },
               ]}
               disabled={payFromUserP2P === payToUserP2P}
