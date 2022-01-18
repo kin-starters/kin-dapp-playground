@@ -23,8 +23,9 @@ const kinLinks = {
       link: 'https://developer.kin.org',
     },
   ],
-
-  sdkRepos: [],
+  sdkRepos: [
+    { name: 'Node', link: 'https://github.com/kinecosystem/kin-node' },
+  ],
   devPortal: [
     { name: 'Kin Developer Portal', link: 'https://portal.kin.org/' },
     {
@@ -48,6 +49,7 @@ const kinLinks = {
   createAccount: [
     {
       name: 'Node',
+      sdk: 'https://github.com/kinecosystem/kin-node',
       link:
         'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L80-L103',
     },
@@ -66,7 +68,14 @@ const kinLinks = {
         'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L143-L166',
     },
   ],
-  makePayment: [
+  submitPayment: [
+    {
+      name: 'Node',
+      link:
+        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L188-L231',
+    },
+  ],
+  getTransaction: [
     {
       name: 'Node',
       link:

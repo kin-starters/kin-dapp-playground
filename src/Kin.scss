@@ -56,15 +56,33 @@
     margin: auto auto 20px;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .Kin-action-input-nested {
+    min-width: 100%;
+    padding-top: 10px;
+    padding-left: 30px;
   }
 
   .Kin-action-label {
     margin: auto 10px auto 0;
-    min-width: 100px;
+    min-width: 180px;
   }
 
   .Kin-action-input {
+    box-sizing: border-box;
     margin: auto auto auto 0;
+    padding: 5px;
+    min-width: 200px;
+    max-width: 500px;
+  }
+
+  .Kin-action-input-option {
+    width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .Kin-action-button {
@@ -79,10 +97,13 @@
     &:hover {
       background-color: $kin;
     }
+  }
 
-    &.disabled {
-      pointer-events: none;
-      opacity: 0.6;
+  .Kin-action-display {
+    margin: 20px 0 0;
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
   }
 }

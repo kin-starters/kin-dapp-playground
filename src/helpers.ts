@@ -13,11 +13,16 @@ interface StatusResponse {
   data: {
     appIndex: number;
     users: string[];
+    transactions: string[];
   };
   status: number;
 }
 interface BalanceResponse {
   data: number;
+  status: number;
+}
+interface TransactionResponse {
+  data: Transaction;
   status: number;
 }
 
@@ -138,11 +143,18 @@ export async function handleRequestAirdrop({
   }
 }
 
-interface HandleSendKin {
+export interface Invoice {
+  title: string;
+  description?: string;
+  amount?: string;
+  sku?: string;
+}
+export interface HandleSendKin {
   from: string;
   to: string;
   amount: string;
-  memo: string;
+  memo?: string;
+  invoice?: Invoice;
   type: string;
   onSuccess: () => void;
   onFailure: (arg: any) => void;
@@ -155,19 +167,34 @@ export async function handleSendKin({
   to,
   amount,
   memo,
+  invoice,
   type,
 }: HandleSendKin) {
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
 
-    const data = {
+    const data: {
+      from: string;
+      to: string;
+      amount: string;
+      memo?: string;
+      invoiceItems?: Invoice[];
+      type: string;
+    } = {
       from,
       to,
       amount,
-      memo,
       type,
     };
+
+    if (memo) {
+      data.memo = memo;
+    }
+
+    if (invoice?.title) {
+      data.invoiceItems = [invoice];
+    }
 
     const options = {
       headers: {
@@ -178,6 +205,42 @@ export async function handleSendKin({
     const url = `${baseUrl}/send`;
     await axios.post(url, data, options);
     onSuccess();
+  } catch (error) {
+    onFailure(error);
+  }
+}
+
+interface Payment {
+  kin: string;
+  type: number;
+  sender: string;
+  destination: string;
+}
+export interface Transaction {
+  txState: number;
+  payments: Payment[];
+}
+interface HandleGetTransaction {
+  transaction: string;
+  onSuccess: (transaction: Transaction) => void;
+  onFailure: (arg: any) => void;
+}
+
+export async function handleGetTransaction({
+  transaction,
+  onSuccess,
+  onFailure,
+}: HandleGetTransaction) {
+  try {
+    const baseUrl = process.env.REACT_APP_SERVER_URL;
+    if (!baseUrl) throw new Error('No URL');
+    console.log('🚀 ~ handleGetTransaction', transaction);
+
+    const url = `${baseUrl}/transaction?transaction=${encodeURIComponent(
+      transaction
+    )}`;
+    const { data }: TransactionResponse = await axios.get(url);
+    onSuccess(data);
   } catch (error) {
     onFailure(error);
   }

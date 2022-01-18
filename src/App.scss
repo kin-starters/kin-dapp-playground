@@ -82,6 +82,11 @@
   }
 }
 
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 .LoaderFullScreen {
   background-color: rgba(0, 0, 0, 0.248);
   display: flex;
