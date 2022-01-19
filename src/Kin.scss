@@ -67,20 +67,19 @@
 
   .Kin-action-label {
     margin: auto 10px auto 0;
-    min-width: 180px;
+    min-width: 200px;
   }
 
   .Kin-action-input {
     box-sizing: border-box;
     margin: auto auto auto 0;
     padding: 5px;
-    min-width: 200px;
+    min-width: 250px;
     max-width: 500px;
-    font-size: calc(6px + 1.2vmin);
+    font-size: calc(4px + 1.2vmin);
   }
 
   .Kin-action-input-option {
-    width: 50%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

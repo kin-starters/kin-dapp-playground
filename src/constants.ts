@@ -19,8 +19,12 @@ const kinLinks = {
   title: 'Code Samples: ',
   docs: [
     {
-      name: 'Kin Docs',
+      name: 'Docs',
       link: 'https://developer.kin.org',
+    },
+    {
+      name: 'Discord',
+      link: 'https://discord.com/invite/kdRyUNmHDn',
     },
   ],
   sdkRepos: [
