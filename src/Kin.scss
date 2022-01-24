@@ -31,21 +31,28 @@
     }
   }
 
-  .Kin-action-title {
-    font-size: calc(12px + 1.2vmin);
+  .Kin-action-container {
     margin-bottom: 10px;
+    background-color: $background;
+    border-radius: 5px;
+    border: 0.5px solid $kin_light;
+  }
+
+  .Kin-action-trigger {
+    cursor: pointer;
+    padding: 10px;
   }
 
   .Kin-action-subTitle {
-    margin: -5px 0 10px;
+    margin: 0;
   }
 
   .Kin-action {
-    border-radius: 5px;
-    margin: auto auto 20px;
+    border-radius: 0 0 5px 5px;
+    margin: auto;
     width: calc(100% - 40px);
     padding: 20px;
-    background-color: $background;
+    background-color: $background_dark;
 
     .links {
       margin: 0 0 20px;
@@ -73,10 +80,10 @@
   .Kin-action-input {
     box-sizing: border-box;
     margin: auto auto auto 0;
+    border-radius: 5px;
     padding: 5px;
     min-width: 250px;
     max-width: 500px;
-    font-size: calc(4px + 1.2vmin);
   }
 
   .Kin-action-input-option {

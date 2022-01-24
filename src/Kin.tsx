@@ -108,6 +108,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
       {serverRunning ? (
         <>
           <KinAction
+            open
             title="Setup Your Kin Client with your App Index"
             subTitleLinks={kinLinks.devPortal}
             linksTitle={kinLinks.title}
@@ -342,160 +343,156 @@ function Kin({ makeToast, setLoading }: KinProps) {
             return null;
           })()}
 
-          <div
-            className={`${
-              !serverAppIndex || !userAccounts.length ? 'disabled' : ''
-            }`}
-          >
-            <KinAction
-              title="Pay Kin from App To User - Earn Transaction"
-              linksTitle={kinLinks.title}
-              links={kinLinks.submitPayment}
-              actionName="Pay"
-              action={() => {
-                setLoading(true);
+          <KinAction
+            title="Pay Kin from App To User - Earn Transaction"
+            linksTitle={kinLinks.title}
+            links={kinLinks.submitPayment}
+            actionName="Pay"
+            action={() => {
+              setLoading(true);
 
-                const sendKinOptions: HandleSendKin = {
-                  from: 'App',
-                  to: payToUserEarn || userAccounts[0],
-                  amount: payAmountEarn,
+              const sendKinOptions: HandleSendKin = {
+                from: 'App',
+                to: payToUserEarn || userAccounts[0],
+                amount: payAmountEarn,
 
-                  type: 'Earn',
-                  onSuccess: () => {
-                    setLoading(false);
-                    makeToast({ text: 'Send Successful!', happy: true });
-                    setPayAmountEarn('');
+                type: 'Earn',
+                onSuccess: () => {
+                  setLoading(false);
+                  makeToast({ text: 'Send Successful!', happy: true });
+                  setPayAmountEarn('');
 
-                    setShouldUpdate(true);
-                  },
-                  onFailure: (error: string) => {
-                    setLoading(false);
-                    makeToast({ text: 'Send Failed!', happy: false });
-                    console.log(error);
-                  },
-                };
-
-                handleSendKin(sendKinOptions);
-              }}
-              inputs={[
-                {
-                  name: 'To',
-                  value: payToUserEarn || userAccounts[0],
-                  options: userAccounts,
-                  onChange: (user) => {
-                    setPayToUserEarn(user);
-                  },
+                  setShouldUpdate(true);
                 },
-                {
-                  name: 'Amount to Pay',
-                  value: payAmountEarn,
-                  type: 'number',
-                  onChange: setPayAmountEarn,
+                onFailure: (error: string) => {
+                  setLoading(false);
+                  makeToast({ text: 'Send Failed!', happy: false });
+                  console.log(error);
                 },
-              ]}
-            />
-            <KinAction
-              title="Pay Kin from User To App - Spend Transaction"
-              linksTitle={kinLinks.title}
-              links={kinLinks.submitPayment}
-              subTitle="Requires 'sign_transaction' Webhook"
-              actionName="Pay"
-              action={() => {
-                setLoading(true);
+              };
 
-                const sendKinOptions: HandleSendKin = {
-                  from: payFromUserSpend || userAccounts[0],
-                  to: 'App',
-                  amount: payAmountSpend,
-                  type: 'Spend',
-                  onSuccess: () => {
-                    setLoading(false);
-                    makeToast({ text: 'Send Successful!', happy: true });
-                    setPayAmountSpend('');
-                    setShouldUpdate(true);
-                  },
-                  onFailure: (error: string) => {
-                    setLoading(false);
-                    makeToast({ text: 'Send Failed!', happy: false });
-                    console.log(error);
-                  },
-                };
+              handleSendKin(sendKinOptions);
+            }}
+            inputs={[
+              {
+                name: 'To',
+                value: payToUserEarn || userAccounts[0],
+                options: userAccounts,
+                onChange: (user) => {
+                  setPayToUserEarn(user);
+                },
+              },
+              {
+                name: 'Amount to Pay',
+                value: payAmountEarn,
+                type: 'number',
+                onChange: setPayAmountEarn,
+              },
+            ]}
+            disabled={!serverAppIndex}
+          />
+          <KinAction
+            title="Pay Kin from User To App - Spend Transaction"
+            linksTitle={kinLinks.title}
+            links={kinLinks.submitPayment}
+            subTitle="Requires 'sign_transaction' Webhook"
+            actionName="Pay"
+            action={() => {
+              setLoading(true);
 
-                handleSendKin(sendKinOptions);
-              }}
-              inputs={[
-                {
-                  name: 'From',
-                  value: payFromUserSpend || userAccounts[0],
-                  options: userAccounts,
-                  onChange: (user) => {
-                    setPayFromUserSpend(user);
-                  },
+              const sendKinOptions: HandleSendKin = {
+                from: payFromUserSpend || userAccounts[0],
+                to: 'App',
+                amount: payAmountSpend,
+                type: 'Spend',
+                onSuccess: () => {
+                  setLoading(false);
+                  makeToast({ text: 'Send Successful!', happy: true });
+                  setPayAmountSpend('');
+                  setShouldUpdate(true);
                 },
-                {
-                  name: 'Amount to Pay',
-                  value: payAmountSpend,
-                  type: 'number',
-                  onChange: setPayAmountSpend,
+                onFailure: (error: string) => {
+                  setLoading(false);
+                  makeToast({ text: 'Send Failed!', happy: false });
+                  console.log(error);
                 },
-              ]}
-            />
-            <KinAction
-              title="Send Kin from User to User -  P2P Transaction"
-              linksTitle={kinLinks.title}
-              links={kinLinks.submitPayment}
-              subTitle="Requires 'sign_transaction' Webhook"
-              actionName="Send"
-              action={() => {
-                setLoading(true);
+              };
 
-                const sendKinOptions: HandleSendKin = {
-                  from: payFromUserP2P || userAccounts[0],
-                  to: payToUserP2P || userAccounts[0],
-                  amount: payAmountP2P,
-                  type: 'P2P',
-                  onSuccess: () => {
-                    setLoading(false);
-                    makeToast({ text: 'Send Successful!', happy: true });
-                    setPayAmountP2P('');
-                    setShouldUpdate(true);
-                  },
-                  onFailure: (error: string) => {
-                    setLoading(false);
-                    makeToast({ text: 'Send Failed!', happy: false });
-                    console.log(error);
-                  },
-                };
+              handleSendKin(sendKinOptions);
+            }}
+            inputs={[
+              {
+                name: 'From',
+                value: payFromUserSpend || userAccounts[0],
+                options: userAccounts,
+                onChange: (user) => {
+                  setPayFromUserSpend(user);
+                },
+              },
+              {
+                name: 'Amount to Pay',
+                value: payAmountSpend,
+                type: 'number',
+                onChange: setPayAmountSpend,
+              },
+            ]}
+            disabled={!serverAppIndex}
+          />
+          <KinAction
+            title="Send Kin from User to User -  P2P Transaction"
+            linksTitle={kinLinks.title}
+            links={kinLinks.submitPayment}
+            subTitle="Requires 'sign_transaction' Webhook"
+            actionName="Send"
+            action={() => {
+              setLoading(true);
 
-                handleSendKin(sendKinOptions);
-              }}
-              inputs={[
-                {
-                  name: 'From',
-                  value: payFromUserP2P || userAccounts[0],
-                  options: userAccounts,
-                  onChange: (user) => {
-                    setPayFromUserP2P(user);
-                  },
+              const sendKinOptions: HandleSendKin = {
+                from: payFromUserP2P || userAccounts[0],
+                to: payToUserP2P || userAccounts[0],
+                amount: payAmountP2P,
+                type: 'P2P',
+                onSuccess: () => {
+                  setLoading(false);
+                  makeToast({ text: 'Send Successful!', happy: true });
+                  setPayAmountP2P('');
+                  setShouldUpdate(true);
                 },
-                {
-                  name: 'To',
-                  value: payToUserP2P || userAccounts[0],
-                  options: userAccounts,
-                  onChange: (user) => {
-                    setPayToUserP2P(user);
-                  },
+                onFailure: (error: string) => {
+                  setLoading(false);
+                  makeToast({ text: 'Send Failed!', happy: false });
+                  console.log(error);
                 },
-                {
-                  name: 'Amount to Send',
-                  value: payAmountP2P,
-                  type: 'number',
-                  onChange: setPayAmountP2P,
+              };
+
+              handleSendKin(sendKinOptions);
+            }}
+            inputs={[
+              {
+                name: 'From',
+                value: payFromUserP2P || userAccounts[0],
+                options: userAccounts,
+                onChange: (user) => {
+                  setPayFromUserP2P(user);
                 },
-              ]}
-              disabled={payFromUserP2P === payToUserP2P}
-            />
-          </div>
+              },
+              {
+                name: 'To',
+                value: payToUserP2P || userAccounts[0],
+                options: userAccounts,
+                onChange: (user) => {
+                  setPayToUserP2P(user);
+                },
+              },
+              {
+                name: 'Amount to Send',
+                value: payAmountP2P,
+                type: 'number',
+                onChange: setPayAmountP2P,
+              },
+            ]}
+            disabled={!serverAppIndex || payFromUserP2P === payToUserP2P}
+          />
         </>
       ) : null}
     </div>

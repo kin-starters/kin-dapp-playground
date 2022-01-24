@@ -1,3 +1,5 @@
+import Collapsible from 'react-collapsible';
+
 import { Links, Link } from './Links';
 
 interface Input {
@@ -11,6 +13,7 @@ interface Input {
   inputs?: Input[];
 }
 interface KinActionProps {
+  open?: boolean;
   title: string;
   subTitle?: string;
   subTitleLinks?: Link[];
@@ -24,6 +27,7 @@ interface KinActionProps {
   displayOutput?: object | null;
 }
 export function KinAction({
+  open = false,
   title,
   subTitle,
   subTitleLinks,
@@ -107,14 +111,25 @@ export function KinAction({
   }
 
   return (
-    <>
-      <div className="Kin-action-title">{title}</div>
-      {subTitle ? <div className="Kin-action-subTitle">{subTitle}</div> : null}
-      {subTitleLinks ? (
-        <div className="Kin-action-subTitle">
-          <Links links={subTitleLinks} darkMode />
+    <Collapsible
+      transitionTime={250}
+      easing={'ease-out'}
+      open={open}
+      classParentString="Kin-action-container"
+      trigger={
+        <div className="Kin-action-trigger">
+          <div className="Kin-action-title">{title}</div>
+          {subTitle ? (
+            <div className="Kin-action-subTitle">{subTitle}</div>
+          ) : null}
+          {subTitleLinks ? (
+            <div className="Kin-action-subTitle">
+              <Links links={subTitleLinks} darkMode />
+            </div>
+          ) : null}
         </div>
-      ) : null}
+      }
+    >
       <div className="Kin-action">
         {links.length ? (
           <p className="links">
@@ -138,6 +153,6 @@ export function KinAction({
           </p>
         ) : null}
       </div>
-    </>
+    </Collapsible>
   );
 }
