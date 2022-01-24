@@ -154,7 +154,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
             disabled={!appIndex}
           />
 
-          <h3>{`SDK Actions that don't require registering your App Index:`}</h3>
+          <h4 className="Kin-section">{`SDK Actions that don't require registering your App Index:`}</h4>
           <KinAction
             title="Create a Kin Account for your User"
             linksTitle={kinLinks.title}
@@ -322,7 +322,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
             displayOutput={gotTransaction ? gotTransaction : null}
           />
 
-          <h3>{`These SDK Actions require registering your App Index so you can take advantage of the KRE:`}</h3>
+          <h4 className="Kin-section">{`These SDK Actions require registering your App Index so you can take advantage of the KRE:`}</h4>
           <p className="KRELinks">
             <Links links={kinLinks.KRE} darkMode />
           </p>
