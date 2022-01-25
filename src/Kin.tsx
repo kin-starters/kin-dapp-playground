@@ -154,6 +154,9 @@ function Kin({ makeToast, setLoading }: KinProps) {
             disabled={!appIndex}
           />
 
+          <br />
+          <hr />
+
           <h4 className="Kin-section">{`SDK Actions that don't require registering your App Index:`}</h4>
           <KinAction
             title="Create a Kin Account for your User"
@@ -229,7 +232,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
           {kinEnvironment === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
-              subTitle="Get some kin so you can start testing your transaction code."
+              subTitle="Get some kin so you can start testing your transaction code"
               linksTitle={kinLinks.title}
               links={kinLinks.requestAirdrop}
               actionName="Request"
@@ -272,7 +275,7 @@ function Kin({ makeToast, setLoading }: KinProps) {
 
           <KinAction
             title="Get Transaction Details"
-            subTitle="Transactions may take a little time to appear."
+            subTitle="Transactions may take a little time to appear"
             linksTitle={kinLinks.title}
             links={kinLinks.getTransaction}
             actionName="Get"
@@ -321,6 +324,9 @@ function Kin({ makeToast, setLoading }: KinProps) {
             ]}
             displayOutput={gotTransaction ? gotTransaction : null}
           />
+
+          <br />
+          <hr />
 
           <h4 className="Kin-section">{`These SDK Actions require registering your App Index so you can take advantage of the KRE:`}</h4>
           <p className="KRELinks">
@@ -495,6 +501,9 @@ function Kin({ makeToast, setLoading }: KinProps) {
           />
         </>
       ) : null}
+
+      <br />
+      <hr />
     </div>
   );
 }
