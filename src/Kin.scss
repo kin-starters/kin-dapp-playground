@@ -15,12 +15,9 @@
     color: white;
     background-color: $kin_light;
 
-    &.up {
+    &.up,
+    &.hasAppIndex {
       background-color: $kin;
-    }
-
-    &.down {
-      background-color: $kin_light;
     }
   }
 

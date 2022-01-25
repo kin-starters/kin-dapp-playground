@@ -44,6 +44,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
       setShouldUpdate(false);
     }
+
+    return () => {};
   }, [shouldUpdate]);
   const [kinEnvironment, setKinEnvironment] = useState('Test');
   const [appIndex, setAppIndex] = useState('');

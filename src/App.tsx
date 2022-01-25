@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { KinClient } from '@kin-sdk/client';
 
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
 
 import { colors, kinLinks } from './constants';
 import { MakeToast } from './helpers';
+import { handleSetupKinClient } from './kinClientHelpers';
 
 import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
@@ -27,11 +29,21 @@ const makeToast = ({ text, happy }: MakeToast) => {
   return happy ? toast.success(text, options) : toast.error(text, options);
 };
 
+const defaultClient = handleSetupKinClient({
+  kinEnvironment: 'Test',
+  appIndex: 0,
+});
+
 function App() {
   const [loading, setLoading] = useState(false);
 
-  const appTypes = ['Server App', 'Client App'];
+  const appTypes = ['Server Side App', 'Client Side App (Web)'];
   const [selectedAppType, setSelectedAppType] = useState(appTypes[1]);
+
+  const [kinClient, setKinClient] = useState<KinClient>(defaultClient.client);
+  const [kinClientAppIndex, setKinClientAppIndex] = useState(
+    defaultClient.appIndex
+  );
 
   return (
     <div className="App">
@@ -70,7 +82,14 @@ function App() {
           {selectedAppType === appTypes[0] ? (
             <KinServerApp makeToast={makeToast} setLoading={setLoading} />
           ) : (
-            <KinClientApp makeToast={makeToast} setLoading={setLoading} />
+            <KinClientApp
+              makeToast={makeToast}
+              setLoading={setLoading}
+              kinClient={kinClient}
+              setKinClient={setKinClient}
+              kinClientAppIndex={kinClientAppIndex}
+              setKinClientAppIndex={setKinClientAppIndex}
+            />
           )}
         </div>
       </main>

@@ -20,16 +20,22 @@ import {
 
 import './Kin.scss';
 
-const defaultClient = handleSetupKinClient({
-  kinEnvironment: 'Test',
-  appIndex: 0,
-});
-
 interface KinClientAppProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
+  kinClient: KinClient;
+  setKinClient: (client: KinClient) => void;
+  kinClientAppIndex: number;
+  setKinClientAppIndex: (kinClientAppIndex: number) => void;
 }
-export function KinClientApp({ makeToast, setLoading }: KinClientAppProps) {
+export function KinClientApp({
+  makeToast,
+  setLoading,
+  kinClient,
+  setKinClient,
+  kinClientAppIndex,
+  setKinClientAppIndex,
+}: KinClientAppProps) {
   const [userAccounts, setUserAccounts] = useState<string[]>([]);
   const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
@@ -43,10 +49,8 @@ export function KinClientApp({ makeToast, setLoading }: KinClientAppProps) {
     }
   }, [shouldUpdate]);
   const [kinEnvironment, setKinEnvironment] = useState('Test');
-  const [appIndex, setAppIndex] = useState('');
-  const [kinClient, setKinClient] = useState<KinClient>(defaultClient.client);
-  const [kinClientAppIndex, setKinClientAppIndex] = useState(
-    defaultClient.appIndex
+  const [appIndex, setAppIndex] = useState(
+    kinClientAppIndex ? kinClientAppIndex.toString() : ''
   );
 
   const [newUserName, setNewUserName] = useState('');
