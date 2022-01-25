@@ -1,0 +1,28 @@
+@import './constants.scss';
+
+.Toggle {
+  width: 100%;
+  margin-bottom: 20px;
+
+  .Toggle-options {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    transition: all 0.4s;
+    border: 1px solid $kin_light;
+  }
+
+  .Toggle-option {
+    flex-grow: 1;
+    background-color: $background_dark;
+    transition: all 0.4s;
+    padding: 20px;
+    cursor: pointer;
+
+    &.selected {
+      background-color: $kin_dark;
+      color: white;
+      pointer-events: none;
+    }
+  }
+}

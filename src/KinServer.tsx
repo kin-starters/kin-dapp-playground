@@ -20,11 +20,11 @@ import {
 
 import './Kin.scss';
 
-interface KinProps {
+interface KinServerProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
 }
-function Kin({ makeToast, setLoading }: KinProps) {
+export function KinServer({ makeToast, setLoading }: KinServerProps) {
   const [serverRunning, setServerRunning] = useState(false);
   const [serverAppIndex, setServerAppIndex] = useState(0);
   const [userAccounts, setUserAccounts] = useState<string[]>([]);
@@ -499,13 +499,10 @@ function Kin({ makeToast, setLoading }: KinProps) {
             ]}
             disabled={!serverAppIndex || payFromUserP2P === payToUserP2P}
           />
+          <br />
+          <hr />
         </>
       ) : null}
-
-      <br />
-      <hr />
     </div>
   );
 }
-
-export default Kin;

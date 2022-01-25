@@ -7,7 +7,9 @@ import { colors, kinLinks } from './constants';
 import { MakeToast } from './helpers';
 
 import logo from './kin-white.svg';
-import Kin from './Kin';
+import { Toggle } from './Toggle';
+import { KinServer } from './KinServer';
+import { KinClient } from './KinClient';
 import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +29,9 @@ const makeToast = ({ text, happy }: MakeToast) => {
 
 function App() {
   const [loading, setLoading] = useState(false);
+
+  const appTypes = ['Server App', 'Client App'];
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
 
   return (
     <div className="App">
@@ -55,7 +60,18 @@ function App() {
       </nav>
       <main className="App-body">
         <div className="App-body-container">
-          <Kin makeToast={makeToast} setLoading={setLoading} />
+          <Toggle
+            title="I'm making a ..."
+            options={appTypes}
+            selected={selectedAppType}
+            onChange={setSelectedAppType}
+          />
+
+          {selectedAppType === appTypes[0] ? (
+            <KinServer makeToast={makeToast} setLoading={setLoading} />
+          ) : (
+            <KinClient makeToast={makeToast} setLoading={setLoading} />
+          )}
         </div>
       </main>
     </div>
