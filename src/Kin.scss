@@ -124,6 +124,12 @@
   }
 
   .KRELinks {
-    margin: 0px 0px 10px;
+    margin: -20px 0px 10px;
+  }
+
+  input,
+  select,
+  option {
+    font-size: calc(6px + 1vmin);
   }
 }
