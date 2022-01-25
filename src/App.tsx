@@ -8,8 +8,8 @@ import { MakeToast } from './helpers';
 
 import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
-import { KinServer } from './KinServer';
-import { KinClient } from './KinClient';
+import { KinServerApp } from './KinServer';
+import { KinClientApp } from './KinClient';
 import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,7 +31,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const appTypes = ['Server App', 'Client App'];
-  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[1]);
 
   return (
     <div className="App">
@@ -68,9 +68,9 @@ function App() {
           />
 
           {selectedAppType === appTypes[0] ? (
-            <KinServer makeToast={makeToast} setLoading={setLoading} />
+            <KinServerApp makeToast={makeToast} setLoading={setLoading} />
           ) : (
-            <KinClient makeToast={makeToast} setLoading={setLoading} />
+            <KinClientApp makeToast={makeToast} setLoading={setLoading} />
           )}
         </div>
       </main>

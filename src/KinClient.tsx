@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
+import { KinClient } from '@kin-sdk/client';
 
 import { KinAction } from './KinAction';
 import { Links } from './Links';
 
 import { kinLinks } from './constants';
 
+import { MakeToast } from './helpers';
 import {
-  MakeToast,
   handleSetupKinClient,
   handleCreateAccount,
   handleGetBalance,
@@ -15,31 +16,38 @@ import {
   handleGetTransaction,
   Transaction,
   HandleSendKin,
-} from './helpers';
+} from './kinClientHelpers';
 
 import './Kin.scss';
 
-interface KinClientProps {
+const defaultClient = handleSetupKinClient({
+  kinEnvironment: 'Test',
+  appIndex: 0,
+});
+
+interface KinClientAppProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
 }
-export function KinClient({ makeToast, setLoading }: KinClientProps) {
-  const [serverAppIndex, setServerAppIndex] = useState(0);
-  console.log('🚀 ~ setServerAppIndex', setServerAppIndex);
+export function KinClientApp({ makeToast, setLoading }: KinClientAppProps) {
   const [userAccounts, setUserAccounts] = useState<string[]>([]);
-  console.log('🚀 ~ setUserAccounts', setUserAccounts);
   const [transactions, setTransactions] = useState<string[]>([]);
-  console.log('🚀 ~ setTransactions', setTransactions);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
       // TODO stuff here
+      setUserAccounts([]);
+      setTransactions([]);
 
       setShouldUpdate(false);
     }
   }, [shouldUpdate]);
   const [kinEnvironment, setKinEnvironment] = useState('Test');
   const [appIndex, setAppIndex] = useState('');
+  const [kinClient, setKinClient] = useState<KinClient>(defaultClient.client);
+  const [kinClientAppIndex, setKinClientAppIndex] = useState(
+    defaultClient.appIndex
+  );
 
   const [newUserName, setNewUserName] = useState('');
 
@@ -67,35 +75,32 @@ export function KinClient({ makeToast, setLoading }: KinClientProps) {
 
   return (
     <div className="Kin">
+      <div
+        className={`Kin-status ${
+          kinClientAppIndex ? 'hasAppIndex' : 'noAppIndex'
+        }`}
+      >
+        <span>
+          {`Client Initialised`}
+          <br />
+          {`App Index ${kinClientAppIndex}`}
+        </span>
+      </div>
+
       <KinAction
         open
-        title="Setup Your Kin Client with your App Index"
+        title="Initialise Your Kin Client with your App Index"
         subTitleLinks={kinLinks.devPortal}
         linksTitle={kinLinks.title}
         links={kinLinks.setupClient}
         actionName="Setup"
         action={() => {
-          setLoading(true);
-          handleSetupKinClient({
-            onSuccess: () => {
-              setLoading(false);
-              makeToast({
-                text: `Connected to App Index ${appIndex}!`,
-                happy: true,
-              });
-              setShouldUpdate(true);
-            },
-            onFailure: (error) => {
-              setLoading(false);
-              makeToast({
-                text: `Couldn't connect to App Index ${serverAppIndex}!`,
-                happy: false,
-              });
-              console.log(error);
-            },
+          const { client, appIndex: newAppIndex } = handleSetupKinClient({
             kinEnvironment,
-            appIndex,
+            appIndex: Number(appIndex),
           });
+          setKinClient(client);
+          setKinClientAppIndex(newAppIndex);
         }}
         inputs={[
           {
@@ -126,6 +131,7 @@ export function KinClient({ makeToast, setLoading }: KinClientProps) {
         action={() => {
           setLoading(true);
           handleCreateAccount({
+            kinClient,
             name: newUserName,
             onSuccess: () => {
               setLoading(false);
@@ -293,10 +299,10 @@ export function KinClient({ makeToast, setLoading }: KinClientProps) {
       </p>
 
       {(() => {
-        if (!serverAppIndex && !userAccounts.length) {
+        if (!kinClientAppIndex && !userAccounts.length) {
           return <h4>Why not register your App Index and add some users?</h4>;
         }
-        if (!serverAppIndex) {
+        if (!kinClientAppIndex) {
           return <h4>Why not register your App Index?</h4>;
         }
         if (!userAccounts.length) {
@@ -352,7 +358,7 @@ export function KinClient({ makeToast, setLoading }: KinClientProps) {
             onChange: setPayAmountEarn,
           },
         ]}
-        disabled={!serverAppIndex}
+        disabled={!kinClientAppIndex}
       />
       <KinAction
         title="Pay Kin from User To App - Spend Transaction"
@@ -399,7 +405,7 @@ export function KinClient({ makeToast, setLoading }: KinClientProps) {
             onChange: setPayAmountSpend,
           },
         ]}
-        disabled={!serverAppIndex}
+        disabled={!kinClientAppIndex}
       />
       <KinAction
         title="Send Kin from User to User -  P2P Transaction"
@@ -454,7 +460,7 @@ export function KinClient({ makeToast, setLoading }: KinClientProps) {
             onChange: setPayAmountP2P,
           },
         ]}
-        disabled={!serverAppIndex || payFromUserP2P === payToUserP2P}
+        disabled={!kinClientAppIndex || payFromUserP2P === payToUserP2P}
       />
       <br />
       <hr />

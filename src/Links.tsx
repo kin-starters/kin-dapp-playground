@@ -15,7 +15,7 @@ export function Links({ links, linksTitle, darkMode }: LinkProps) {
       <span className="Links">
         {linksTitle || null}
         {links.map(({ name, link }, index) => (
-          <>
+          <span key={name}>
             {index > 0 ? ' | ' : ''}
             <a
               key={name}
@@ -26,7 +26,7 @@ export function Links({ links, linksTitle, darkMode }: LinkProps) {
             >
               {name}
             </a>
-          </>
+          </span>
         ))}
       </span>
     </>

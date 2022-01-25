@@ -5,11 +5,13 @@
   margin-bottom: 20px;
 
   .Toggle-options {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     width: 100%;
     transition: all 0.4s;
-    border: 1px solid $kin_light;
+    border: 1px solid $kin_dark;
+    border-radius: 5px;
   }
 
   .Toggle-option {

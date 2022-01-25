@@ -5,8 +5,8 @@ import { Links } from './Links';
 
 import { kinLinks } from './constants';
 
+import { MakeToast } from './helpers';
 import {
-  MakeToast,
   checkServerRunning,
   handleSetupKinClient,
   handleCreateAccount,
@@ -16,15 +16,15 @@ import {
   handleGetTransaction,
   Transaction,
   HandleSendKin,
-} from './helpers';
+} from './kinServerHelpers';
 
 import './Kin.scss';
 
-interface KinServerProps {
+interface KinServerAppProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
 }
-export function KinServer({ makeToast, setLoading }: KinServerProps) {
+export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   const [serverRunning, setServerRunning] = useState(false);
   const [serverAppIndex, setServerAppIndex] = useState(0);
   const [userAccounts, setUserAccounts] = useState<string[]>([]);
@@ -102,14 +102,13 @@ export function KinServer({ makeToast, setLoading }: KinServerProps) {
             />
           </span>
         )}
-        {/* : 'Server Not Running'} */}
       </div>
 
       {serverRunning ? (
         <>
           <KinAction
             open
-            title="Setup Your Kin Client with your App Index"
+            title="Initialise your Kin Client on the Server with your App Index"
             subTitleLinks={kinLinks.devPortal}
             linksTitle={kinLinks.title}
             links={kinLinks.setupClient}
