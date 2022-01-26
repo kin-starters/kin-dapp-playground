@@ -13,9 +13,11 @@ import {
   handleGetBalance,
   handleRequestAirdrop,
   handleSendKin,
-  handleGetTransaction,
-  Transaction,
+  // handleGetTransaction,
+  // Transaction,
   HandleSendKin,
+  getUserAccounts,
+  // getTransactions,
 } from './kinClientHelpers';
 
 import './Kin.scss';
@@ -36,14 +38,14 @@ export function KinClientApp({
   kinClientAppIndex,
   setKinClientAppIndex,
 }: KinClientAppProps) {
-  const [userAccounts, setUserAccounts] = useState<string[]>([]);
-  const [transactions, setTransactions] = useState<string[]>([]);
+  const [userAccounts, setUserAccounts] = useState<string[]>(getUserAccounts());
+  // const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
       // TODO stuff here
-      setUserAccounts([]);
-      setTransactions([]);
+      setUserAccounts(getUserAccounts());
+      // setTransactions(getTransactions());
 
       setShouldUpdate(false);
     }
@@ -61,11 +63,11 @@ export function KinClientApp({
   const [airdropUser, setAirdropUser] = useState('App');
   const [airdropAmount, setAirdropAmount] = useState('');
 
-  const [inputTransaction, setInputTransaction] = useState('');
-  const [selectedTransaction, setSelectedTransaction] = useState('');
-  const [gotTransaction, setGotTransaction] = useState<Transaction | null>(
-    null
-  );
+  // const [inputTransaction, setInputTransaction] = useState('');
+  // const [selectedTransaction, setSelectedTransaction] = useState('');
+  // const [gotTransaction, setGotTransaction] = useState<Transaction | null>(
+  //   null
+  // );
 
   const [payFromUserP2P, setPayFromUserP2P] = useState('');
   const [payToUserP2P, setPayToUserP2P] = useState('');
@@ -172,10 +174,11 @@ export function KinClientApp({
         action={() => {
           setLoading(true);
           handleGetBalance({
+            kinClient,
             user: balanceUser,
             onSuccess: (balance) => {
               setLoading(false);
-              setDisplayBalance(balance.toString());
+              setDisplayBalance(balance);
             },
             onFailure: (error) => {
               setLoading(false);
@@ -211,6 +214,7 @@ export function KinClientApp({
             handleRequestAirdrop({
               to: airdropUser,
               amount: airdropAmount,
+              kinClient,
               onSuccess: () => {
                 setLoading(false);
                 makeToast({ text: 'Airdrop Successful!', happy: true });
@@ -243,7 +247,7 @@ export function KinClientApp({
         />
       ) : null}
 
-      <KinAction
+      {/* <KinAction
         title="Get Transaction Details"
         subTitle="Transactions may take a little time to appear"
         linksTitle={kinLinks.title}
@@ -292,7 +296,7 @@ export function KinClientApp({
           },
         ]}
         displayOutput={gotTransaction ? gotTransaction : null}
-      />
+      /> */}
 
       <br />
       <hr />
@@ -325,6 +329,7 @@ export function KinClientApp({
           setLoading(true);
 
           const sendKinOptions: HandleSendKin = {
+            kinClient,
             from: 'App',
             to: payToUserEarn || userAccounts[0],
             amount: payAmountEarn,
@@ -374,6 +379,7 @@ export function KinClientApp({
           setLoading(true);
 
           const sendKinOptions: HandleSendKin = {
+            kinClient,
             from: payFromUserSpend || userAccounts[0],
             to: 'App',
             amount: payAmountSpend,
@@ -421,6 +427,7 @@ export function KinClientApp({
           setLoading(true);
 
           const sendKinOptions: HandleSendKin = {
+            kinClient,
             from: payFromUserP2P || userAccounts[0],
             to: payToUserP2P || userAccounts[0],
             amount: payAmountP2P,

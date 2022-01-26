@@ -37,7 +37,7 @@ const defaultClient = handleSetupKinClient({
 function App() {
   const [loading, setLoading] = useState(false);
 
-  const appTypes = ['Server Side App', 'Client Side App (Web)'];
+  const appTypes = ['Backend Server', 'Client App'];
   const [selectedAppType, setSelectedAppType] = useState(appTypes[1]);
 
   const [kinClient, setKinClient] = useState<KinClient>(defaultClient.client);
