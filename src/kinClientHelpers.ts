@@ -82,33 +82,33 @@ function getPublicKey(user: string): string {
   return wallet?.publicKey || '';
 }
 
-async function getTokenAccount(
-  user: string,
-  amount: string,
-  kinClient: KinClient
-) {
-  if (user === 'App') return process.env.REACT_APP_PUBLIC_KEY;
+// async function getTokenAccount(
+//   user: string,
+//   amount: string,
+//   kinClient: KinClient
+// ) {
+//   if (user === 'App') return process.env.REACT_APP_PUBLIC_KEY;
 
-  const publicKey = getPublicKey(user);
-  console.log('🚀 ~ publicKey', publicKey);
+//   const publicKey = getPublicKey(user);
+//   console.log('🚀 ~ publicKey', publicKey);
 
-  try {
-    const [balances] = await kinClient.getBalances(publicKey);
-    if (balances.length) {
-      const tokenAccountWithBalance = balances.find(
-        (balance) => Number(balance.balance) > Number(amount)
-      );
+//   try {
+//     const [balances] = await kinClient.getBalances(publicKey);
+//     if (balances.length) {
+//       const tokenAccountWithBalance = balances.find(
+//         (balance) => Number(balance.balance) > Number(amount)
+//       );
 
-      console.log('🚀 ~ tokenAccountWithBalance', tokenAccountWithBalance);
-      return tokenAccountWithBalance?.account || '';
-    } else {
-      throw new Error('No token account with enough balance.');
-    }
-  } catch (error) {
-    console.log('🚀 ~ error', error);
-    return '';
-  }
-}
+//       console.log('🚀 ~ tokenAccountWithBalance', tokenAccountWithBalance);
+//       return tokenAccountWithBalance?.account || '';
+//     } else {
+//       throw new Error('No token account with enough balance.');
+//     }
+//   } catch (error) {
+//     console.log('🚀 ~ error', error);
+//     return '';
+//   }
+// }
 
 function saveTransaction(transaction: string) {
   const transactions = secureLocalStorage.get('transactions') || [];
@@ -244,8 +244,10 @@ export async function handleSendKin({
   try {
     const secret = getPrivateKey(from);
     console.log('🚀 ~ secret', secret);
-    // const tokenAccount = getPublicKey(from);
-    const tokenAccount = await getTokenAccount(from, amount, kinClient);
+
+    // TODO Discuss with Bram should tokenAccount be tokenAccount or publicKey?
+    const tokenAccount = getPublicKey(from);
+    // const tokenAccount = await getTokenAccount(from, amount, kinClient);
     console.log('🚀 ~ tokenAccount', tokenAccount);
     const destination = getPublicKey(to);
     console.log('🚀 ~ destination', destination);
@@ -257,11 +259,12 @@ export async function handleSendKin({
 
     if (secret && tokenAccount && destination) {
       const options = {
+        secret,
         tokenAccount,
         destination,
         amount,
+        memo: `Transaction type: ${type}`, //  Need to include memo or Spend / P2P will fail. Does this affect appIndex?
         type: transactionType,
-        secret,
       };
 
       console.log('🚀 ~ options', options);
