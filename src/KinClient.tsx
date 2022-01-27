@@ -429,6 +429,7 @@ export function KinClientApp({
 
       <KinAction
         title="View Transaction"
+        subTitle="See the details of your transactions on the Solana Explorer"
         actionName="Get"
         action={() => {
           const transaction =
@@ -463,6 +464,7 @@ export function KinClientApp({
       />
       <KinAction
         title="Get User Keys"
+        subTitle="Users will need a safe way to access their secret so they don't lose access to their Kin"
         actionName="Get"
         action={() => {
           const wallet = getUserWallet(seeWallet);

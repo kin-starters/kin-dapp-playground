@@ -21,7 +21,7 @@ export function handleSetupKinClient({
     appIndex: Number(appIndex),
   });
 
-  localStorage.setItem('clientAppIndex', appIndex.toString());
+  sessionStorage.setItem('clientAppIndex', appIndex.toString());
 
   return {
     client,
