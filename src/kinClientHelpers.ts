@@ -2,7 +2,6 @@ import SecureLS from 'secure-ls';
 
 import {
   KinClient,
-  // KinClientOptions,
   KinProd,
   KinTest,
   Wallet,
@@ -21,6 +20,9 @@ export function handleSetupKinClient({
   const client = new KinClient(kinEnvironment === 'Prod' ? KinProd : KinTest, {
     appIndex: Number(appIndex),
   });
+
+  localStorage.setItem('clientAppIndex', appIndex.toString());
+
   return {
     client,
     appIndex,
@@ -59,7 +61,7 @@ export function getUserAccounts(): string[] {
   }
 }
 
-function getUserWallet(user: string): Wallet | null {
+export function getUserWallet(user: string): Wallet | null {
   const wallets = secureLocalStorage.get('wallets') || [];
   const userWallet = wallets.find((wallet: Wallet) => wallet.name === user);
 

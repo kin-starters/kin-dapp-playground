@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { KinClient } from '@kin-sdk/client';
+import { KinClient, Wallet } from '@kin-sdk/client';
 
 import { KinAction } from './KinAction';
 import { Links } from './Links';
@@ -13,11 +13,10 @@ import {
   handleGetBalance,
   handleRequestAirdrop,
   handleSendKin,
-  // handleGetTransaction,
-  // Transaction,
   HandleSendKin,
   getUserAccounts,
-  // getTransactions,
+  getUserWallet,
+  getTransactions,
 } from './kinClientHelpers';
 
 import './Kin.scss';
@@ -39,13 +38,13 @@ export function KinClientApp({
   setKinClientAppIndex,
 }: KinClientAppProps) {
   const [userAccounts, setUserAccounts] = useState<string[]>(getUserAccounts());
-  // const [transactions, setTransactions] = useState<string[]>([]);
+  const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
-      // TODO stuff here
+      // Get data from secure local storage
       setUserAccounts(getUserAccounts());
-      // setTransactions(getTransactions());
+      setTransactions(getTransactions());
 
       setShouldUpdate(false);
     }
@@ -63,12 +62,6 @@ export function KinClientApp({
   const [airdropUser, setAirdropUser] = useState('App');
   const [airdropAmount, setAirdropAmount] = useState('');
 
-  // const [inputTransaction, setInputTransaction] = useState('');
-  // const [selectedTransaction, setSelectedTransaction] = useState('');
-  // const [gotTransaction, setGotTransaction] = useState<Transaction | null>(
-  //   null
-  // );
-
   const [payFromUserP2P, setPayFromUserP2P] = useState('');
   const [payToUserP2P, setPayToUserP2P] = useState('');
   const [payAmountP2P, setPayAmountP2P] = useState('');
@@ -78,6 +71,13 @@ export function KinClientApp({
 
   const [payToUserEarn, setPayToUserEarn] = useState('');
   const [payAmountEarn, setPayAmountEarn] = useState('');
+
+  const [inputTransaction, setInputTransaction] = useState('');
+  const [selectedTransaction, setSelectedTransaction] = useState('');
+
+  const [seeWallet, setSeeWallet] = useState('');
+
+  const [seeWalletDetails, setSeeWalletDetails] = useState<Wallet | null>(null);
 
   return (
     <div className="Kin">
@@ -247,57 +247,6 @@ export function KinClientApp({
         />
       ) : null}
 
-      {/* <KinAction
-        title="Get Transaction Details"
-        subTitle="Transactions may take a little time to appear"
-        linksTitle={kinLinks.title}
-        links={kinLinks.getTransaction}
-        actionName="Get"
-        action={() => {
-          setLoading(true);
-          handleGetTransaction({
-            transaction:
-              inputTransaction || selectedTransaction || transactions[0],
-            onSuccess: (transaction) => {
-              setLoading(false);
-              makeToast({ text: 'Got Transaction Data!', happy: true });
-              setGotTransaction(transaction);
-            },
-            onFailure: (error) => {
-              setLoading(false);
-              setGotTransaction(null);
-              makeToast({
-                text: "Couldn't get Transaction data!",
-                happy: false,
-              });
-              console.log(error);
-            },
-          });
-        }}
-        inputs={[
-          {
-            name: 'Transaction Id',
-            value: inputTransaction,
-            onChange: (transaction) => {
-              setInputTransaction(transaction);
-              setGotTransaction(null);
-            },
-          },
-          {
-            name: 'Transaction',
-            value: selectedTransaction || transactions[0],
-            options: [...transactions],
-            onChange: (transaction) => {
-              setSelectedTransaction(transaction);
-              setInputTransaction('');
-              setGotTransaction(null);
-            },
-            disabledInput: !transactions.length || !!inputTransaction.length,
-          },
-        ]}
-        displayOutput={gotTransaction ? gotTransaction : null}
-      /> */}
-
       <br />
       <hr />
 
@@ -314,7 +263,7 @@ export function KinClientApp({
           return <h4>Why not register your App Index?</h4>;
         }
         if (!userAccounts.length) {
-          return <h4>Why not add some users?</h4>;
+          return <h4>Why not add some usersz?</h4>;
         }
 
         return null;
@@ -473,6 +422,67 @@ export function KinClientApp({
         ]}
         disabled={!kinClientAppIndex || payFromUserP2P === payToUserP2P}
       />
+      <br />
+      <hr />
+
+      <h4 className="Kin-section">{`Additional actions not using Kin SDK`}</h4>
+
+      <KinAction
+        title="View Transaction"
+        actionName="Get"
+        action={() => {
+          const transaction =
+            inputTransaction || selectedTransaction || transactions[0];
+          window.open(
+            `https://explorer.solana.com/tx/${transaction}${
+              kinEnvironment === 'Test'
+                ? '?cluster=custom&customUrl=https%3A%2F%2Flocal.validator.agorainfra.dev%2F'
+                : ''
+            }`
+          );
+        }}
+        inputs={[
+          {
+            name: 'Transaction Id',
+            value: inputTransaction,
+            onChange: (transaction) => {
+              setInputTransaction(transaction);
+            },
+          },
+          {
+            name: 'Transaction',
+            value: selectedTransaction || transactions[0],
+            options: [...transactions],
+            onChange: (transaction) => {
+              setSelectedTransaction(transaction);
+              setInputTransaction('');
+            },
+            disabledInput: !transactions.length || !!inputTransaction.length,
+          },
+        ]}
+      />
+      <KinAction
+        title="Get User Keys"
+        actionName="Get"
+        action={() => {
+          const wallet = getUserWallet(seeWallet);
+          setSeeWalletDetails(wallet);
+        }}
+        inputs={[
+          {
+            name: 'User',
+            value: seeWallet,
+            options: [...userAccounts],
+            onChange: (user) => {
+              setSeeWallet(user);
+              setSeeWalletDetails(null);
+            },
+            disabledInput: !userAccounts.length,
+          },
+        ]}
+        displayOutput={seeWalletDetails ? seeWalletDetails : null}
+      />
+
       <br />
       <hr />
     </div>

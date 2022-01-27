@@ -148,9 +148,9 @@ export function KinAction({
           <p className="Kin-action-display">{displayValue}</p>
         ) : null}
         {displayOutput ? (
-          <p className="Kin-action-display">
-            <pre>{JSON.stringify(displayOutput, null, 2)}</pre>
-          </p>
+          <pre className="Kin-action-display">
+            {JSON.stringify(displayOutput, null, 2)}
+          </pre>
         ) : null}
       </div>
     </Collapsible>

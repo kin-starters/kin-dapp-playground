@@ -31,7 +31,7 @@ const makeToast = ({ text, happy }: MakeToast) => {
 
 const defaultClient = handleSetupKinClient({
   kinEnvironment: 'Test',
-  appIndex: 0,
+  appIndex: Number(localStorage.getItem('clientAppIndex')) || 0,
 });
 
 function App() {
