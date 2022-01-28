@@ -6,7 +6,6 @@ import Loader from 'react-loader-spinner';
 
 import { colors, kinLinks } from './constants';
 import { MakeToast } from './helpers';
-import { handleSetupKinClient } from './kinClientHelpers';
 
 import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
@@ -29,20 +28,15 @@ const makeToast = ({ text, happy }: MakeToast) => {
   return happy ? toast.success(text, options) : toast.error(text, options);
 };
 
-const defaultClient = handleSetupKinClient({
-  kinEnvironment: 'Test',
-  appIndex: Number(sessionStorage.getItem('clientAppIndex')) || 0,
-});
-
 function App() {
   const [loading, setLoading] = useState(false);
 
   const appTypes = ['Backend Server', 'Client App'];
-  const [selectedAppType, setSelectedAppType] = useState(appTypes[1]);
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
 
-  const [kinClient, setKinClient] = useState<KinClient>(defaultClient.client);
-  const [kinClientAppIndex, setKinClientAppIndex] = useState(
-    defaultClient.appIndex
+  const [kinClient, setKinClient] = useState<KinClient | null>(null);
+  const [kinClientAppIndex, setKinClientAppIndex] = useState<number | null>(
+    null
   );
 
   return (

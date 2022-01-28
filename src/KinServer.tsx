@@ -5,7 +5,7 @@ import { Links } from './Links';
 
 import { kinLinks } from './constants';
 
-import { MakeToast } from './helpers';
+import { MakeToast, openExplorer } from './helpers';
 import {
   checkServerRunning,
   handleSetupKinClient,
@@ -15,6 +15,7 @@ import {
   handleSendKin,
   handleGetTransaction,
   Transaction,
+  User,
   HandleSendKin,
 } from './kinServerHelpers';
 
@@ -27,13 +28,21 @@ interface KinServerAppProps {
 export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   const [serverRunning, setServerRunning] = useState(false);
   const [serverAppIndex, setServerAppIndex] = useState(0);
-  const [userAccounts, setUserAccounts] = useState<string[]>([]);
+  const [serverKinEnvironment, setServerKinEnvironment] = useState<
+    string | null
+  >(null);
+
+  const [userAccounts, setUserAccounts] = useState<User[]>([]);
+  const userAccountNames = userAccounts.map((userAccount) => userAccount.name);
   const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
       checkServerRunning({
         onSuccess: ({ status, data }) => {
+          if (data?.env === 1) setServerKinEnvironment('Test');
+          if (data?.env === 0) setServerKinEnvironment('Prod');
+
           setServerRunning(status === 200);
           setServerAppIndex(data.appIndex);
           setUserAccounts(data.users);
@@ -48,7 +57,6 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
     return () => {};
   }, [shouldUpdate]);
   const [kinEnvironment, setKinEnvironment] = useState('Test');
-  const [appIndex, setAppIndex] = useState('');
 
   const [newUserName, setNewUserName] = useState('');
 
@@ -64,8 +72,10 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
     null
   );
 
-  const [payFromUserP2P, setPayFromUserP2P] = useState('');
-  const [payToUserP2P, setPayToUserP2P] = useState('');
+  const [payFromUserP2P, setPayFromUserP2P] = useState(
+    userAccountNames[0] || ''
+  );
+  const [payToUserP2P, setPayToUserP2P] = useState(userAccountNames[1] || '');
   const [payAmountP2P, setPayAmountP2P] = useState('');
 
   const [payFromUserSpend, setPayFromUserSpend] = useState('');
@@ -76,14 +86,18 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
   return (
     <div className="Kin">
-      <div className={`Kin-status ${serverRunning ? 'up' : 'down'}`}>
-        {serverRunning ? (
+      <div
+        className={`Kin-status ${
+          serverRunning && serverAppIndex ? 'up' : 'down'
+        }`}
+      >
+        {serverRunning && serverAppIndex ? (
           <span>
             Server Running{' '}
             {serverAppIndex ? (
               <>
                 <br />
-                App Index {serverAppIndex}
+                App Index {serverAppIndex} on {serverKinEnvironment}
               </>
             ) : (
               <>
@@ -96,12 +110,19 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           </span>
         ) : (
           <span>
-            {`Server not running`}
+            {!serverRunning
+              ? `Server not running`
+              : `Server on but Kin Client not initialised`}
             <br />
-            <Links
-              links={kinLinks.serverRepos}
-              linksTitle="Example Servers: "
-            />
+
+            {!serverRunning ? (
+              <Links
+                links={kinLinks.serverRepos}
+                linksTitle="Example Servers: "
+              />
+            ) : (
+              `Click Setup Below`
+            )}
           </span>
         )}
       </div>
@@ -110,34 +131,38 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
         <>
           <KinAction
             open
-            title="Initialise your Kin Client on the Server with your App Index"
+            title="Initialise your Kin Client on the Server"
+            subTitle="Choose your environment"
             subTitleLinks={kinLinks.devPortal}
             linksTitle={kinLinks.title}
             links={kinLinks.setupClient}
-            actionName="Setup"
-            action={() => {
-              setLoading(true);
-              handleSetupKinClient({
-                onSuccess: () => {
-                  setLoading(false);
-                  makeToast({
-                    text: `Connected to App Index ${appIndex}!`,
-                    happy: true,
+            actions={[
+              {
+                name: 'Setup',
+                onClick: () => {
+                  setLoading(true);
+                  handleSetupKinClient({
+                    onSuccess: () => {
+                      setLoading(false);
+                      setShouldUpdate(true);
+                      makeToast({
+                        text: `Kin Client initialised!`,
+                        happy: true,
+                      });
+                    },
+                    onFailure: (error) => {
+                      setLoading(false);
+                      makeToast({
+                        text: `Couldn't initialise Kin Client`,
+                        happy: false,
+                      });
+                      console.log(error);
+                    },
+                    kinEnvironment,
                   });
-                  setShouldUpdate(true);
                 },
-                onFailure: (error) => {
-                  setLoading(false);
-                  makeToast({
-                    text: `Couldn't connect to App Index ${serverAppIndex}!`,
-                    happy: false,
-                  });
-                  console.log(error);
-                },
-                kinEnvironment,
-                appIndex,
-              });
-            }}
+              },
+            ]}
             inputs={[
               {
                 name: 'Environment',
@@ -145,48 +170,48 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 options: ['Test', 'Prod'],
                 onChange: setKinEnvironment,
               },
-              {
-                name: 'App Index',
-                value: appIndex,
-                type: 'number',
-                onChange: setAppIndex,
-              },
             ]}
-            disabled={!appIndex}
           />
-
+        </>
+      ) : null}
+      {serverAppIndex && serverKinEnvironment ? (
+        <>
           <br />
           <hr />
+          <h4 className="Kin-section">{`Try out some of our Kin SDK features for accounts`}</h4>
 
-          <h4 className="Kin-section">{`SDK Actions that don't require registering your App Index:`}</h4>
           <KinAction
-            title="Create a Kin Account for your User"
+            title="Create a Kin Account for a User"
             linksTitle={kinLinks.title}
             links={kinLinks.createAccount}
-            actionName="Create"
-            action={() => {
-              setLoading(true);
-              handleCreateAccount({
-                name: newUserName,
-                onSuccess: () => {
-                  setLoading(false);
-                  makeToast({
-                    text: 'Account Creation Successful!',
-                    happy: true,
+            actions={[
+              {
+                name: 'Create',
+                onClick: () => {
+                  setLoading(true);
+                  handleCreateAccount({
+                    name: newUserName,
+                    onSuccess: () => {
+                      setLoading(false);
+                      makeToast({
+                        text: 'Account Creation Successful!',
+                        happy: true,
+                      });
+                      setShouldUpdate(true);
+                      setNewUserName('');
+                    },
+                    onFailure: (error) => {
+                      setLoading(false);
+                      makeToast({
+                        text: 'Account Creation Failed!',
+                        happy: false,
+                      });
+                      console.log(error);
+                    },
                   });
-                  setShouldUpdate(true);
-                  setNewUserName('');
                 },
-                onFailure: (error) => {
-                  setLoading(false);
-                  makeToast({
-                    text: 'Account Creation Failed!',
-                    happy: false,
-                  });
-                  console.log(error);
-                },
-              });
-            }}
+              },
+            ]}
             inputs={[
               {
                 name: 'Username',
@@ -195,30 +220,51 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
               },
             ]}
           />
+
           <KinAction
-            title="Get Account Balance"
+            title="Get an Account Balance"
             linksTitle={kinLinks.title}
             links={kinLinks.getBalance}
-            actionName="Get"
-            action={() => {
-              setLoading(true);
-              handleGetBalance({
-                user: balanceUser,
-                onSuccess: (balance) => {
-                  setLoading(false);
-                  setDisplayBalance(balance.toString());
+            actions={[
+              {
+                name: 'Get Balance',
+                onClick: () => {
+                  setLoading(true);
+                  handleGetBalance({
+                    user: balanceUser,
+                    onSuccess: (balance) => {
+                      setLoading(false);
+                      setDisplayBalance(balance.toString());
+                    },
+                    onFailure: (error) => {
+                      setLoading(false);
+                      console.log(error);
+                    },
+                  });
                 },
-                onFailure: (error) => {
-                  setLoading(false);
-                  console.log(error);
+              },
+              {
+                name: 'See in Explorer',
+                onClick: async () => {
+                  const user = userAccounts.find(
+                    (account) => account.name === balanceUser
+                  );
+
+                  const address =
+                    user?.publicKey || process.env.REACT_APP_PUBLIC_KEY;
+                  console.log('🚀 ~ address', address);
+                  openExplorer({
+                    address,
+                    kinEnvironment,
+                  });
                 },
-              });
-            }}
+              },
+            ]}
             inputs={[
               {
                 name: 'User',
                 value: balanceUser,
-                options: ['App', ...userAccounts],
+                options: ['App', ...userAccountNames],
                 onChange: (user) => {
                   setBalanceUser(user);
                   setDisplayBalance('');
@@ -236,30 +282,34 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
               subTitle="Get some kin so you can start testing your transaction code"
               linksTitle={kinLinks.title}
               links={kinLinks.requestAirdrop}
-              actionName="Request"
-              action={() => {
-                setLoading(true);
-                handleRequestAirdrop({
-                  to: airdropUser,
-                  amount: airdropAmount,
-                  onSuccess: () => {
-                    setLoading(false);
-                    makeToast({ text: 'Airdrop Successful!', happy: true });
-                    setShouldUpdate(true);
-                    setAirdropAmount('');
+              actions={[
+                {
+                  name: 'Request',
+                  onClick: () => {
+                    setLoading(true);
+                    handleRequestAirdrop({
+                      to: airdropUser,
+                      amount: airdropAmount,
+                      onSuccess: () => {
+                        setLoading(false);
+                        makeToast({ text: 'Airdrop Successful!', happy: true });
+                        setShouldUpdate(true);
+                        setAirdropAmount('');
+                      },
+                      onFailure: (error) => {
+                        setLoading(false);
+                        makeToast({ text: 'Airdrop Failed!', happy: false });
+                        console.log(error);
+                      },
+                    });
                   },
-                  onFailure: (error) => {
-                    setLoading(false);
-                    makeToast({ text: 'Airdrop Failed!', happy: false });
-                    console.log(error);
-                  },
-                });
-              }}
+                },
+              ]}
               inputs={[
                 {
                   name: 'User',
                   value: airdropUser,
-                  options: ['App', ...userAccounts],
+                  options: ['App', ...userAccountNames],
                   onChange: (user) => {
                     setAirdropUser(user);
                   },
@@ -274,62 +324,10 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             />
           ) : null}
 
-          <KinAction
-            title="Get Transaction Details"
-            subTitle="Transactions may take a little time to appear"
-            linksTitle={kinLinks.title}
-            links={kinLinks.getTransaction}
-            actionName="Get"
-            action={() => {
-              setLoading(true);
-              handleGetTransaction({
-                transaction:
-                  inputTransaction || selectedTransaction || transactions[0],
-                onSuccess: (transaction) => {
-                  setLoading(false);
-                  makeToast({ text: 'Got Transaction Data!', happy: true });
-                  setGotTransaction(transaction);
-                },
-                onFailure: (error) => {
-                  setLoading(false);
-                  setGotTransaction(null);
-                  makeToast({
-                    text: "Couldn't get Transaction data!",
-                    happy: false,
-                  });
-                  console.log(error);
-                },
-              });
-            }}
-            inputs={[
-              {
-                name: 'Transaction Id',
-                value: inputTransaction,
-                onChange: (transaction) => {
-                  setInputTransaction(transaction);
-                  setGotTransaction(null);
-                },
-              },
-              {
-                name: 'Transaction',
-                value: selectedTransaction || transactions[0],
-                options: [...transactions],
-                onChange: (transaction) => {
-                  setSelectedTransaction(transaction);
-                  setInputTransaction('');
-                  setGotTransaction(null);
-                },
-                disabledInput:
-                  !transactions.length || !!inputTransaction.length,
-              },
-            ]}
-            displayOutput={gotTransaction ? gotTransaction : null}
-          />
-
           <br />
           <hr />
 
-          <h4 className="Kin-section">{`These SDK Actions require registering your App Index so you can take advantage of the KRE:`}</h4>
+          <h4 className="Kin-section">{`Here's the fun stuff! Making payments and earning Kin via the KRE`}</h4>
           <p className="KRELinks">
             <Links links={kinLinks.KRE} darkMode />
           </p>
@@ -354,37 +352,41 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             title="Pay Kin from App To User - Earn Transaction"
             linksTitle={kinLinks.title}
             links={kinLinks.submitPayment}
-            actionName="Pay"
-            action={() => {
-              setLoading(true);
+            actions={[
+              {
+                name: 'Pay',
+                onClick: () => {
+                  setLoading(true);
 
-              const sendKinOptions: HandleSendKin = {
-                from: 'App',
-                to: payToUserEarn || userAccounts[0],
-                amount: payAmountEarn,
+                  const sendKinOptions: HandleSendKin = {
+                    from: 'App',
+                    to: payToUserEarn || userAccountNames[0],
+                    amount: payAmountEarn,
 
-                type: 'Earn',
-                onSuccess: () => {
-                  setLoading(false);
-                  makeToast({ text: 'Send Successful!', happy: true });
-                  setPayAmountEarn('');
+                    type: 'Earn',
+                    onSuccess: () => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Successful!', happy: true });
+                      setPayAmountEarn('');
 
-                  setShouldUpdate(true);
+                      setShouldUpdate(true);
+                    },
+                    onFailure: (error: string) => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Failed!', happy: false });
+                      console.log(error);
+                    },
+                  };
+
+                  handleSendKin(sendKinOptions);
                 },
-                onFailure: (error: string) => {
-                  setLoading(false);
-                  makeToast({ text: 'Send Failed!', happy: false });
-                  console.log(error);
-                },
-              };
-
-              handleSendKin(sendKinOptions);
-            }}
+              },
+            ]}
             inputs={[
               {
                 name: 'To',
-                value: payToUserEarn || userAccounts[0],
-                options: userAccounts,
+                value: payToUserEarn || userAccountNames[0],
+                options: userAccountNames,
                 onChange: (user) => {
                   setPayToUserEarn(user);
                 },
@@ -396,42 +398,46 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountEarn,
               },
             ]}
-            disabled={!serverAppIndex}
+            disabled={!serverAppIndex || userAccounts.length < 1}
           />
           <KinAction
             title="Pay Kin from User To App - Spend Transaction"
             linksTitle={kinLinks.title}
             links={kinLinks.submitPayment}
-            subTitle="Requires 'sign_transaction' Webhook"
-            actionName="Pay"
-            action={() => {
-              setLoading(true);
+            subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
+            actions={[
+              {
+                name: 'Pay',
+                onClick: () => {
+                  setLoading(true);
 
-              const sendKinOptions: HandleSendKin = {
-                from: payFromUserSpend || userAccounts[0],
-                to: 'App',
-                amount: payAmountSpend,
-                type: 'Spend',
-                onSuccess: () => {
-                  setLoading(false);
-                  makeToast({ text: 'Send Successful!', happy: true });
-                  setPayAmountSpend('');
-                  setShouldUpdate(true);
-                },
-                onFailure: (error: string) => {
-                  setLoading(false);
-                  makeToast({ text: 'Send Failed!', happy: false });
-                  console.log(error);
-                },
-              };
+                  const sendKinOptions: HandleSendKin = {
+                    from: payFromUserSpend || userAccountNames[0],
+                    to: 'App',
+                    amount: payAmountSpend,
+                    type: 'Spend',
+                    onSuccess: () => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Successful!', happy: true });
+                      setPayAmountSpend('');
+                      setShouldUpdate(true);
+                    },
+                    onFailure: (error: string) => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Failed!', happy: false });
+                      console.log(error);
+                    },
+                  };
 
-              handleSendKin(sendKinOptions);
-            }}
+                  handleSendKin(sendKinOptions);
+                },
+              },
+            ]}
             inputs={[
               {
                 name: 'From',
-                value: payFromUserSpend || userAccounts[0],
-                options: userAccounts,
+                value: payFromUserSpend || userAccountNames[0],
+                options: userAccountNames,
                 onChange: (user) => {
                   setPayFromUserSpend(user);
                 },
@@ -443,50 +449,63 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountSpend,
               },
             ]}
-            disabled={!serverAppIndex}
+            disabled={!serverAppIndex || userAccounts.length < 1}
           />
           <KinAction
             title="Send Kin from User to User -  P2P Transaction"
             linksTitle={kinLinks.title}
             links={kinLinks.submitPayment}
-            subTitle="Requires 'sign_transaction' Webhook"
-            actionName="Send"
-            action={() => {
-              setLoading(true);
+            subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
+            actions={[
+              {
+                name: 'Send',
+                onClick: () => {
+                  setLoading(true);
 
-              const sendKinOptions: HandleSendKin = {
-                from: payFromUserP2P || userAccounts[0],
-                to: payToUserP2P || userAccounts[0],
-                amount: payAmountP2P,
-                type: 'P2P',
-                onSuccess: () => {
-                  setLoading(false);
-                  makeToast({ text: 'Send Successful!', happy: true });
-                  setPayAmountP2P('');
-                  setShouldUpdate(true);
-                },
-                onFailure: (error: string) => {
-                  setLoading(false);
-                  makeToast({ text: 'Send Failed!', happy: false });
-                  console.log(error);
-                },
-              };
+                  const sendKinOptions: HandleSendKin = {
+                    from: payFromUserP2P || userAccountNames[0],
+                    to: payToUserP2P || userAccountNames[1],
+                    amount: payAmountP2P,
+                    type: 'P2P',
+                    onSuccess: () => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Successful!', happy: true });
+                      setPayAmountP2P('');
+                      setShouldUpdate(true);
+                    },
+                    onFailure: (error: string) => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Failed!', happy: false });
+                      console.log(error);
+                    },
+                  };
 
-              handleSendKin(sendKinOptions);
-            }}
+                  if (
+                    sendKinOptions.from &&
+                    sendKinOptions.to &&
+                    sendKinOptions.from !== sendKinOptions.to
+                  ) {
+                    handleSendKin(sendKinOptions);
+                  } else {
+                    makeToast({ text: 'Send Failed!', happy: false });
+                    setLoading(false);
+                  }
+                },
+              },
+            ]}
             inputs={[
               {
                 name: 'From',
-                value: payFromUserP2P || userAccounts[0],
-                options: userAccounts,
+                value: payFromUserP2P || userAccountNames[0],
+                options: userAccountNames,
                 onChange: (user) => {
                   setPayFromUserP2P(user);
                 },
               },
               {
                 name: 'To',
-                value: payToUserP2P || userAccounts[0],
-                options: userAccounts,
+                value: payToUserP2P || userAccountNames[1],
+                options: userAccountNames,
                 onChange: (user) => {
                   setPayToUserP2P(user);
                 },
@@ -498,7 +517,73 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountP2P,
               },
             ]}
-            disabled={!serverAppIndex || payFromUserP2P === payToUserP2P}
+            disabled={!serverAppIndex || userAccounts.length < 2}
+          />
+
+          <KinAction
+            title="Get Transaction Details"
+            subTitle="Transactions may take a little time to appear"
+            linksTitle={kinLinks.title}
+            links={kinLinks.getTransaction}
+            actions={[
+              {
+                name: 'Get Transaction',
+                onClick: () => {
+                  setLoading(true);
+                  handleGetTransaction({
+                    transaction:
+                      inputTransaction ||
+                      selectedTransaction ||
+                      transactions[0],
+                    onSuccess: (transaction) => {
+                      setLoading(false);
+                      makeToast({ text: 'Got Transaction Data!', happy: true });
+                      setGotTransaction(transaction);
+                    },
+                    onFailure: (error) => {
+                      setLoading(false);
+                      setGotTransaction(null);
+                      makeToast({
+                        text: "Couldn't get Transaction data!",
+                        happy: false,
+                      });
+                      console.log(error);
+                    },
+                  });
+                },
+              },
+              {
+                name: 'See in Explorer',
+                onClick: () => {
+                  const transaction =
+                    inputTransaction || selectedTransaction || transactions[0];
+                  openExplorer({ transaction, kinEnvironment });
+                },
+              },
+            ]}
+            inputs={[
+              {
+                name: 'Transaction Id',
+                value: inputTransaction,
+                onChange: (transaction) => {
+                  setInputTransaction(transaction);
+                  setGotTransaction(null);
+                },
+              },
+              {
+                name: 'Transaction',
+                value: selectedTransaction || transactions[0],
+                options: [...transactions],
+                onChange: (transaction) => {
+                  setSelectedTransaction(transaction);
+                  setInputTransaction('');
+                  setGotTransaction(null);
+                },
+                disabledInput:
+                  !transactions.length || !!inputTransaction.length,
+              },
+            ]}
+            displayOutput={gotTransaction ? gotTransaction : null}
           />
           <br />
           <hr />

@@ -4,10 +4,16 @@ interface Response {
   data: string;
   status: number;
 }
+
+export interface User {
+  publicKey: string;
+  name: string;
+}
 interface StatusResponse {
   data: {
     appIndex: number;
-    users: string[];
+    env: number;
+    users: User[];
     transactions: string[];
   };
   status: number;
@@ -44,19 +50,17 @@ interface HandleSetupKinClient {
   onSuccess: () => void;
   onFailure: (arg: any) => void;
   kinEnvironment: string;
-  appIndex: string;
 }
 export async function handleSetupKinClient({
   onSuccess,
   onFailure,
   kinEnvironment,
-  appIndex,
 }: HandleSetupKinClient) {
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
 
-    const url = `${baseUrl}/setup?env=${kinEnvironment}&appIndex=${appIndex}`;
+    const url = `${baseUrl}/setup?env=${kinEnvironment}`;
     const response: Response = await axios.post(url);
 
     if (response.status === 201) {

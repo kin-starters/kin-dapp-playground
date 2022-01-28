@@ -12,13 +12,18 @@ interface Input {
   onChange?: (arg: string) => void;
   inputs?: Input[];
 }
+
+interface Action {
+  name: string;
+  onClick: () => void;
+}
 interface KinActionProps {
   open?: boolean;
   title: string;
   subTitle?: string;
   subTitleLinks?: Link[];
-  actionName: string;
-  action: () => void;
+  actions?: Action[];
+
   inputs?: Input[];
   displayValue?: string;
   disabled?: boolean;
@@ -31,8 +36,7 @@ export function KinAction({
   title,
   subTitle,
   subTitleLinks,
-  actionName,
-  action,
+  actions = [],
   inputs,
   displayValue,
   disabled = false,
@@ -137,13 +141,27 @@ export function KinAction({
           </p>
         ) : null}
         {inputs?.length ? generateInputs(inputs) : null}
-        <button
-          type="button"
-          className={`Kin-action-button ${disabled ? 'disabled' : 'enabled'}`}
-          onClick={action}
-        >
-          {actionName}
-        </button>
+
+        {actions.length ? (
+          <div className="Kin-action-buttons">
+            {actions?.map(({ name, onClick }) => {
+              return (
+                <div key={name}>
+                  <button
+                    type="button"
+                    className={`Kin-action-button ${
+                      disabled ? 'disabled' : 'enabled'
+                    }`}
+                    onClick={onClick}
+                  >
+                    {name}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+
         {displayValue ? (
           <p className="Kin-action-display">{displayValue}</p>
         ) : null}

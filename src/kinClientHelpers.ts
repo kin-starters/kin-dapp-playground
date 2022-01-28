@@ -76,7 +76,7 @@ function getPrivateKey(user: string): string {
   return wallet?.secret || '';
 }
 
-function getPublicKey(user: string): string {
+export function getPublicKey(user: string): string {
   if (user === 'App') {
     return process.env.REACT_APP_PUBLIC_KEY || '';
   }
@@ -217,8 +217,12 @@ export async function handleRequestAirdrop({
 }: HandleRequestAirdrop) {
   try {
     const publicKey = getPublicKey(to);
-    await kinClient.requestAirdrop(publicKey, amount);
-    onSuccess();
+    console.log('🚀 ~ Airdropping', amount, 'to', publicKey);
+    const [success, error] = await kinClient.requestAirdrop(publicKey, amount);
+    console.log('🚀 ~ success', success);
+    console.log('🚀 ~ error', error);
+    if (error) onFailure(error);
+    if (success) onSuccess();
   } catch (error) {
     onFailure(error);
   }
@@ -265,12 +269,13 @@ export async function handleSendKin({
         tokenAccount,
         destination,
         amount,
-        memo: `Transaction type: ${type}`, //  Need to include memo or Spend / P2P will fail. Does this affect appIndex?
+        // memo: `Transaction type: ${type}`, //  Need to include memo or Spend / P2P will fail. Does this affect appIndex?
         type: transactionType,
       };
 
       console.log('🚀 ~ options', options);
-      const [transaction] = await kinClient.submitPayment(options);
+      const [transaction, err] = await kinClient.submitPayment(options);
+      console.log('🚀 ~ err', err);
       saveTransaction(transaction);
       console.log('🚀 ~ transaction', transaction);
       onSuccess();
