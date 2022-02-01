@@ -16,7 +16,6 @@ const breakpoints = {
 };
 
 const kinLinks = {
-  title: 'Code Samples: ',
   docs: [
     {
       name: 'Docs',
@@ -53,49 +52,95 @@ const kinLinks = {
       link: 'https://github.com/kinecosystem/node-sdk-demo-server',
     },
   ],
-  setupClient: [
-    {
-      name: 'Node',
-      link:
-        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L96-L129',
+  serverCodeSamples: {
+    title: 'Sample SDK Code: ',
+    methods: {
+      setupClient: [
+        {
+          name: 'Node',
+          link:
+            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L96-L129',
+        },
+      ],
+      createAccount: [
+        {
+          name: 'Node',
+          sdk: 'https://github.com/kinecosystem/kin-node',
+          link:
+            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L136-L159',
+        },
+      ],
+      getBalance: [
+        {
+          name: 'Node',
+          link:
+            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L166-L192',
+        },
+      ],
+      requestAirdrop: [
+        {
+          name: 'Node',
+          link:
+            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L199-L227',
+        },
+      ],
+      getTransaction: [
+        {
+          name: 'Node',
+          link:
+            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L234-L272',
+        },
+      ],
+      submitPayment: [
+        {
+          name: 'Node',
+          link:
+            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L294-L337',
+        },
+      ],
     },
-  ],
-  createAccount: [
-    {
-      name: 'Node',
-      sdk: 'https://github.com/kinecosystem/kin-node',
-      link:
-        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L136-L159',
+  },
+  clientCodeSamples: {
+    title: 'Sample Code: ',
+    methods: {
+      setupClient: [
+        {
+          name: 'Web SDK',
+          link:
+            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L79-L100',
+        },
+      ],
+      createAccount: [
+        {
+          name: 'Web SDK',
+          sdk: 'https://github.com/kinecosystem/kin-node',
+          link:
+            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L116-L158',
+        },
+      ],
+      getBalance: [
+        {
+          name: 'Web SDK',
+          link:
+            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L167-L207',
+        },
+      ],
+      requestAirdrop: [
+        {
+          name: 'Web SDK',
+          link:
+            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L218-L237',
+        },
+      ],
+      submitPayment: [
+        {
+          name: 'Web SDK',
+          link:
+            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L284-L336',
+        },
+      ],
     },
-  ],
-  getBalance: [
-    {
-      name: 'Node',
-      link:
-        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L166-L192',
-    },
-  ],
-  requestAirdrop: [
-    {
-      name: 'Node',
-      link:
-        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L199-L227',
-    },
-  ],
-  getTransaction: [
-    {
-      name: 'Node',
-      link:
-        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L234-L272',
-    },
-  ],
-  submitPayment: [
-    {
-      name: 'Node',
-      link:
-        'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L294-L337',
-    },
-  ],
+  },
 };
 
 export { colors, breakpoints, kinLinks };

@@ -137,8 +137,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             title="Initialise your Kin Client on the Server"
             subTitle="Choose your environment"
             subTitleLinks={kinLinks.devPortal}
-            linksTitle={kinLinks.title}
-            links={kinLinks.setupClient}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.setupClient}
             actions={[
               {
                 name: 'Setup',
@@ -185,8 +185,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
           <KinAction
             title="Create a Kin Account for a User"
-            linksTitle={kinLinks.title}
-            links={kinLinks.createAccount}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.createAccount}
             actions={[
               {
                 name: 'Create',
@@ -226,8 +226,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <KinAction
             title="Get an Account Balance"
             subTitle="Explorer links to the App require your Public"
-            linksTitle={kinLinks.title}
-            links={kinLinks.getBalance}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.getBalance}
             actions={[
               {
                 name: 'Get Balance',
@@ -304,8 +304,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             <KinAction
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
-              linksTitle={kinLinks.title}
-              links={kinLinks.requestAirdrop}
+              linksTitle={kinLinks.serverCodeSamples.title}
+              links={kinLinks.serverCodeSamples.methods.requestAirdrop}
               actions={[
                 {
                   name: 'Request',
@@ -349,8 +349,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
           <KinAction
             title="Pay Kin from App To User - Earn Transaction"
-            linksTitle={kinLinks.title}
-            links={kinLinks.submitPayment}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.submitPayment}
             actions={[
               {
                 name: 'Pay',
@@ -400,8 +400,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           />
           <KinAction
             title="Pay Kin from User To App - Spend Transaction"
-            linksTitle={kinLinks.title}
-            links={kinLinks.submitPayment}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.submitPayment}
             subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
             actions={[
               {
@@ -450,8 +450,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           />
           <KinAction
             title="Send Kin from User to User -  P2P Transaction"
-            linksTitle={kinLinks.title}
-            links={kinLinks.submitPayment}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.submitPayment}
             subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
             actions={[
               {
@@ -519,8 +519,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <KinAction
             title="Get Transaction Details"
             subTitle="Transactions may take a little time to appear"
-            linksTitle={kinLinks.title}
-            links={kinLinks.getTransaction}
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.getTransaction}
             actions={[
               {
                 name: 'Get Transaction',

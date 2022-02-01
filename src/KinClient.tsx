@@ -96,8 +96,8 @@ export function KinClientApp({
         title="Initialise Your Kin Client with your App Index"
         subTitle="Make sure you've added your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
-        linksTitle={kinLinks.title}
-        links={kinLinks.setupClient}
+        linksTitle={kinLinks.clientCodeSamples.title}
+        links={kinLinks.clientCodeSamples.methods.setupClient}
         disabled={!process.env.REACT_APP_APP_INDEX}
         actions={[
           {
@@ -141,8 +141,8 @@ export function KinClientApp({
           <h4 className="Kin-section">{`Manage Kin Accounts`}</h4>
           <KinAction
             title="Create a Kin Account for a User"
-            linksTitle={kinLinks.title}
-            links={kinLinks.createAccount}
+            linksTitle={kinLinks.clientCodeSamples.title}
+            links={kinLinks.clientCodeSamples.methods.createAccount}
             actions={[
               {
                 name: 'Create',
@@ -182,8 +182,8 @@ export function KinClientApp({
           />{' '}
           <KinAction
             title="Get an Account Balance"
-            linksTitle={kinLinks.title}
-            links={kinLinks.getBalance}
+            linksTitle={kinLinks.clientCodeSamples.title}
+            links={kinLinks.clientCodeSamples.methods.getBalance}
             disabled={!userAccounts.length}
             actions={[
               {
@@ -263,8 +263,8 @@ export function KinClientApp({
             <KinAction
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
-              linksTitle={kinLinks.title}
-              links={kinLinks.requestAirdrop}
+              linksTitle={kinLinks.clientCodeSamples.title}
+              links={kinLinks.clientCodeSamples.methods.requestAirdrop}
               disabled={!userAccounts.length}
               actions={[
                 {
@@ -310,8 +310,8 @@ export function KinClientApp({
           ) : null}
           <KinAction
             title="Send Kin from User to User -  P2P Transaction"
-            linksTitle={kinLinks.title}
-            links={kinLinks.submitPayment}
+            linksTitle={kinLinks.clientCodeSamples.title}
+            links={kinLinks.clientCodeSamples.methods.submitPayment}
             subTitle="If you've added a Transactions Webhook URL on the Kin Developer Portal, make sure your server is running so that it can validate this transaction."
             actions={[
               {
