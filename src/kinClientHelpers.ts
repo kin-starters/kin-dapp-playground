@@ -9,112 +9,54 @@ import {
   createWallet,
 } from '@kin-sdk/client';
 
-interface HandleSetupKinClient {
-  kinEnvironment: string;
-  appIndex: number;
-}
-export function handleSetupKinClient({
-  kinEnvironment,
-  appIndex,
-}: HandleSetupKinClient): { client: KinClient; appIndex: number } {
-  const client = new KinClient(kinEnvironment === 'Prod' ? KinProd : KinTest, {
-    appIndex: Number(appIndex),
-  });
-
-  sessionStorage.setItem('clientAppIndex', appIndex.toString());
-
-  return {
-    client,
-    appIndex,
-  };
-}
-
-interface HandleCreateAccount {
-  kinClient: KinClient;
-  name: string;
-  onSuccess: () => void;
-  onFailure: (arg: any) => void;
-}
-
-// createWallet needs global.buffer
-// ReferenceError: Buffer is not defined
-(window as any).global = window;
-global.Buffer = global.Buffer || require('buffer').Buffer;
-
 // https://github.com/softvar/secure-ls
 export const secureLocalStorage = new SecureLS();
 console.log('🚀 ~ secureLocalStorage', secureLocalStorage);
 
 // We are just saving into localStorage. Make sure your app uses a secure solution.
-function saveWallet(wallet: Wallet) {
-  const wallets = secureLocalStorage.get('wallets') || [];
-  if (wallet.publicKey) secureLocalStorage.set('wallets', [wallet, ...wallets]);
+interface Account extends Wallet {
+  tokenAccounts: string[];
+}
+function saveAccount(account: Account, kinEnvironment: string) {
+  const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
+  if (account.publicKey)
+    secureLocalStorage.set(`accounts${kinEnvironment}`, [...accounts, account]);
 }
 
-export function getUserAccounts(): string[] {
+export function getUserAccounts(kinEnvironment: string): string[] {
   try {
-    const wallets = secureLocalStorage.get('wallets') || [];
-    return wallets.map((wallet: Wallet) => wallet.name);
+    const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
+    return accounts.map((account: Account) => account.name);
   } catch (error) {
-    console.log('🚀 ~ error', error);
     return [];
   }
 }
 
-export function getUserWallet(user: string): Wallet | null {
-  const wallets = secureLocalStorage.get('wallets') || [];
-  const userWallet = wallets.find((wallet: Wallet) => wallet.name === user);
+export function getUserAccount(
+  user: string,
+  kinEnvironment: string
+): Account | null {
+  const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
+  const userAccount = accounts.find(
+    (account: Account) => account.name === user
+  );
 
-  return userWallet || null;
+  return userAccount || null;
 }
 
-function getPrivateKey(user: string): string {
-  if (user === 'App') {
-    return process.env.REACT_APP_SECRET_KEY || '';
-  }
-  const wallet = getUserWallet(user);
-  return wallet?.secret || '';
+function getPrivateKey(user: string, kinEnvironment: string): string {
+  const account = getUserAccount(user, kinEnvironment);
+  return account?.secret || '';
 }
 
-export function getPublicKey(user: string): string {
-  if (user === 'App') {
-    return process.env.REACT_APP_PUBLIC_KEY || '';
-  }
-  const wallet = getUserWallet(user);
-  return wallet?.publicKey || '';
+export function getPublicKey(user: string, kinEnvironment: string): string {
+  const account = getUserAccount(user, kinEnvironment);
+  return account?.publicKey || '';
 }
-
-// async function getTokenAccount(
-//   user: string,
-//   amount: string,
-//   kinClient: KinClient
-// ) {
-//   if (user === 'App') return process.env.REACT_APP_PUBLIC_KEY;
-
-//   const publicKey = getPublicKey(user);
-//   console.log('🚀 ~ publicKey', publicKey);
-
-//   try {
-//     const [balances] = await kinClient.getBalances(publicKey);
-//     if (balances.length) {
-//       const tokenAccountWithBalance = balances.find(
-//         (balance) => Number(balance.balance) > Number(amount)
-//       );
-
-//       console.log('🚀 ~ tokenAccountWithBalance', tokenAccountWithBalance);
-//       return tokenAccountWithBalance?.account || '';
-//     } else {
-//       throw new Error('No token account with enough balance.');
-//     }
-//   } catch (error) {
-//     console.log('🚀 ~ error', error);
-//     return '';
-//   }
-// }
 
 function saveTransaction(transaction: string) {
   const transactions = secureLocalStorage.get('transactions') || [];
-  secureLocalStorage.set('transactions', [transaction, ...transactions]);
+  secureLocalStorage.set('transactions', [...transactions, transaction]);
 }
 
 export function getTransactions() {
@@ -127,39 +69,99 @@ export function getTransactions() {
   }
 }
 
+// SDK Related Functions
+
+interface HandleSetupKinClient {
+  kinEnvironment: string;
+  onSuccess: ({ client }: { client: KinClient }) => void;
+  onFailure: () => void;
+}
+export function handleSetupKinClient({
+  kinEnvironment,
+  onSuccess,
+  onFailure,
+}: HandleSetupKinClient) {
+  console.log('🚀 ~ handleSetupKinClient', kinEnvironment);
+  try {
+    const appIndex = Number(process.env.REACT_APP_APP_INDEX);
+    if (appIndex > 0) {
+      const client = new KinClient(
+        kinEnvironment === 'Prod' ? KinProd : KinTest,
+        { appIndex }
+      );
+      onSuccess({ client });
+    } else {
+      throw new Error('No App Index');
+    }
+  } catch (error) {
+    console.log('🚀 ~ error', error);
+    onFailure();
+  }
+}
+
+interface HandleCreateAccount {
+  kinClient: KinClient;
+  name: string;
+  kinEnvironment: string;
+
+  onSuccess: () => void;
+  onFailure: () => void;
+}
+
+// createWallet needs global.buffer
+// ReferenceError: Buffer is not defined
+(window as any).global = window;
+global.Buffer = global.Buffer || require('buffer').Buffer;
+
 export async function handleCreateAccount({
   onSuccess,
   onFailure,
   name,
+  kinEnvironment,
   kinClient,
 }: HandleCreateAccount) {
+  console.log('🚀 ~ handleCreateAccount', name);
   try {
     const wallet = createWallet('create', { name });
-    console.log('🚀 ~ wallet', wallet);
-    saveWallet(wallet);
 
-    const account =
-      wallet.secret && (await kinClient.createAccount(wallet.secret));
-    console.log('🚀 ~ account', account);
+    if (wallet.secret) {
+      const [account, createAccountError] = await kinClient.createAccount(
+        wallet.secret
+      );
+
+      if (createAccountError) throw new Error(createAccountError);
+
+      if (account) {
+        const [balances, error] = await kinClient.getBalances(account);
+        if (error) throw new Error("Couldn't find account");
+
+        const tokenAccounts = balances.map((balance) => balance.account || '');
+
+        if (tokenAccounts.length) {
+          saveAccount(
+            {
+              ...wallet,
+              tokenAccounts,
+            },
+            kinEnvironment
+          );
+          onSuccess();
+        }
+      }
+    }
 
     // confirm account creation
-    if (wallet.publicKey) {
-      const [balances] = await kinClient.getBalances(wallet.publicKey);
-      console.log('🚀 ~ balances', balances);
-      if (!balances.length) throw new Error("Couldn't find account");
-      if (balances[0].balance) onSuccess();
-    } else {
-      throw new Error("Couldn't find balances");
-    }
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 interface HandleGetBalance {
   kinClient: KinClient;
   user: string;
+  kinEnvironment: string;
   onSuccess: (arg: string) => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleGetBalance({
@@ -167,17 +169,17 @@ export async function handleGetBalance({
   onFailure,
   user,
   kinClient,
+  kinEnvironment,
 }: HandleGetBalance) {
+  console.log('🚀 ~ handleGetBalance', user);
   try {
-    const publicKey = getPublicKey(user);
+    const publicKey = getPublicKey(user, kinEnvironment);
 
     if (publicKey) {
-      const balances = await kinClient.getBalances(publicKey);
-      console.log('🚀 ~ balances', balances);
-      // TODO Discuss this with Bram
+      const [balances, error] = await kinClient.getBalances(publicKey);
 
-      if (balances[0].length) {
-        const balanceString = balances[0].reduce((string, balance) => {
+      if (balances) {
+        const balanceString = balances.reduce((string, balance) => {
           if (!string && balance.balance) {
             return balance.balance;
           } else if (balance.balance) {
@@ -192,20 +194,25 @@ export async function handleGetBalance({
         } else {
           throw new Error("Couldn't get balance");
         }
+      } else {
+        throw new Error(error);
       }
     } else {
       throw new Error("Couldn't find publicKey");
     }
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
+
 interface HandleRequestAirdrop {
   kinClient: KinClient;
   to: string;
   amount: string;
+  kinEnvironment: string;
   onSuccess: () => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleRequestAirdrop({
@@ -214,17 +221,52 @@ export async function handleRequestAirdrop({
   to,
   amount,
   kinClient,
+  kinEnvironment,
 }: HandleRequestAirdrop) {
+  console.log('🚀 ~ handleRequestAirdrop', to, amount);
   try {
-    const publicKey = getPublicKey(to);
-    console.log('🚀 ~ Airdropping', amount, 'to', publicKey);
+    const publicKey = getPublicKey(to, kinEnvironment);
+
     const [success, error] = await kinClient.requestAirdrop(publicKey, amount);
-    console.log('🚀 ~ success', success);
-    console.log('🚀 ~ error', error);
-    if (error) onFailure(error);
+
+    if (error) throw new Error(error);
+
     if (success) onSuccess();
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
+  }
+}
+
+interface GetTokenAccountWithSufficientBalance {
+  user: string;
+  amount: string;
+  kinClient: KinClient;
+  kinEnvironment: string;
+}
+
+async function getTokenAccountWithSufficientBalance({
+  user,
+  amount,
+  kinClient,
+  kinEnvironment,
+}: GetTokenAccountWithSufficientBalance) {
+  const publicKey = getPublicKey(user, kinEnvironment);
+
+  const [balances, error] = await kinClient.getBalances(publicKey);
+
+  if (balances) {
+    const tokenAccountWithBalance = balances.find(
+      (balance) => Number(balance.balance) > Number(amount)
+    );
+
+    if (!tokenAccountWithBalance) {
+      throw new Error('No token account with enough balance.');
+    } else {
+      return tokenAccountWithBalance.account;
+    }
+  } else {
+    throw new Error(error);
   }
 }
 
@@ -234,6 +276,7 @@ export interface HandleSendKin {
   to: string;
   amount: string;
   type: string;
+  kinEnvironment: string;
   onSuccess: () => void;
   onFailure: (arg: any) => void;
 }
@@ -246,17 +289,21 @@ export async function handleSendKin({
   amount,
   type,
   kinClient,
+  kinEnvironment,
 }: HandleSendKin) {
+  console.log('🚀 ~ handleSendKin', type, from, to, amount);
   try {
-    const secret = getPrivateKey(from);
-    console.log('🚀 ~ secret', secret);
+    const secret = getPrivateKey(from, kinEnvironment);
 
     // TODO Discuss with Bram should tokenAccount be tokenAccount or publicKey?
-    const tokenAccount = getPublicKey(from);
-    // const tokenAccount = await getTokenAccount(from, amount, kinClient);
-    console.log('🚀 ~ tokenAccount', tokenAccount);
-    const destination = getPublicKey(to);
-    console.log('🚀 ~ destination', destination);
+    // const tokenAccount = getPublicKey(from);
+    const tokenAccount = await getTokenAccountWithSufficientBalance({
+      user: from,
+      amount,
+      kinClient,
+      kinEnvironment,
+    });
+    const destination = getPublicKey(to, kinEnvironment);
 
     let transactionType = TransactionType.None;
     if (type === 'Earn') transactionType = TransactionType.Earn;
@@ -269,52 +316,21 @@ export async function handleSendKin({
         tokenAccount,
         destination,
         amount,
-        // memo: `Transaction type: ${type}`, //  Need to include memo or Spend / P2P will fail. Does this affect appIndex?
         type: transactionType,
       };
 
-      console.log('🚀 ~ options', options);
-      const [transaction, err] = await kinClient.submitPayment(options);
-      console.log('🚀 ~ err', err);
-      saveTransaction(transaction);
-      console.log('🚀 ~ transaction', transaction);
-      onSuccess();
+      const [transaction, error] = await kinClient.submitPayment(options);
+      if (transaction) {
+        saveTransaction(transaction);
+        onSuccess();
+      }
+
+      if (error) throw new Error(error);
     } else {
       throw new Error("Couldn't make transaction");
     }
   } catch (error) {
+    console.log('🚀 ~ error', error);
     onFailure(error);
   }
 }
-
-// interface Payment {
-//   kin: string;
-//   type: number;
-//   sender: string;
-//   destination: string;
-// }
-// export interface Transaction {
-//   txState: number;
-//   payments: Payment[];
-// }
-// interface HandleGetTransaction {
-//   transaction: string;
-//   onSuccess: (transaction: Transaction) => void;
-//   onFailure: (arg: any) => void;
-// }
-
-// export async function handleGetTransaction({
-//   transaction,
-//   onSuccess,
-//   onFailure,
-// }: HandleGetTransaction) {
-//   try {
-//     const submitTransactionRequest = new SubmitTransactionRequest();
-//     const transactionData = submitTransactionRequest.getTransaction(
-//       transaction
-//     );
-//     onSuccess(transactionData);
-//   } catch (error) {
-//     onFailure(error);
-//   }
-// }

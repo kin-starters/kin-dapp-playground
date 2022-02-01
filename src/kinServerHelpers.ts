@@ -29,12 +29,13 @@ interface TransactionResponse {
 
 interface CheckServerRunning {
   onSuccess: (arg: StatusResponse) => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 export async function checkServerRunning({
   onSuccess,
   onFailure,
 }: CheckServerRunning) {
+  console.log('🚀 ~ checkServerRunning');
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
@@ -43,12 +44,13 @@ export async function checkServerRunning({
     const response: StatusResponse = await axios.get(url);
     onSuccess(response);
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 interface HandleSetupKinClient {
   onSuccess: () => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
   kinEnvironment: string;
 }
 export async function handleSetupKinClient({
@@ -56,6 +58,7 @@ export async function handleSetupKinClient({
   onFailure,
   kinEnvironment,
 }: HandleSetupKinClient) {
+  console.log('🚀 ~ handleSetupKinClient', kinEnvironment);
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
@@ -69,14 +72,15 @@ export async function handleSetupKinClient({
       throw new Error('No appIndex');
     }
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 
 interface HandleCreateAccount {
   name: string;
   onSuccess: () => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleCreateAccount({
@@ -84,6 +88,7 @@ export async function handleCreateAccount({
   onFailure,
   name,
 }: HandleCreateAccount) {
+  console.log('🚀 ~ handleCreateAccount', name);
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
@@ -92,13 +97,14 @@ export async function handleCreateAccount({
     await axios.post(url);
     onSuccess();
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 interface HandleGetBalance {
   user: string;
   onSuccess: (arg: number) => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleGetBalance({
@@ -106,6 +112,7 @@ export async function handleGetBalance({
   onFailure,
   user,
 }: HandleGetBalance) {
+  console.log('🚀 ~ handleGetBalance', user);
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
@@ -114,14 +121,15 @@ export async function handleGetBalance({
     const response: BalanceResponse = await axios.get(url);
     onSuccess(response.data);
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 interface HandleRequestAirdrop {
   to: string;
   amount: string;
   onSuccess: () => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleRequestAirdrop({
@@ -131,6 +139,7 @@ export async function handleRequestAirdrop({
   amount,
 }: HandleRequestAirdrop) {
   try {
+    console.log('🚀 ~ handleRequestAirdrop', to, amount);
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
 
@@ -138,7 +147,8 @@ export async function handleRequestAirdrop({
     await axios.post(url);
     onSuccess();
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 
@@ -148,7 +158,7 @@ export interface HandleSendKin {
   amount: string;
   type: string;
   onSuccess: () => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleSendKin({
@@ -160,6 +170,7 @@ export async function handleSendKin({
 
   type,
 }: HandleSendKin) {
+  console.log('🚀 ~ handleSendKin', from, to, amount);
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
@@ -186,7 +197,8 @@ export async function handleSendKin({
     await axios.post(url, data, options);
     onSuccess();
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }
 
@@ -203,7 +215,7 @@ export interface Transaction {
 interface HandleGetTransaction {
   transaction: string;
   onSuccess: (transaction: Transaction) => void;
-  onFailure: (arg: any) => void;
+  onFailure: () => void;
 }
 
 export async function handleGetTransaction({
@@ -222,6 +234,7 @@ export async function handleGetTransaction({
     const { data }: TransactionResponse = await axios.get(url);
     onSuccess(data);
   } catch (error) {
-    onFailure(error);
+    console.log('🚀 ~ error', error);
+    onFailure();
   }
 }

@@ -15,7 +15,7 @@ import {
   handleSendKin,
   HandleSendKin,
   getUserAccounts,
-  getUserWallet,
+  getUserAccount,
   getTransactions,
   getPublicKey,
 } from './kinClientHelpers';
@@ -27,51 +27,44 @@ interface KinClientAppProps {
   setLoading: (arg: boolean) => void;
   kinClient: KinClient | null;
   setKinClient: (client: KinClient) => void;
-  kinClientAppIndex: number | null;
-  setKinClientAppIndex: (kinClientAppIndex: number) => void;
+  kinClientEnvironment: string;
+  setKinClientEnvironment: (environment: string) => void;
 }
 export function KinClientApp({
   makeToast,
   setLoading,
   kinClient,
   setKinClient,
-  kinClientAppIndex,
-  setKinClientAppIndex,
+  kinClientEnvironment,
+  setKinClientEnvironment,
 }: KinClientAppProps) {
-  const [userAccounts, setUserAccounts] = useState<string[]>(getUserAccounts());
+  const [userAccounts, setUserAccounts] = useState<string[]>(
+    getUserAccounts(kinClientEnvironment)
+  );
   const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
       // Get data from secure local storage
-      setUserAccounts(getUserAccounts());
+      setUserAccounts(getUserAccounts(kinClientEnvironment));
       setTransactions(getTransactions());
 
       setShouldUpdate(false);
     }
   }, [shouldUpdate]);
   const [kinEnvironment, setKinEnvironment] = useState('Test');
-  const [appIndex, setAppIndex] = useState(
-    kinClientAppIndex ? kinClientAppIndex.toString() : ''
-  );
 
   const [newUserName, setNewUserName] = useState('');
 
-  const [balanceUser, setBalanceUser] = useState('App');
+  const [balanceUser, setBalanceUser] = useState('');
   const [displayBalance, setDisplayBalance] = useState('');
 
-  const [airdropUser, setAirdropUser] = useState('App');
+  const [airdropUser, setAirdropUser] = useState('');
   const [airdropAmount, setAirdropAmount] = useState('');
 
   const [payFromUserP2P, setPayFromUserP2P] = useState('');
   const [payToUserP2P, setPayToUserP2P] = useState('');
   const [payAmountP2P, setPayAmountP2P] = useState('');
-
-  const [payFromUserSpend, setPayFromUserSpend] = useState('');
-  const [payAmountSpend, setPayAmountSpend] = useState('');
-
-  const [payToUserEarn, setPayToUserEarn] = useState('');
-  const [payAmountEarn, setPayAmountEarn] = useState('');
 
   const [inputTransaction, setInputTransaction] = useState('');
   const [selectedTransaction, setSelectedTransaction] = useState('');
@@ -82,34 +75,52 @@ export function KinClientApp({
 
   return (
     <div className="Kin">
-      <div
-        className={`Kin-status ${
-          kinClientAppIndex ? 'hasAppIndex' : 'noAppIndex'
-        }`}
-      >
-        <span>
-          {`Client Initialised`}
-          <br />
-          {`App Index ${kinClientAppIndex}`}
-        </span>
+      <div className={`Kin-status ${kinClient ? 'hasAppIndex' : 'noAppIndex'}`}>
+        {kinClient ? (
+          <span>
+            {`Client Initialised`}
+            <br />
+            {`App Index ${process.env.REACT_APP_APP_INDEX} on ${kinClientEnvironment}`}
+          </span>
+        ) : (
+          <span>
+            {`Client Not Initialised`}
+            <br />
+            {`Click Setup Below`}
+          </span>
+        )}
       </div>
 
       <KinAction
         open
         title="Initialise Your Kin Client with your App Index"
+        subTitle="Make sure you've added your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
         linksTitle={kinLinks.title}
         links={kinLinks.setupClient}
+        disabled={!process.env.REACT_APP_APP_INDEX}
         actions={[
           {
             name: 'Setup',
             onClick: () => {
-              const { client, appIndex: newAppIndex } = handleSetupKinClient({
+              handleSetupKinClient({
                 kinEnvironment,
-                appIndex: Number(appIndex),
+                onSuccess: ({ client }) => {
+                  setKinClient(client);
+                  setKinClientEnvironment(kinEnvironment);
+                  setShouldUpdate(true);
+                  makeToast({
+                    text: 'Client Initialisation Successful!',
+                    happy: true,
+                  });
+                },
+                onFailure: () => {
+                  makeToast({
+                    text: 'Client Initialisation Failed!',
+                    happy: false,
+                  });
+                },
               });
-              setKinClient(client);
-              setKinClientAppIndex(newAppIndex);
             },
           },
         ]}
@@ -120,28 +131,60 @@ export function KinClientApp({
             options: ['Test', 'Prod'],
             onChange: setKinEnvironment,
           },
-          {
-            name: 'App Index',
-            value: appIndex,
-            type: 'number',
-            onChange: setAppIndex,
-          },
         ]}
-        disabled={!appIndex}
       />
 
       {kinClient ? (
         <>
           <br />
           <hr />
-
-          <h4 className="Kin-section">{`SDK Actions that don't require registering your App Index:`}</h4>
-
-          {/* TODO Refacto action to be an array */}
+          <h4 className="Kin-section">{`Manage Kin Accounts`}</h4>
           <KinAction
-            title="Get Account Balance"
+            title="Create a Kin Account for a User"
+            linksTitle={kinLinks.title}
+            links={kinLinks.createAccount}
+            actions={[
+              {
+                name: 'Create',
+                onClick: () => {
+                  setLoading(true);
+                  handleCreateAccount({
+                    kinClient,
+                    name: newUserName,
+                    kinEnvironment: kinClientEnvironment,
+                    onSuccess: () => {
+                      setLoading(false);
+                      makeToast({
+                        text: 'Account Creation Successful!',
+                        happy: true,
+                      });
+                      setShouldUpdate(true);
+                      setNewUserName('');
+                    },
+                    onFailure: () => {
+                      setLoading(false);
+                      makeToast({
+                        text: 'Account Creation Failed!',
+                        happy: false,
+                      });
+                    },
+                  });
+                },
+              },
+            ]}
+            inputs={[
+              {
+                name: 'Username',
+                value: newUserName,
+                onChange: setNewUserName,
+              },
+            ]}
+          />{' '}
+          <KinAction
+            title="Get an Account Balance"
             linksTitle={kinLinks.title}
             links={kinLinks.getBalance}
+            disabled={!userAccounts.length}
             actions={[
               {
                 name: 'Get Balance',
@@ -149,14 +192,18 @@ export function KinClientApp({
                   setLoading(true);
                   handleGetBalance({
                     kinClient,
-                    user: balanceUser,
+                    user: balanceUser || userAccounts[0],
+                    kinEnvironment: kinClientEnvironment,
                     onSuccess: (balance) => {
                       setLoading(false);
                       setDisplayBalance(balance);
                     },
-                    onFailure: (error) => {
+                    onFailure: () => {
                       setLoading(false);
-                      console.log(error);
+                      makeToast({
+                        text: "Couldn't get Balance!",
+                        happy: false,
+                      });
                     },
                   });
                 },
@@ -164,10 +211,21 @@ export function KinClientApp({
               {
                 name: 'See in Explorer',
                 onClick: () => {
-                  openExplorer({
-                    address: getPublicKey(balanceUser),
-                    kinEnvironment,
-                  });
+                  const address = getPublicKey(
+                    balanceUser || userAccounts[0],
+                    kinClientEnvironment
+                  );
+                  if (!address) {
+                    makeToast({
+                      text: "Couldn't find user's address",
+                      happy: false,
+                    });
+                  } else {
+                    openExplorer({
+                      address,
+                      kinEnvironment,
+                    });
+                  }
                 },
               },
             ]}
@@ -175,7 +233,7 @@ export function KinClientApp({
               {
                 name: 'User',
                 value: balanceUser,
-                options: ['App', ...userAccounts],
+                options: userAccounts,
                 onChange: (user) => {
                   setBalanceUser(user);
                   setDisplayBalance('');
@@ -183,35 +241,50 @@ export function KinClientApp({
               },
             ]}
             displayValue={
-              displayBalance ? `${balanceUser} has ${displayBalance} Kin` : ''
+              displayBalance
+                ? `${balanceUser || userAccounts[0]} has ${displayBalance} Kin`
+                : ''
             }
           />
+          <br />
+          <hr />
+          <h4 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h4>
+          <p className="KRELinks">
+            <Links links={kinLinks.KRE} darkMode />
+          </p>
+          {(() => {
+            if (!userAccounts || userAccounts.length < 2) {
+              return <h4>Why not add some users?</h4>;
+            }
 
+            return null;
+          })()}
           {kinEnvironment === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
               linksTitle={kinLinks.title}
               links={kinLinks.requestAirdrop}
+              disabled={!userAccounts.length}
               actions={[
                 {
                   name: 'Request',
                   onClick: () => {
                     setLoading(true);
                     handleRequestAirdrop({
-                      to: airdropUser,
+                      to: airdropUser || userAccounts[0],
                       amount: airdropAmount,
                       kinClient,
+                      kinEnvironment: kinClientEnvironment,
                       onSuccess: () => {
                         setLoading(false);
                         makeToast({ text: 'Airdrop Successful!', happy: true });
                         setShouldUpdate(true);
                         setAirdropAmount('');
                       },
-                      onFailure: (error) => {
+                      onFailure: () => {
                         setLoading(false);
                         makeToast({ text: 'Airdrop Failed!', happy: false });
-                        console.log(error);
                       },
                     });
                   },
@@ -221,7 +294,7 @@ export function KinClientApp({
                 {
                   name: 'User',
                   value: airdropUser,
-                  options: ['App', ...userAccounts],
+                  options: userAccounts,
                   onChange: (user) => {
                     setAirdropUser(user);
                   },
@@ -235,183 +308,11 @@ export function KinClientApp({
               ]}
             />
           ) : null}
-
-          <br />
-          <hr />
-
-          <h4 className="Kin-section">{`These SDK Actions require registering your App Index so you can take advantage of the KRE:`}</h4>
-          <p className="KRELinks">
-            <Links links={kinLinks.KRE} darkMode />
-          </p>
-
-          {(() => {
-            if (!kinClientAppIndex && !userAccounts.length) {
-              return (
-                <h4>Why not register your App Index and add some users?</h4>
-              );
-            }
-            if (!kinClientAppIndex) {
-              return <h4>Why not register your App Index?</h4>;
-            }
-            if (!userAccounts.length) {
-              return <h4>Why not add some usersz?</h4>;
-            }
-
-            return null;
-          })()}
-
-          <KinAction
-            title="Create a Kin Account for your User"
-            linksTitle={kinLinks.title}
-            links={kinLinks.createAccount}
-            actions={[
-              {
-                name: 'Create',
-                onClick: () => {
-                  setLoading(true);
-                  handleCreateAccount({
-                    kinClient,
-                    name: newUserName,
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({
-                        text: 'Account Creation Successful!',
-                        happy: true,
-                      });
-                      setShouldUpdate(true);
-                      setNewUserName('');
-                    },
-                    onFailure: (error) => {
-                      setLoading(false);
-                      makeToast({
-                        text: 'Account Creation Failed!',
-                        happy: false,
-                      });
-                      console.log(error);
-                    },
-                  });
-                },
-              },
-            ]}
-            inputs={[
-              {
-                name: 'Username',
-                value: newUserName,
-                onChange: setNewUserName,
-              },
-            ]}
-          />
-
-          <KinAction
-            title="Pay Kin from App To User - Earn Transaction"
-            linksTitle={kinLinks.title}
-            links={kinLinks.submitPayment}
-            actions={[
-              {
-                name: 'Pay',
-                onClick: () => {
-                  setLoading(true);
-
-                  const sendKinOptions: HandleSendKin = {
-                    kinClient,
-                    from: 'App',
-                    to: payToUserEarn || userAccounts[0],
-                    amount: payAmountEarn,
-
-                    type: 'Earn',
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Successful!', happy: true });
-                      setPayAmountEarn('');
-
-                      setShouldUpdate(true);
-                    },
-                    onFailure: (error: string) => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
-                    },
-                  };
-
-                  handleSendKin(sendKinOptions);
-                },
-              },
-            ]}
-            inputs={[
-              {
-                name: 'To',
-                value: payToUserEarn || userAccounts[0],
-                options: userAccounts,
-                onChange: (user) => {
-                  setPayToUserEarn(user);
-                },
-              },
-              {
-                name: 'Amount to Pay',
-                value: payAmountEarn,
-                type: 'number',
-                onChange: setPayAmountEarn,
-              },
-            ]}
-            disabled={!kinClientAppIndex}
-          />
-          <KinAction
-            title="Pay Kin from User To App - Spend Transaction"
-            linksTitle={kinLinks.title}
-            links={kinLinks.submitPayment}
-            subTitle="Requires 'sign_transaction' Webhook"
-            actions={[
-              {
-                name: 'Pay',
-                onClick: () => {
-                  setLoading(true);
-
-                  const sendKinOptions: HandleSendKin = {
-                    kinClient,
-                    from: payFromUserSpend || userAccounts[0],
-                    to: 'App',
-                    amount: payAmountSpend,
-                    type: 'Spend',
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Successful!', happy: true });
-                      setPayAmountSpend('');
-                      setShouldUpdate(true);
-                    },
-                    onFailure: (error: string) => {
-                      setLoading(false);
-                      makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
-                    },
-                  };
-
-                  handleSendKin(sendKinOptions);
-                },
-              },
-            ]}
-            inputs={[
-              {
-                name: 'From',
-                value: payFromUserSpend || userAccounts[0],
-                options: userAccounts,
-                onChange: (user) => {
-                  setPayFromUserSpend(user);
-                },
-              },
-              {
-                name: 'Amount to Pay',
-                value: payAmountSpend,
-                type: 'number',
-                onChange: setPayAmountSpend,
-              },
-            ]}
-            disabled={!kinClientAppIndex}
-          />
           <KinAction
             title="Send Kin from User to User -  P2P Transaction"
             linksTitle={kinLinks.title}
             links={kinLinks.submitPayment}
-            subTitle="Requires 'sign_transaction' Webhook"
+            subTitle="If you've added a Transactions Webhook URL on the Kin Developer Portal, make sure your server is running so that it can validate this transaction."
             actions={[
               {
                 name: 'Send',
@@ -420,8 +321,9 @@ export function KinClientApp({
 
                   const sendKinOptions: HandleSendKin = {
                     kinClient,
+                    kinEnvironment: kinClientEnvironment,
                     from: payFromUserP2P || userAccounts[0],
-                    to: payToUserP2P || userAccounts[0],
+                    to: payToUserP2P || userAccounts[1],
                     amount: payAmountP2P,
                     type: 'P2P',
                     onSuccess: () => {
@@ -430,14 +332,23 @@ export function KinClientApp({
                       setPayAmountP2P('');
                       setShouldUpdate(true);
                     },
-                    onFailure: (error: string) => {
+                    onFailure: () => {
                       setLoading(false);
                       makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
                     },
                   };
 
-                  handleSendKin(sendKinOptions);
+                  if (
+                    sendKinOptions.from &&
+                    sendKinOptions.to &&
+                    sendKinOptions.from !== sendKinOptions.to &&
+                    payAmountP2P
+                  ) {
+                    handleSendKin(sendKinOptions);
+                  } else {
+                    makeToast({ text: 'Send Failed!', happy: false });
+                    setLoading(false);
+                  }
                 },
               },
             ]}
@@ -465,16 +376,15 @@ export function KinClientApp({
                 onChange: setPayAmountP2P,
               },
             ]}
-            disabled={!kinClientAppIndex || payFromUserP2P === payToUserP2P}
+            disabled={!payAmountP2P || payFromUserP2P === payToUserP2P}
           />
           <br />
           <hr />
-
           <h4 className="Kin-section">{`Additional actions not using Kin SDK`}</h4>
-
           <KinAction
             title="View Transaction"
             subTitle="See the details of your transactions on the Solana Explorer"
+            disabled={!transactions.length && !inputTransaction}
             actions={[
               {
                 name: 'View',
@@ -514,7 +424,10 @@ export function KinClientApp({
               {
                 name: 'View',
                 onClick: () => {
-                  const wallet = getUserWallet(seeWallet || userAccounts[0]);
+                  const wallet = getUserAccount(
+                    seeWallet || userAccounts[0],
+                    kinClientEnvironment
+                  );
                   setSeeWalletDetails(wallet);
                 },
               },
@@ -533,7 +446,6 @@ export function KinClientApp({
             ]}
             displayOutput={seeWalletDetails ? seeWalletDetails : null}
           />
-
           <br />
           <hr />
         </>

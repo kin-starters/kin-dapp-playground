@@ -33,7 +33,10 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   >(null);
 
   const [userAccounts, setUserAccounts] = useState<User[]>([]);
-  const userAccountNames = userAccounts.map((userAccount) => userAccount.name);
+  const userAccountNames = userAccounts
+    .map((userAccount) => userAccount.name)
+    .filter((userName) => userName !== 'App');
+
   const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
@@ -112,7 +115,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <span>
             {!serverRunning
               ? `Server not running`
-              : `Server on but Kin Client not initialised`}
+              : `Server running but Kin Client not initialised`}
             <br />
 
             {!serverRunning ? (
@@ -150,13 +153,13 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                         happy: true,
                       });
                     },
-                    onFailure: (error) => {
+                    onFailure: () => {
                       setLoading(false);
+                      setShouldUpdate(true);
                       makeToast({
                         text: `Couldn't initialise Kin Client`,
                         happy: false,
                       });
-                      console.log(error);
                     },
                     kinEnvironment,
                   });
@@ -178,7 +181,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
         <>
           <br />
           <hr />
-          <h4 className="Kin-section">{`Try out some of our Kin SDK features for accounts`}</h4>
+          <h4 className="Kin-section">{`Manage Kin Accounts`}</h4>
 
           <KinAction
             title="Create a Kin Account for a User"
@@ -200,13 +203,12 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                       setShouldUpdate(true);
                       setNewUserName('');
                     },
-                    onFailure: (error) => {
+                    onFailure: () => {
                       setLoading(false);
                       makeToast({
                         text: 'Account Creation Failed!',
                         happy: false,
                       });
-                      console.log(error);
                     },
                   });
                 },
@@ -223,6 +225,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
           <KinAction
             title="Get an Account Balance"
+            subTitle="Explorer links to the App require your Public"
             linksTitle={kinLinks.title}
             links={kinLinks.getBalance}
             actions={[
@@ -236,9 +239,12 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                       setLoading(false);
                       setDisplayBalance(balance.toString());
                     },
-                    onFailure: (error) => {
+                    onFailure: () => {
                       setLoading(false);
-                      console.log(error);
+                      makeToast({
+                        text: "Couldn't get Balance!",
+                        happy: false,
+                      });
                     },
                   });
                 },
@@ -250,9 +256,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                     (account) => account.name === balanceUser
                   );
 
-                  const address =
-                    user?.publicKey || process.env.REACT_APP_PUBLIC_KEY;
-                  console.log('🚀 ~ address', address);
+                  const address = user?.publicKey;
                   openExplorer({
                     address,
                     kinEnvironment,
@@ -272,9 +276,29 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
               },
             ]}
             displayValue={
-              displayBalance ? `${balanceUser} has ${displayBalance} Kin` : ''
+              displayBalance
+                ? `${
+                    balanceUser || userAccountNames[0]
+                  } has ${displayBalance} Kin`
+                : ''
             }
           />
+
+          <br />
+          <hr />
+
+          <h4 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h4>
+          <p className="KRELinks">
+            <Links links={kinLinks.KRE} darkMode />
+          </p>
+
+          {(() => {
+            if (!userAccountNames.length) {
+              return <h4>Why not add some users?</h4>;
+            }
+
+            return null;
+          })()}
 
           {kinEnvironment === 'Test' ? (
             <KinAction
@@ -296,10 +320,9 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                         setShouldUpdate(true);
                         setAirdropAmount('');
                       },
-                      onFailure: (error) => {
+                      onFailure: () => {
                         setLoading(false);
                         makeToast({ text: 'Airdrop Failed!', happy: false });
-                        console.log(error);
                       },
                     });
                   },
@@ -324,30 +347,6 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             />
           ) : null}
 
-          <br />
-          <hr />
-
-          <h4 className="Kin-section">{`Here's the fun stuff! Making payments and earning Kin via the KRE`}</h4>
-          <p className="KRELinks">
-            <Links links={kinLinks.KRE} darkMode />
-          </p>
-
-          {(() => {
-            if (!serverAppIndex && !userAccounts.length) {
-              return (
-                <h4>Why not register your App Index and add some users?</h4>
-              );
-            }
-            if (!serverAppIndex) {
-              return <h4>Why not register your App Index?</h4>;
-            }
-            if (!userAccounts.length) {
-              return <h4>Why not add some users?</h4>;
-            }
-
-            return null;
-          })()}
-
           <KinAction
             title="Pay Kin from App To User - Earn Transaction"
             linksTitle={kinLinks.title}
@@ -371,10 +370,9 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
                       setShouldUpdate(true);
                     },
-                    onFailure: (error: string) => {
+                    onFailure: () => {
                       setLoading(false);
                       makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
                     },
                   };
 
@@ -398,7 +396,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountEarn,
               },
             ]}
-            disabled={!serverAppIndex || userAccounts.length < 1}
+            disabled={!serverAppIndex || userAccountNames.length < 1}
           />
           <KinAction
             title="Pay Kin from User To App - Spend Transaction"
@@ -422,10 +420,9 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                       setPayAmountSpend('');
                       setShouldUpdate(true);
                     },
-                    onFailure: (error: string) => {
+                    onFailure: () => {
                       setLoading(false);
                       makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
                     },
                   };
 
@@ -449,7 +446,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountSpend,
               },
             ]}
-            disabled={!serverAppIndex || userAccounts.length < 1}
+            disabled={!serverAppIndex || userAccountNames.length < 1}
           />
           <KinAction
             title="Send Kin from User to User -  P2P Transaction"
@@ -473,10 +470,9 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                       setPayAmountP2P('');
                       setShouldUpdate(true);
                     },
-                    onFailure: (error: string) => {
+                    onFailure: () => {
                       setLoading(false);
                       makeToast({ text: 'Send Failed!', happy: false });
-                      console.log(error);
                     },
                   };
 
@@ -517,7 +513,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountP2P,
               },
             ]}
-            disabled={!serverAppIndex || userAccounts.length < 2}
+            disabled={!serverAppIndex || userAccountNames.length < 2}
           />
 
           <KinAction
@@ -540,14 +536,13 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                       makeToast({ text: 'Got Transaction Data!', happy: true });
                       setGotTransaction(transaction);
                     },
-                    onFailure: (error) => {
+                    onFailure: () => {
                       setLoading(false);
                       setGotTransaction(null);
                       makeToast({
                         text: "Couldn't get Transaction data!",
                         happy: false,
                       });
-                      console.log(error);
                     },
                   });
                 },

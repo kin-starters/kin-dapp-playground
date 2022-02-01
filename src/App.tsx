@@ -35,9 +35,7 @@ function App() {
   const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
-  const [kinClientAppIndex, setKinClientAppIndex] = useState<number | null>(
-    null
-  );
+  const [kinClientEnvironment, setKinClientEnvironment] = useState('Test');
 
   return (
     <div className="App">
@@ -81,8 +79,8 @@ function App() {
               setLoading={setLoading}
               kinClient={kinClient}
               setKinClient={setKinClient}
-              kinClientAppIndex={kinClientAppIndex}
-              setKinClientAppIndex={setKinClientAppIndex}
+              kinClientEnvironment={kinClientEnvironment}
+              setKinClientEnvironment={setKinClientEnvironment}
             />
           )}
         </div>
