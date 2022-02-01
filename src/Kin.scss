@@ -8,18 +8,16 @@
   .Kin-status {
     border-radius: 5px;
     margin: 0 auto 20px;
-    color: white;
     text-align: center;
     width: calc(100% - 40px);
     padding: 20px;
+    transition: all 0.4s 0.5s;
+    color: white;
+    background-color: $kin_light;
 
-    &.up {
-      background-color: $kin_dark;
-    }
-
-    &.down {
-      background-color: $red;
-      margin-bottom: 0;
+    &.up,
+    &.hasAppIndex {
+      background-color: $kin;
     }
   }
 
@@ -96,6 +94,11 @@
     text-overflow: ellipsis;
   }
 
+  .Kin-action-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
   .Kin-action-button {
     background-color: $kin_dark;
     color: $white;
@@ -104,6 +107,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.2s;
+    margin-right: 5px;
 
     &:hover {
       background-color: $kin;
@@ -112,11 +116,9 @@
 
   .Kin-action-display {
     margin: 20px 0 0;
-    pre {
-      font-size: calc(6px + 1vmin);
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
+    font-size: calc(6px + 1vmin);
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 
   .Kin-section {
@@ -124,7 +126,7 @@
   }
 
   .KRELinks {
-    margin: -20px 0px 10px;
+    margin: -20px 0px 20px;
   }
 
   input,

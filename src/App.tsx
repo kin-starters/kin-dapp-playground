@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { KinClient } from '@kin-sdk/client';
 
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
@@ -7,7 +8,9 @@ import { colors, kinLinks } from './constants';
 import { MakeToast } from './helpers';
 
 import logo from './kin-white.svg';
-import Kin from './Kin';
+import { Toggle } from './Toggle';
+import { KinServerApp } from './KinServer';
+import { KinClientApp } from './KinClient';
 import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +30,12 @@ const makeToast = ({ text, happy }: MakeToast) => {
 
 function App() {
   const [loading, setLoading] = useState(false);
+
+  const appTypes = ['Backend Server', 'Client App'];
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
+
+  const [kinClient, setKinClient] = useState<KinClient | null>(null);
+  const [kinClientEnvironment, setKinClientEnvironment] = useState('Test');
 
   return (
     <div className="App">
@@ -55,7 +64,25 @@ function App() {
       </nav>
       <main className="App-body">
         <div className="App-body-container">
-          <Kin makeToast={makeToast} setLoading={setLoading} />
+          <Toggle
+            title="I'm making a ..."
+            options={appTypes}
+            selected={selectedAppType}
+            onChange={setSelectedAppType}
+          />
+
+          {selectedAppType === appTypes[0] ? (
+            <KinServerApp makeToast={makeToast} setLoading={setLoading} />
+          ) : (
+            <KinClientApp
+              makeToast={makeToast}
+              setLoading={setLoading}
+              kinClient={kinClient}
+              setKinClient={setKinClient}
+              kinClientEnvironment={kinClientEnvironment}
+              setKinClientEnvironment={setKinClientEnvironment}
+            />
+          )}
         </div>
       </main>
     </div>
