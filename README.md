@@ -18,7 +18,6 @@ This app is designed to work with the following Kin Server Demos:
 ## Requirements
 
 - Environment variable for server URL (if testing a Back End Server)
-
 - Environment variable for App Index (if testing a Client App)
 
 `.env`
@@ -39,3 +38,7 @@ or
 ```
 yarn start
 ```
+
+## Dev Community
+
+Join us on [Discord](https://discord.com/invite/kdRyUNmHDn)
