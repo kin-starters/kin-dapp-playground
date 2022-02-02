@@ -191,26 +191,34 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
               {
                 name: 'Create',
                 onClick: () => {
-                  setLoading(true);
-                  handleCreateAccount({
-                    name: newUserName,
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({
-                        text: 'Account Creation Successful!',
-                        happy: true,
-                      });
-                      setShouldUpdate(true);
-                      setNewUserName('');
-                    },
-                    onFailure: () => {
-                      setLoading(false);
-                      makeToast({
-                        text: 'Account Creation Failed!',
-                        happy: false,
-                      });
-                    },
-                  });
+                  const exists = userAccountNames.includes(newUserName);
+                  if (exists) {
+                    makeToast({
+                      text: 'Username already exists',
+                      happy: false,
+                    });
+                  } else {
+                    setLoading(true);
+                    handleCreateAccount({
+                      name: newUserName,
+                      onSuccess: () => {
+                        setLoading(false);
+                        makeToast({
+                          text: 'Account Creation Successful!',
+                          happy: true,
+                        });
+                        setShouldUpdate(true);
+                        setNewUserName('');
+                      },
+                      onFailure: () => {
+                        setLoading(false);
+                        makeToast({
+                          text: 'Account Creation Failed!',
+                          happy: false,
+                        });
+                      },
+                    });
+                  }
                 },
               },
             ]}

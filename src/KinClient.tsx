@@ -147,28 +147,36 @@ export function KinClientApp({
               {
                 name: 'Create',
                 onClick: () => {
-                  setLoading(true);
-                  handleCreateAccount({
-                    kinClient,
-                    name: newUserName,
-                    kinEnvironment: kinClientEnvironment,
-                    onSuccess: () => {
-                      setLoading(false);
-                      makeToast({
-                        text: 'Account Creation Successful!',
-                        happy: true,
-                      });
-                      setShouldUpdate(true);
-                      setNewUserName('');
-                    },
-                    onFailure: () => {
-                      setLoading(false);
-                      makeToast({
-                        text: 'Account Creation Failed!',
-                        happy: false,
-                      });
-                    },
-                  });
+                  const exists = userAccounts.includes(newUserName);
+                  if (exists) {
+                    makeToast({
+                      text: 'Username already exists',
+                      happy: false,
+                    });
+                  } else {
+                    setLoading(true);
+                    handleCreateAccount({
+                      kinClient,
+                      name: newUserName,
+                      kinEnvironment: kinClientEnvironment,
+                      onSuccess: () => {
+                        setLoading(false);
+                        makeToast({
+                          text: 'Account Creation Successful!',
+                          happy: true,
+                        });
+                        setShouldUpdate(true);
+                        setNewUserName('');
+                      },
+                      onFailure: () => {
+                        setLoading(false);
+                        makeToast({
+                          text: 'Account Creation Failed!',
+                          happy: false,
+                        });
+                      },
+                    });
+                  }
                 },
               },
             ]}
