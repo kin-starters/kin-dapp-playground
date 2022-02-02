@@ -2,8 +2,6 @@
 
 ## This app demonstrates two ways of integrating with [Kin](https://developer.kin.org/)
 
-## If you're just getting started, you might want to look at [this](https://developer.kin.org/tutorials/#getting-started) first...
-
 ## Via the [Web SDK](https://github.com/kin-sdk/kin-sdk-web)
 
 or
@@ -41,6 +39,8 @@ or
 ```
 yarn start
 ```
+
+## If you're just getting started, you might want to look at [this](https://developer.kin.org/tutorials/#getting-started) first...
 
 ## Dev Community
 
