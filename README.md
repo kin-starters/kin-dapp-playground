@@ -2,6 +2,8 @@
 
 ## This app demonstrates two ways of integrating with [Kin](https://developer.kin.org/).
 
+## If you're just getting started, you might want to look at [this](https://developer.kin.org/tutorials/#getting-started) first...
+
 ## Via the [Web SDK](https://github.com/kin-sdk/kin-sdk-web)
 
 or
@@ -15,10 +17,11 @@ This app is designed to work with the following Kin Server Demos:
 - [Node](https://github.com/kinecosystem/node-sdk-demo-server)
 - More to come!
 
-## Requirements
+## Prep
 
-- Environment variable for server URL (if testing a Back End Server)
-- Environment variable for App Index (if testing a Client App)
+- Your App is registered on the [Kin Developer Portal](https://portal.kin.org/) so you can take advantage of the [Kin Rewards Engine](https://developer.kin.org/docs/the-kre-explained/) and get your App Index
+- Environment variable for your server URL (if testing a Back End Server)
+- Environment variable for your App Index (if testing a Client App)
 
 `.env`
 
@@ -41,4 +44,4 @@ yarn start
 
 ## Dev Community
 
-Join us on [Discord](https://discord.com/invite/kdRyUNmHDn)
+Join us on [Discord](https://discord.com/invite/kdRyUNmHDn) if you're looking for support with your App or to connect with other active Kin developers.
