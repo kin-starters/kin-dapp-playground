@@ -7,7 +7,7 @@ import { kinLinks } from './constants';
 
 import { MakeToast, openExplorer } from './helpers';
 import {
-  checkServerRunning,
+  getServerStatus,
   handleSetupKinClient,
   handleCreateAccount,
   handleGetBalance,
@@ -41,7 +41,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
-      checkServerRunning({
+      getServerStatus({
         onSuccess: ({ status, data }) => {
           if (data?.env === 1) setServerKinEnvironment('Test');
           if (data?.env === 0) setServerKinEnvironment('Prod');

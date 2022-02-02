@@ -31,11 +31,11 @@ interface CheckServerRunning {
   onSuccess: (arg: StatusResponse) => void;
   onFailure: () => void;
 }
-export async function checkServerRunning({
+export async function getServerStatus({
   onSuccess,
   onFailure,
 }: CheckServerRunning) {
-  console.log('🚀 ~ checkServerRunning');
+  console.log('🚀 ~ getServerStatus');
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
