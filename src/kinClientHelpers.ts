@@ -76,14 +76,14 @@ interface HandleSetupKinClient {
   onSuccess: ({ client }: { client: KinClient }) => void;
   onFailure: () => void;
 }
-export function handleSetupKinClient({
+export function handleSetUpKinClient({
   kinEnvironment,
   onSuccess,
   onFailure,
 }: HandleSetupKinClient) {
-  console.log('🚀 ~ handleSetupKinClient', kinEnvironment);
   try {
     const appIndex = Number(process.env.REACT_APP_APP_INDEX);
+    console.log('🚀 ~ handleSetUpKinClient', kinEnvironment, appIndex);
     if (appIndex > 0) {
       const client = new KinClient(
         kinEnvironment === 'Prod' ? KinProd : KinTest,
@@ -176,9 +176,11 @@ export async function handleGetBalance({
     const publicKey = getPublicKey(user, kinEnvironment);
 
     if (publicKey) {
+      // returns an array of objects containing the balances of the different tokenAccounts
       const [balances, error] = await kinClient.getBalances(publicKey);
 
       if (balances) {
+        // produce string of balances for display purposes
         const balanceString = balances.reduce((string, balance) => {
           if (!string && balance.balance) {
             return balance.balance;
@@ -294,9 +296,6 @@ export async function handleSendKin({
   console.log('🚀 ~ handleSendKin', type, from, to, amount);
   try {
     const secret = getPrivateKey(from, kinEnvironment);
-
-    // TODO Discuss with Bram should tokenAccount be tokenAccount or publicKey?
-    // const tokenAccount = getPublicKey(from);
     const tokenAccount = await getTokenAccountWithSufficientBalance({
       user: from,
       amount,

@@ -8,7 +8,7 @@ import { kinLinks } from './constants';
 
 import { MakeToast, openExplorer } from './helpers';
 import {
-  handleSetupKinClient,
+  handleSetUpKinClient,
   handleCreateAccount,
   handleGetBalance,
   handleRequestAirdrop,
@@ -97,13 +97,13 @@ export function KinClientApp({
         subTitle="Make sure you've added your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
         linksTitle={kinLinks.clientCodeSamples.title}
-        links={kinLinks.clientCodeSamples.methods.setupClient}
+        links={kinLinks.clientCodeSamples.methods.setUpKinClient}
         disabled={!process.env.REACT_APP_APP_INDEX}
         actions={[
           {
             name: 'Setup',
             onClick: () => {
-              handleSetupKinClient({
+              handleSetUpKinClient({
                 kinEnvironment,
                 onSuccess: ({ client }) => {
                   setKinClient(client);
@@ -303,6 +303,7 @@ export function KinClientApp({
                   name: 'User',
                   value: airdropUser,
                   options: userAccounts,
+                  disabledInput: !userAccounts[0],
                   onChange: (user) => {
                     setAirdropUser(user);
                   },
@@ -311,6 +312,7 @@ export function KinClientApp({
                   name: 'Requested Amount',
                   value: airdropAmount,
                   type: 'number',
+                  disabledInput: !userAccounts[0],
                   onChange: setAirdropAmount,
                 },
               ]}
@@ -365,14 +367,16 @@ export function KinClientApp({
                 name: 'From',
                 value: payFromUserP2P || userAccounts[0],
                 options: userAccounts,
+                disabledInput: !userAccounts[1],
                 onChange: (user) => {
                   setPayFromUserP2P(user);
                 },
               },
               {
                 name: 'To',
-                value: payToUserP2P || userAccounts[0],
+                value: payToUserP2P || userAccounts[1],
                 options: userAccounts,
+                disabledInput: !userAccounts[1],
                 onChange: (user) => {
                   setPayToUserP2P(user);
                 },
@@ -381,10 +385,11 @@ export function KinClientApp({
                 name: 'Amount to Send',
                 value: payAmountP2P,
                 type: 'number',
+                disabledInput: !userAccounts[1],
                 onChange: setPayAmountP2P,
               },
             ]}
-            disabled={!payAmountP2P || payFromUserP2P === payToUserP2P}
+            disabled={!payAmountP2P || !userAccounts[1]}
           />
           <br />
           <hr />

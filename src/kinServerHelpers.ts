@@ -53,12 +53,12 @@ interface HandleSetupKinClient {
   onFailure: () => void;
   kinEnvironment: string;
 }
-export async function handleSetupKinClient({
+export async function handleSetUpKinClient({
   onSuccess,
   onFailure,
   kinEnvironment,
 }: HandleSetupKinClient) {
-  console.log('🚀 ~ handleSetupKinClient', kinEnvironment);
+  console.log('🚀 ~ handleSetUpKinClient', kinEnvironment);
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');

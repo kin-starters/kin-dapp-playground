@@ -8,7 +8,7 @@ import { kinLinks } from './constants';
 import { MakeToast, openExplorer } from './helpers';
 import {
   getServerStatus,
-  handleSetupKinClient,
+  handleSetUpKinClient,
   handleCreateAccount,
   handleGetBalance,
   handleRequestAirdrop,
@@ -138,13 +138,13 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             subTitle="Choose your environment"
             subTitleLinks={kinLinks.devPortal}
             linksTitle={kinLinks.serverCodeSamples.title}
-            links={kinLinks.serverCodeSamples.methods.setupClient}
+            links={kinLinks.serverCodeSamples.methods.setUpKinClient}
             actions={[
               {
                 name: 'Setup',
                 onClick: () => {
                   setLoading(true);
-                  handleSetupKinClient({
+                  handleSetUpKinClient({
                     onSuccess: () => {
                       setLoading(false);
                       setShouldUpdate(true);

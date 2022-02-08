@@ -49,17 +49,17 @@ const kinLinks = {
   serverRepos: [
     {
       name: 'Node',
-      link: 'https://github.com/kinecosystem/node-sdk-demo-server',
+      link: 'https://github.com/kin-labs/kin-demo-node-sdk',
     },
   ],
   serverCodeSamples: {
     title: 'Sample SDK Code: ',
     methods: {
-      setupClient: [
+      setUpKinClient: [
         {
           name: 'Node',
           link:
-            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L96-L129',
+            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L108-L141',
         },
       ],
       createAccount: [
@@ -67,35 +67,35 @@ const kinLinks = {
           name: 'Node',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L136-L159',
+            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L148-L173',
         },
       ],
       getBalance: [
         {
           name: 'Node',
           link:
-            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L166-L192',
+            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L180-L208',
         },
       ],
       requestAirdrop: [
         {
           name: 'Node',
           link:
-            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L199-L227',
+            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L215-L257',
         },
       ],
       getTransaction: [
         {
           name: 'Node',
           link:
-            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L234-L272',
+            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L264-L302',
         },
       ],
       submitPayment: [
         {
           name: 'Node',
           link:
-            'https://github.com/kinecosystem/node-sdk-demo-server/blob/master/src/index.ts#L294-L337',
+            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L324-L367',
         },
       ],
     },
@@ -103,11 +103,11 @@ const kinLinks = {
   clientCodeSamples: {
     title: 'Sample Code: ',
     methods: {
-      setupClient: [
+      setUpKinClient: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L79-L100',
+            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L79-L100',
         },
       ],
       createAccount: [
@@ -115,28 +115,28 @@ const kinLinks = {
           name: 'Web SDK',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L116-L158',
+            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L116-L158',
         },
       ],
       getBalance: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L167-L207',
+            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L167-L209',
         },
       ],
       requestAirdrop: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L218-L237',
+            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L220-L241',
         },
       ],
       submitPayment: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kinecosystem/kin-sdk-demo-fe/blob/master/src/kinClientHelpers.ts#L284-L336',
+            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L286-L335',
         },
       ],
     },
