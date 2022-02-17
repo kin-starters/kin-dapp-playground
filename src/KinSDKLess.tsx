@@ -117,6 +117,7 @@ function KinSDKLessApp({
             name: 'Transaction Type',
             value: type,
             options: ['Spend', 'Earn', 'P2P'],
+            onChange: setType,
           },
           { name: 'Memo', value: memo, onChange: setMemo },
         ]}
