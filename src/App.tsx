@@ -11,6 +11,8 @@ import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
 import { KinServerApp } from './KinServer';
 import { KinClientApp } from './KinClient';
+import { KinSDKLessAppWithWallet } from './KinSDKLess';
+
 import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,11 +33,12 @@ const makeToast = ({ text, happy }: MakeToast) => {
 function App() {
   const [loading, setLoading] = useState(false);
 
-  const appTypes = ['Backend Server', 'Client App'];
-  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
+  const appTypes = ['Backend Server', 'Client App', 'SDKLess App'];
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[2]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
   const [kinClientEnvironment, setKinClientEnvironment] = useState('Test');
+  const [solanaEnvironment, setSolanaEnvironment] = useState('Mainnet');
 
   return (
     <div className="App">
@@ -71,18 +74,41 @@ function App() {
             onChange={setSelectedAppType}
           />
 
-          {selectedAppType === appTypes[0] ? (
-            <KinServerApp makeToast={makeToast} setLoading={setLoading} />
-          ) : (
-            <KinClientApp
-              makeToast={makeToast}
-              setLoading={setLoading}
-              kinClient={kinClient}
-              setKinClient={setKinClient}
-              kinClientEnvironment={kinClientEnvironment}
-              setKinClientEnvironment={setKinClientEnvironment}
-            />
-          )}
+          {(() => {
+            if (selectedAppType === appTypes[0]) {
+              return (
+                <KinServerApp makeToast={makeToast} setLoading={setLoading} />
+              );
+            }
+            if (selectedAppType === appTypes[1]) {
+              return (
+                <KinClientApp
+                  makeToast={makeToast}
+                  setLoading={setLoading}
+                  kinClient={kinClient}
+                  setKinClient={setKinClient}
+                  kinClientEnvironment={kinClientEnvironment}
+                  setKinClientEnvironment={setKinClientEnvironment}
+                />
+              );
+            }
+            if (selectedAppType === appTypes[2]) {
+              return (
+                <KinSDKLessAppWithWallet
+                  makeToast={makeToast}
+                  setLoading={setLoading}
+                  solanaEnvironment={solanaEnvironment}
+                  setSolanaEnvironment={setSolanaEnvironment}
+                  // kinClient={kinClient}
+                  // setKinClient={setKinClient}
+                  // kinClientEnvironment={kinClientEnvironment}
+                  // setKinClientEnvironment={setKinClientEnvironment}
+                />
+              );
+            }
+
+            return null;
+          })()}
         </div>
       </main>
     </div>

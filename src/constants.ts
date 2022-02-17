@@ -39,6 +39,12 @@ const kinLinks = {
       link: 'https://developer.kin.org/docs/transaction-guide/',
     },
   ],
+  walletAdapter: [
+    {
+      name: '@solana/wallet-adapter',
+      link: 'https://github.com/solana-labs/wallet-adapter',
+    },
+  ],
   devPortal: [
     { name: 'Kin Developer Portal', link: 'https://portal.kin.org/' },
     {
