@@ -1,75 +1,17 @@
-import SecureLS from 'secure-ls';
-
 import {
   KinClient,
   KinProd,
   KinTest,
-  Wallet,
   TransactionType,
   createWallet,
 } from '@kin-sdk/client';
 
-// https://github.com/softvar/secure-ls
-export const secureLocalStorage = new SecureLS();
-console.log('🚀 ~ secureLocalStorage', secureLocalStorage);
-
-// We are just saving into localStorage. Make sure your app uses a secure solution.
-interface Account extends Wallet {
-  tokenAccounts: string[];
-}
-function saveAccount(account: Account, kinEnvironment: string) {
-  const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
-  if (account.publicKey)
-    secureLocalStorage.set(`accounts${kinEnvironment}`, [...accounts, account]);
-}
-
-export function getUserAccounts(kinEnvironment: string): string[] {
-  try {
-    const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
-    return accounts.map((account: Account) => account.name);
-  } catch (error) {
-    return [];
-  }
-}
-
-export function getUserAccount(
-  user: string,
-  kinEnvironment: string
-): Account | null {
-  const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
-  const userAccount = accounts.find(
-    (account: Account) => account.name === user
-  );
-
-  return userAccount || null;
-}
-
-function getPrivateKey(user: string, kinEnvironment: string): string {
-  const account = getUserAccount(user, kinEnvironment);
-  return account?.secret || '';
-}
-
-export function getPublicKey(user: string, kinEnvironment: string): string {
-  const account = getUserAccount(user, kinEnvironment);
-  return account?.publicKey || '';
-}
-
-function saveTransaction(transaction: string) {
-  const transactions = secureLocalStorage.get('transactions') || [];
-  secureLocalStorage.set('transactions', [...transactions, transaction]);
-}
-
-export function getTransactions() {
-  try {
-    const transactions = secureLocalStorage.get('transactions') || [];
-    return transactions;
-  } catch (error) {
-    console.log('🚀 ~ error', error);
-    return [];
-  }
-}
-
-// SDK Related Functions
+import {
+  saveAccount,
+  saveTransaction,
+  getPublicKey,
+  getPrivateKey,
+} from './helpers';
 
 interface HandleSetupKinClient {
   kinEnvironment: string;

@@ -6,7 +6,14 @@ import { Links } from './Links';
 
 import { kinLinks } from './constants';
 
-import { MakeToast, openExplorer } from './helpers';
+import {
+  MakeToast,
+  openExplorer,
+  getUserAccounts,
+  getUserAccount,
+  getTransactions,
+  getPublicKey,
+} from './helpers';
 import {
   handleSetUpKinClient,
   handleCreateAccount,
@@ -14,10 +21,6 @@ import {
   handleRequestAirdrop,
   handleSendKin,
   HandleSendKin,
-  getUserAccounts,
-  getUserAccount,
-  getTransactions,
-  getPublicKey,
 } from './kinClientHelpers';
 
 import './Kin.scss';

@@ -1,16 +1,11 @@
 import SecureLS from 'secure-ls';
 import BigNumber from 'bignumber.js';
 
-import { FC, useMemo, useCallback } from 'react';
-import {
-  WalletAdapterNetwork,
-  WalletNotConnectedError,
-} from '@solana/wallet-adapter-base';
+import { FC, useMemo } from 'react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   ConnectionProvider,
   WalletProvider,
-  useConnection,
-  useWallet,
 } from '@solana/wallet-adapter-react';
 import {
   LedgerWalletAdapter,
@@ -27,33 +22,38 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-react-ui';
 import {
+  Token,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
+import {
   clusterApiUrl,
-  Keypair,
   PublicKey,
-  SystemProgram,
   Transaction,
   Connection,
   TransactionInstruction,
 } from '@solana/web3.js';
 
 import { createKinMemo, TransactionType } from '@kin-tools/kin-memo';
-import { Token } from '@solana/spl-token';
+
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
+import { solanaAddresses } from './constants';
+import { saveTransaction } from './helpers';
 
 // https://github.com/softvar/secure-ls
 export const secureLocalStorage = new SecureLS();
 console.log('🚀 ~ secureLocalStorage', secureLocalStorage);
 
 interface WalletProps {
-  solanaEnvironment: string;
+  solanaNetwork: string;
 }
-export const Wallet: FC<WalletProps> = ({ children, solanaEnvironment }) => {
+export const Wallet: FC<WalletProps> = ({ children, solanaNetwork }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   // const network = WalletAdapterNetwork.Devnet;
   let network = WalletAdapterNetwork.Mainnet;
-  if (solanaEnvironment === 'Devnet') network = WalletAdapterNetwork.Devnet;
-  if (solanaEnvironment === 'Testnet') network = WalletAdapterNetwork.Testnet;
+  if (solanaNetwork === 'Devnet') network = WalletAdapterNetwork.Devnet;
+  if (solanaNetwork === 'Testnet') network = WalletAdapterNetwork.Testnet;
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
@@ -87,35 +87,6 @@ export const Wallet: FC<WalletProps> = ({ children, solanaEnvironment }) => {
   );
 };
 
-export const SendOneLamportToRandomAddress: FC = () => {
-  const { connection } = useConnection();
-  console.log('🚀 ~ connection', connection);
-  const { publicKey, sendTransaction } = useWallet();
-  console.log('🚀 ~ publicKey', publicKey);
-
-  const onClick = useCallback(async () => {
-    if (!publicKey) throw new WalletNotConnectedError();
-
-    const transaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: Keypair.generate().publicKey,
-        lamports: 1,
-      })
-    );
-
-    const signature = await sendTransaction(transaction, connection);
-
-    await connection.confirmTransaction(signature, 'processed');
-  }, [publicKey, sendTransaction, connection]);
-
-  return (
-    <button onClick={onClick} disabled={!publicKey}>
-      Send 1 lamport to a random address!
-    </button>
-  );
-};
-
 declare global {
   interface Window {
     solana: any;
@@ -127,12 +98,262 @@ function kinToQuarks(amount: string): BigNumber {
   return b.multipliedBy(1e5);
 }
 
-function generateMemoInstruction(memoContent: string): TransactionInstruction {
+function generateMemoInstruction(
+  memoContent: string,
+  solanaNetwork: string,
+  memoVersion = 1
+): TransactionInstruction {
+  let memoProgramId;
+  if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
+    memoProgramId =
+      memoVersion === 1
+        ? solanaAddresses[solanaNetwork].memoV1ProgramId
+        : solanaAddresses[solanaNetwork].memoV2ProgramId;
+  } else {
+    throw new Error('Missing Addresses for Kin on that Solana Network');
+  }
+  console.log('🚀 ~ memoProgramId', memoProgramId);
+
   return new TransactionInstruction({
     keys: [],
-    programId: new PublicKey('Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'),
+    programId: new PublicKey(memoProgramId),
     data: Buffer.from(memoContent),
   });
+}
+interface GenerateTransferInstruction {
+  connection: Connection;
+  from: PublicKey;
+  to: string;
+  amount: string;
+  solanaNetwork: string;
+}
+async function generateTransferInstruction({
+  connection,
+  from,
+  to,
+  amount,
+  solanaNetwork,
+}: GenerateTransferInstruction) {
+  console.log('🚀 ~ generateTransferInstruction', from.toBase58(), to, amount);
+  if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
+    const mint = new PublicKey(solanaAddresses[solanaNetwork].kinMint);
+    // From
+    const fromTokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      from,
+      { mint }
+    );
+    const fromTokenAccount = fromTokenAccounts?.value[0]?.pubkey;
+    // To
+    const toPublicKey = new PublicKey(to);
+    const toTokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      toPublicKey,
+      { mint }
+    );
+
+    const toTokenAccount = toTokenAccounts?.value[0]?.pubkey;
+    if (!toTokenAccount) throw new Error('No Token Account!');
+
+    // Amount
+    const quarks = kinToQuarks(amount);
+    // Instruction
+    return Token.createTransferInstruction(
+      TOKEN_PROGRAM_ID,
+      fromTokenAccount,
+      toTokenAccount,
+      from,
+      [],
+      Number(quarks)
+    );
+  } else {
+    throw new Error('Solana network not supported');
+  }
+}
+
+interface HandleCreateTokenAccount {
+  connection: Connection;
+  sendTransaction: (
+    transaction: Transaction,
+    connection: Connection
+  ) => Promise<string>;
+  from: PublicKey;
+  to: string;
+  solanaNetwork: string;
+  onSuccess: () => void;
+  onFailure: (arg: any) => void;
+}
+
+// TODO create token account if not found
+// https://solanacookbook.com/references/token.html#associated-token-account-ata
+export async function handleCreateTokenAccount({
+  connection,
+  sendTransaction,
+  from,
+  to,
+  solanaNetwork,
+  onSuccess,
+  onFailure,
+}: HandleCreateTokenAccount) {
+  try {
+    let tokenAccount;
+    if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
+      const mintPublicKey = new PublicKey(
+        solanaAddresses[solanaNetwork].kinMint
+      );
+      const toPublicKey = new PublicKey(to);
+      tokenAccount = await Token.getAssociatedTokenAddress(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        mintPublicKey,
+        toPublicKey
+      );
+      console.log('🚀 ~ tokenAccount', tokenAccount);
+
+      let transaction = new Transaction().add(
+        Token.createAssociatedTokenAccountInstruction(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          TOKEN_PROGRAM_ID,
+          mintPublicKey,
+          tokenAccount,
+          toPublicKey,
+          from
+        )
+      );
+
+      // Send Transaction
+      const signature = await sendTransaction(transaction, connection);
+      console.log('🚀 ~ signature', signature);
+
+      // Check Transaction has been completed
+      await connection.confirmTransaction(signature, 'processed');
+
+      saveTransaction(signature);
+      onSuccess();
+    } else {
+      throw new Error('Missing Addresses for Kin on that Solana Network');
+    }
+  } catch (error) {
+    onFailure(error);
+  }
+}
+
+interface HandleCloseEmptyTokenAccount {
+  connection: Connection;
+  sendTransaction: (
+    transaction: Transaction,
+    connection: Connection
+  ) => Promise<string>;
+  from: PublicKey;
+  to: string;
+  solanaNetwork: string;
+  onSuccess: () => void;
+  onFailure: (arg: any) => void;
+}
+
+// TODO create token account if not found
+// https://solanacookbook.com/references/token.html#associated-token-account-ata
+export async function handleCloseEmptyTokenAccount({
+  connection,
+  sendTransaction,
+  from,
+  to,
+  solanaNetwork,
+  onSuccess,
+  onFailure,
+}: HandleCloseEmptyTokenAccount) {
+  console.log('🚀 ~ from', from);
+  console.log('🚀 ~ sendTransaction', sendTransaction);
+  try {
+    if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
+      const mintPublicKey = new PublicKey(
+        solanaAddresses[solanaNetwork].kinMint
+      );
+      const toPublicKey = new PublicKey(to);
+
+      const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+        toPublicKey,
+        {
+          mint: mintPublicKey,
+        }
+      );
+      console.log('🚀 ~ tokenAccounts', tokenAccounts);
+
+      const zeroBalanceTokenAccountsRaw = await Promise.all(
+        tokenAccounts.value.map(async (tokenAccount) => {
+          try {
+            const tokenAmount = await connection.getTokenAccountBalance(
+              tokenAccount.pubkey
+            );
+            console.log('🚀 ~ tokenAmount', tokenAmount);
+
+            return tokenAmount.value.amount === '0'
+              ? tokenAccount.pubkey
+              : null;
+          } catch (error) {
+            return null;
+          }
+        })
+      );
+
+      const zeroBalanceTokenAccounts = zeroBalanceTokenAccountsRaw.filter(
+        (pk) => pk
+      );
+      console.log('🚀 ~ zeroBalanceTokenAccounts', zeroBalanceTokenAccounts);
+
+      const signatures = await Promise.all(
+        zeroBalanceTokenAccounts.map(async (tokenAccountPublicKey) => {
+          if (tokenAccountPublicKey) {
+            try {
+              const transaction = new Transaction().add(
+                Token.createCloseAccountInstruction(
+                  TOKEN_PROGRAM_ID,
+                  tokenAccountPublicKey,
+                  toPublicKey,
+                  toPublicKey,
+                  []
+                )
+              );
+              console.log('🚀 ~ transaction', transaction);
+
+              const signature = await sendTransaction(transaction, connection);
+              // Check Transaction has been completed
+              await connection.confirmTransaction(signature, 'processed');
+
+              saveTransaction(signature);
+              return signature;
+            } catch (error) {
+              console.log('🚀 ~ error', error);
+            }
+          }
+        })
+      );
+      console.log('🚀 ~ signatures', signatures);
+
+      // let transaction = new Transaction().add(
+      //   Token.createAssociatedTokenAccountInstruction(
+      //     ASSOCIATED_TOKEN_PROGRAM_ID,
+      //     TOKEN_PROGRAM_ID,
+      //     mintPublicKey,
+      //     tokenAccount,
+      //     toPublicKey,
+      //     from
+      //   )
+      // );
+
+      // // Send Transaction
+      // const signature = await sendTransaction(transaction, connection);
+      // console.log('🚀 ~ signature', signature);
+
+      // // Check Transaction has been completed
+      // await connection.confirmTransaction(signature, 'processed');
+
+      // saveTransaction(signature);
+      onSuccess();
+    } else {
+      throw new Error('Missing Addresses for Kin on that Solana Network');
+    }
+  } catch (error) {
+    onFailure(error);
+  }
 }
 
 export interface HandleSendKin {
@@ -146,7 +367,7 @@ export interface HandleSendKin {
   amount: string;
   memo: string;
   type: string;
-  solanaEnvironment: string;
+  solanaNetwork: string;
   onSuccess: () => void;
   onFailure: (arg: any) => void;
 }
@@ -161,81 +382,67 @@ export async function handleSendKin({
   amount,
   memo,
   type,
-  solanaEnvironment,
+  solanaNetwork,
 }: HandleSendKin) {
-  console.log('🚀 ~ handleSendKin', from, to, type, amount, solanaEnvironment);
+  console.log('🚀 ~ handleSendKin', from, to, type, amount, solanaNetwork);
   try {
-    if (solanaEnvironment !== 'Mainnet')
-      throw new Error('No Mint for that environment');
+    // App Index
+    const appIndex = Number(process.env.REACT_APP_APP_INDEX);
+    if (!appIndex) throw new Error('No App Index!');
 
-    let kinMint = 'kinXdEcpDQeHPEuQnqmUgtYykqKGVFq6CeVX5iAHJq6';
-    const mint = new PublicKey(kinMint);
-    console.log('🚀 ~ mint', mint.toBase58());
-
-    let kinTokenProgramId = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
-    const tokenProgramId = new PublicKey(kinTokenProgramId);
-    console.log('🚀 ~ tokenProgramId', tokenProgramId.toBase58());
-
-    const appIndex = Number(process.env.REACT_APP_APP_INDEX) || 0;
     console.log('🚀 ~ appIndex', appIndex);
+
+    // Transaction Type
     let transactionType = TransactionType.None;
     if (type === 'Earn') transactionType = TransactionType.Earn;
     if (type === 'Spend') transactionType = TransactionType.Spend;
     if (type === 'P2P') transactionType = TransactionType.P2P;
 
+    // Create correctly formatted memo string, including your App Index
     const appIndexMemo = createKinMemo({
       appIndex,
       type: transactionType,
     });
-    console.log('🚀 ~ memo', memo);
-
-    const fromPublicKey = new PublicKey(from);
-    console.log('🚀 ~ fromPublicKey', fromPublicKey.toBase58());
-    const fromTokenAccounts = await connection.getParsedTokenAccountsByOwner(
-      fromPublicKey,
-      { mint }
+    console.log('🚀 ~ appIndexMemo', appIndexMemo);
+    // Create Memo Instruction for KRE Ingestion - Must be Memo Program v1, not v2
+    const appIndexMemoInstruction = generateMemoInstruction(
+      appIndexMemo,
+      solanaNetwork,
+      1
     );
-    console.log('🚀 ~ fromTokenAccounts', fromTokenAccounts);
-    const fromTokenAccount = fromTokenAccounts?.value[0]?.pubkey;
-    console.log('🚀 ~ fromTokenAccount', fromTokenAccount.toBase58());
-    const toPublicKey = new PublicKey(to);
-    const toTokenAccounts = await connection.getParsedTokenAccountsByOwner(
-      toPublicKey,
-      { mint }
-    );
-    console.log('🚀 ~ toTokenAccounts', toTokenAccounts);
-    const toTokenAccount = toTokenAccounts?.value[0]?.pubkey;
-    console.log('🚀 ~ toTokenAccount', toTokenAccount.toBase58());
-
-    const quarks = kinToQuarks(amount);
-    console.log('🚀 ~ quarks', quarks);
-
-    const appIndexMemoInstruction = generateMemoInstruction(appIndexMemo);
     console.log('🚀 ~ appIndexMemoInstruction', appIndexMemoInstruction);
 
-    const transferInstruction = Token.createTransferInstruction(
-      tokenProgramId,
-      fromTokenAccount,
-      toTokenAccount,
-      fromPublicKey,
-      [],
-      Number(quarks)
-    );
+    // Create Transfer Instruction
+    const transferInstruction = await generateTransferInstruction({
+      connection,
+      from,
+      to,
+      amount,
+      solanaNetwork,
+    });
 
+    // Build Transaction -
     const transaction = new Transaction()
       .add(appIndexMemoInstruction) // Must be the first instruction
       .add(transferInstruction);
 
+    // Add additional memo, e.g. for SKU if present. Here we are using Memo Program v2
     if (memo) {
-      const memoInstruction = generateMemoInstruction(memo);
+      const memoInstruction = generateMemoInstruction(memo, solanaNetwork, 2);
       transaction.add(memoInstruction);
     }
 
+    // Final Transaction
     console.log('🚀 ~ transaction', transaction);
+
+    // Send Transaction
     const signature = await sendTransaction(transaction, connection);
     console.log('🚀 ~ signature', signature);
 
+    // Check Transaction has been completed
     await connection.confirmTransaction(signature, 'processed');
+
+    saveTransaction(signature);
 
     onSuccess();
   } catch (error) {

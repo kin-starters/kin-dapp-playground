@@ -38,7 +38,7 @@ function App() {
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
   const [kinClientEnvironment, setKinClientEnvironment] = useState('Test');
-  const [solanaEnvironment, setSolanaEnvironment] = useState('Mainnet');
+  const [solanaNetwork, setSolanaEnvironment] = useState('Mainnet');
 
   return (
     <div className="App">
@@ -97,7 +97,7 @@ function App() {
                 <KinSDKLessAppWithWallet
                   makeToast={makeToast}
                   setLoading={setLoading}
-                  solanaEnvironment={solanaEnvironment}
+                  solanaNetwork={solanaNetwork}
                   setSolanaEnvironment={setSolanaEnvironment}
                   // kinClient={kinClient}
                   // setKinClient={setKinClient}

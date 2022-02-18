@@ -15,6 +15,19 @@ const breakpoints = {
   smallScreenBreakpoint: '1440px',
 };
 
+const solanaAddresses = {
+  Mainnet: {
+    kinMint: 'kinXdEcpDQeHPEuQnqmUgtYykqKGVFq6CeVX5iAHJq6',
+    memoV1ProgramId: 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo',
+    memoV2ProgramId: 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+  },
+  Devnet: {
+    kinMint: '',
+    memoV1ProgramId: '',
+    memoV2ProgramId: '',
+  },
+};
+
 const kinLinks = {
   docs: [
     {
@@ -147,6 +160,47 @@ const kinLinks = {
       ],
     },
   },
+  SDKLessCodeSamples: {
+    title: 'Sample Code: ',
+    methods: {
+      // setUpKinClient: [
+      //   {
+      //     name: 'Web SDK',
+      //     link:
+      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L79-L100',
+      //   },
+      // ],
+      // createAccount: [
+      //   {
+      //     name: 'Web SDK',
+      //     sdk: 'https://github.com/kinecosystem/kin-node',
+      //     link:
+      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L116-L158',
+      //   },
+      // ],
+      // getBalance: [
+      //   {
+      //     name: 'Web SDK',
+      //     link:
+      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L167-L209',
+      //   },
+      // ],
+      // requestAirdrop: [
+      //   {
+      //     name: 'Web SDK',
+      //     link:
+      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L220-L241',
+      //   },
+      // ],
+      submitPayment: [
+        {
+          name: 'Solana Web Packages',
+          link:
+            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinSDKLessHelpers.ts#L135-L245',
+        },
+      ],
+    },
+  },
 };
 
-export { colors, breakpoints, kinLinks };
+export { colors, breakpoints, kinLinks, solanaAddresses };
