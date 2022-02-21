@@ -3,10 +3,12 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import {
   Wallet,
+  Balance,
   handleSendKin,
   HandleSendKin,
   handleCreateTokenAccount,
   handleCloseEmptyTokenAccount,
+  handleGetKinBalances,
 } from './kinSDKLessHelpers';
 import { MakeToast, getTransactions, openExplorer } from './helpers';
 
@@ -49,6 +51,10 @@ function KinSDKLessApp({
     closeEmptyTokenAccountSolanaWallet,
     setCloseEmptyTokenAccountSolanaWallet,
   ] = useState('');
+
+  // Balances
+  const [balanceAddress, setBalanceAddress] = useState('');
+  const [balances, setBalances] = useState<Balance[] | null>(null);
 
   // Transactions
   const [transactions, setTransactions] = useState<string[]>(getTransactions());
@@ -95,7 +101,8 @@ function KinSDKLessApp({
         links={kinLinks.SDKLessCodeSamples.methods.submitPayment}
         actions={[
           {
-            name: 'Send',
+            name: 'Transfer',
+            disabledAction: !publicKey || !payToUser,
             onClick: () => {
               setLoading(true);
 
@@ -158,6 +165,7 @@ function KinSDKLessApp({
         actions={[
           {
             name: 'Create',
+            disabledAction: !publicKey || !createTokenAccountSolanaWallet,
             onClick: () => {
               if (publicKey) {
                 setLoading(true);
@@ -193,6 +201,16 @@ function KinSDKLessApp({
               }
             },
           },
+          {
+            name: 'View in Explorer',
+            disabledAction: !createTokenAccountSolanaWallet,
+            onClick: () => {
+              openExplorer({
+                address: createTokenAccountSolanaWallet,
+                solanaNetwork,
+              });
+            },
+          },
         ]}
         inputs={[
           {
@@ -216,7 +234,6 @@ function KinSDKLessApp({
                 handleCloseEmptyTokenAccount({
                   connection,
                   sendTransaction,
-                  from: publicKey,
                   to: closeEmptyTokenAccountSolanaWallet,
                   solanaNetwork,
                   onSuccess: () => {
@@ -255,7 +272,52 @@ function KinSDKLessApp({
         ]}
       />
       <KinAction
-        title="View Transaction"
+        title="View Balance"
+        subTitle="See how much Kin is in the Token Accounts for a Solana Wallet"
+        disabled={!balanceAddress}
+        actions={[
+          {
+            name: 'Get Balance',
+            onClick: () => {
+              setLoading(true);
+              setBalances(null);
+              handleGetKinBalances({
+                connection,
+                address: balanceAddress,
+                solanaNetwork,
+
+                onSuccess: (data: Balance[]) => {
+                  setBalances(data);
+                  setLoading(false);
+                },
+                onFailure: () => {
+                  setLoading(false);
+                  makeToast({
+                    text: "Couldn't get balances...",
+                    happy: false,
+                  });
+                },
+              });
+            },
+          },
+          {
+            name: 'View in Explorer',
+            onClick: () => {
+              openExplorer({ address: balanceAddress, solanaNetwork });
+            },
+          },
+        ]}
+        inputs={[
+          {
+            name: 'Solana Wallet Address',
+            value: balanceAddress,
+            onChange: setBalanceAddress,
+          },
+        ]}
+        displayOutput={balances && { balances }}
+      />
+      <KinAction
+        title="View Transaction Details"
         subTitle="See the details of your transactions on the Solana Explorer"
         disabled={!transactions.length && !inputTransaction}
         actions={[
@@ -296,13 +358,13 @@ interface KinSDKLessAppWithWalletProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
   solanaNetwork: string;
-  setSolanaEnvironment: (environment: string) => void;
+  setSolanaNetwork: (network: string) => void;
 }
 export function KinSDKLessAppWithWallet({
   makeToast,
   setLoading,
   solanaNetwork,
-  setSolanaEnvironment,
+  setSolanaNetwork,
 }: KinSDKLessAppWithWalletProps) {
   return (
     <div className="Kin">
@@ -318,10 +380,10 @@ export function KinSDKLessAppWithWallet({
         subTitle="Make sure your wallet is connected to the same network"
         inputs={[
           {
-            name: 'Environment',
+            name: 'Network',
             value: solanaNetwork,
             options: ['Mainnet', 'Testnet', 'Devnet'],
-            onChange: setSolanaEnvironment,
+            onChange: setSolanaNetwork,
           },
         ]}
       />

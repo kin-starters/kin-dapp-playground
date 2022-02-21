@@ -14,15 +14,15 @@ console.log('🚀 ~ secureLocalStorage', secureLocalStorage);
 interface Account extends Wallet {
   tokenAccounts: string[];
 }
-export function saveAccount(account: Account, kinEnvironment: string) {
-  const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
+export function saveAccount(account: Account, kinNetwork: string) {
+  const accounts = secureLocalStorage.get(`accounts${kinNetwork}`) || [];
   if (account.publicKey)
-    secureLocalStorage.set(`accounts${kinEnvironment}`, [...accounts, account]);
+    secureLocalStorage.set(`accounts${kinNetwork}`, [...accounts, account]);
 }
 
-export function getUserAccounts(kinEnvironment: string): string[] {
+export function getUserAccounts(kinNetwork: string): string[] {
   try {
-    const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
+    const accounts = secureLocalStorage.get(`accounts${kinNetwork}`) || [];
     return accounts.map((account: Account) => account.name);
   } catch (error) {
     return [];
@@ -31,9 +31,9 @@ export function getUserAccounts(kinEnvironment: string): string[] {
 
 export function getUserAccount(
   user: string,
-  kinEnvironment: string
+  kinNetwork: string
 ): Account | null {
-  const accounts = secureLocalStorage.get(`accounts${kinEnvironment}`) || [];
+  const accounts = secureLocalStorage.get(`accounts${kinNetwork}`) || [];
   const userAccount = accounts.find(
     (account: Account) => account.name === user
   );
@@ -41,13 +41,13 @@ export function getUserAccount(
   return userAccount || null;
 }
 
-export function getPrivateKey(user: string, kinEnvironment: string): string {
-  const account = getUserAccount(user, kinEnvironment);
+export function getPrivateKey(user: string, kinNetwork: string): string {
+  const account = getUserAccount(user, kinNetwork);
   return account?.secret || '';
 }
 
-export function getPublicKey(user: string, kinEnvironment: string): string {
-  const account = getUserAccount(user, kinEnvironment);
+export function getPublicKey(user: string, kinNetwork: string): string {
+  const account = getUserAccount(user, kinNetwork);
   return account?.publicKey || '';
 }
 
@@ -69,34 +69,38 @@ export function getTransactions() {
 interface OpenExplorer {
   transaction?: string;
   address?: string;
-  kinEnvironment?: string;
+  kinNetwork?: string;
   solanaNetwork?: string;
 }
 export function openExplorer({
   transaction,
   address,
-  kinEnvironment,
+  kinNetwork,
   solanaNetwork,
 }: OpenExplorer) {
   if (transaction) {
     window.open(
-      `https://explorer.solana.com/tx/${transaction}${
-        kinEnvironment === 'Test'
-          ? '?cluster=custom&customUrl=https%3A%2F%2Flocal.validator.agorainfra.dev%2F'
-          : ''
-      }${
-        solanaNetwork && solanaNetwork !== 'Mainnet'
-          ? `?cluster=${solanaNetwork.toLowerCase()}`
-          : ''
-      }`
+      `https://explorer.solana.com/tx/${transaction}${(() => {
+        if (kinNetwork === 'Test') {
+          return '?cluster=custom&customUrl=https%3A%2F%2Flocal.validator.agorainfra.dev%2F';
+        }
+        if (solanaNetwork && solanaNetwork !== 'Mainnet') {
+          return `?cluster=${solanaNetwork.toLowerCase()}`;
+        }
+        return '';
+      })()}`
     );
   } else if (address) {
     window.open(
-      `https://explorer.solana.com/address/${address}${
-        kinEnvironment === 'Test'
-          ? '?cluster=custom&customUrl=https%3A%2F%2Flocal.validator.agorainfra.dev%2F'
-          : ''
-      }`
+      `https://explorer.solana.com/address/${address}${(() => {
+        if (kinNetwork === 'Test') {
+          return '?cluster=custom&customUrl=https%3A%2F%2Flocal.validator.agorainfra.dev%2F';
+        }
+        if (solanaNetwork && solanaNetwork !== 'Mainnet') {
+          return `?cluster=${solanaNetwork.toLowerCase()}`;
+        }
+        return '';
+      })()}`
     );
   }
 }

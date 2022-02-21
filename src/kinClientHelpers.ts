@@ -14,23 +14,22 @@ import {
 } from './helpers';
 
 interface HandleSetupKinClient {
-  kinEnvironment: string;
+  kinNetwork: string;
   onSuccess: ({ client }: { client: KinClient }) => void;
   onFailure: () => void;
 }
 export function handleSetUpKinClient({
-  kinEnvironment,
+  kinNetwork,
   onSuccess,
   onFailure,
 }: HandleSetupKinClient) {
   try {
     const appIndex = Number(process.env.REACT_APP_APP_INDEX);
-    console.log('🚀 ~ handleSetUpKinClient', kinEnvironment, appIndex);
+    console.log('🚀 ~ handleSetUpKinClient', kinNetwork, appIndex);
     if (appIndex > 0) {
-      const client = new KinClient(
-        kinEnvironment === 'Prod' ? KinProd : KinTest,
-        { appIndex }
-      );
+      const client = new KinClient(kinNetwork === 'Prod' ? KinProd : KinTest, {
+        appIndex,
+      });
       onSuccess({ client });
     } else {
       throw new Error('No App Index');
@@ -44,7 +43,7 @@ export function handleSetUpKinClient({
 interface HandleCreateAccount {
   kinClient: KinClient;
   name: string;
-  kinEnvironment: string;
+  kinNetwork: string;
 
   onSuccess: () => void;
   onFailure: () => void;
@@ -59,7 +58,7 @@ export async function handleCreateAccount({
   onSuccess,
   onFailure,
   name,
-  kinEnvironment,
+  kinNetwork,
   kinClient,
 }: HandleCreateAccount) {
   console.log('🚀 ~ handleCreateAccount', name);
@@ -85,7 +84,7 @@ export async function handleCreateAccount({
               ...wallet,
               tokenAccounts,
             },
-            kinEnvironment
+            kinNetwork
           );
           onSuccess();
         }
@@ -101,7 +100,7 @@ export async function handleCreateAccount({
 interface HandleGetBalance {
   kinClient: KinClient;
   user: string;
-  kinEnvironment: string;
+  kinNetwork: string;
   onSuccess: (arg: string) => void;
   onFailure: () => void;
 }
@@ -111,11 +110,11 @@ export async function handleGetBalance({
   onFailure,
   user,
   kinClient,
-  kinEnvironment,
+  kinNetwork,
 }: HandleGetBalance) {
   console.log('🚀 ~ handleGetBalance', user);
   try {
-    const publicKey = getPublicKey(user, kinEnvironment);
+    const publicKey = getPublicKey(user, kinNetwork);
 
     if (publicKey) {
       // returns an array of objects containing the balances of the different tokenAccounts
@@ -154,7 +153,7 @@ interface HandleRequestAirdrop {
   kinClient: KinClient;
   to: string;
   amount: string;
-  kinEnvironment: string;
+  kinNetwork: string;
   onSuccess: () => void;
   onFailure: () => void;
 }
@@ -165,11 +164,11 @@ export async function handleRequestAirdrop({
   to,
   amount,
   kinClient,
-  kinEnvironment,
+  kinNetwork,
 }: HandleRequestAirdrop) {
   console.log('🚀 ~ handleRequestAirdrop', to, amount);
   try {
-    const publicKey = getPublicKey(to, kinEnvironment);
+    const publicKey = getPublicKey(to, kinNetwork);
 
     const [success, error] = await kinClient.requestAirdrop(publicKey, amount);
 
@@ -186,16 +185,16 @@ interface GetTokenAccountWithSufficientBalance {
   user: string;
   amount: string;
   kinClient: KinClient;
-  kinEnvironment: string;
+  kinNetwork: string;
 }
 
 async function getTokenAccountWithSufficientBalance({
   user,
   amount,
   kinClient,
-  kinEnvironment,
+  kinNetwork,
 }: GetTokenAccountWithSufficientBalance) {
-  const publicKey = getPublicKey(user, kinEnvironment);
+  const publicKey = getPublicKey(user, kinNetwork);
 
   const [balances, error] = await kinClient.getBalances(publicKey);
 
@@ -220,7 +219,7 @@ export interface HandleSendKin {
   to: string;
   amount: string;
   type: string;
-  kinEnvironment: string;
+  kinNetwork: string;
   onSuccess: () => void;
   onFailure: (arg: any) => void;
 }
@@ -233,18 +232,18 @@ export async function handleSendKin({
   amount,
   type,
   kinClient,
-  kinEnvironment,
+  kinNetwork,
 }: HandleSendKin) {
   console.log('🚀 ~ handleSendKin', type, from, to, amount);
   try {
-    const secret = getPrivateKey(from, kinEnvironment);
+    const secret = getPrivateKey(from, kinNetwork);
     const tokenAccount = await getTokenAccountWithSufficientBalance({
       user: from,
       amount,
       kinClient,
-      kinEnvironment,
+      kinNetwork,
     });
-    const destination = getPublicKey(to, kinEnvironment);
+    const destination = getPublicKey(to, kinNetwork);
 
     let transactionType = TransactionType.None;
     if (type === 'Earn') transactionType = TransactionType.Earn;

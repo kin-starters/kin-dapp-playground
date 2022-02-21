@@ -37,8 +37,8 @@ function App() {
   const [selectedAppType, setSelectedAppType] = useState(appTypes[2]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
-  const [kinClientEnvironment, setKinClientEnvironment] = useState('Test');
-  const [solanaNetwork, setSolanaEnvironment] = useState('Mainnet');
+  const [kinClientNetwork, setKinClientNetwork] = useState('Test');
+  const [solanaNetwork, setSolanaNetwork] = useState('Mainnet');
 
   return (
     <div className="App">
@@ -87,8 +87,8 @@ function App() {
                   setLoading={setLoading}
                   kinClient={kinClient}
                   setKinClient={setKinClient}
-                  kinClientEnvironment={kinClientEnvironment}
-                  setKinClientEnvironment={setKinClientEnvironment}
+                  kinClientNetwork={kinClientNetwork}
+                  setKinClientNetwork={setKinClientNetwork}
                 />
               );
             }
@@ -98,11 +98,7 @@ function App() {
                   makeToast={makeToast}
                   setLoading={setLoading}
                   solanaNetwork={solanaNetwork}
-                  setSolanaEnvironment={setSolanaEnvironment}
-                  // kinClient={kinClient}
-                  // setKinClient={setKinClient}
-                  // kinClientEnvironment={kinClientEnvironment}
-                  // setKinClientEnvironment={setKinClientEnvironment}
+                  setSolanaNetwork={setSolanaNetwork}
                 />
               );
             }

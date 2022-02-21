@@ -28,9 +28,7 @@ interface KinServerAppProps {
 export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   const [serverRunning, setServerRunning] = useState(false);
   const [serverAppIndex, setServerAppIndex] = useState(0);
-  const [serverKinEnvironment, setServerKinEnvironment] = useState<
-    string | null
-  >(null);
+  const [serverKinNetwork, setServerKinNetwork] = useState<string | null>(null);
 
   const [userAccounts, setUserAccounts] = useState<User[]>([]);
   const userAccountNames = userAccounts
@@ -43,8 +41,8 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
     if (shouldUpdate) {
       getServerStatus({
         onSuccess: ({ status, data }) => {
-          if (data?.env === 1) setServerKinEnvironment('Test');
-          if (data?.env === 0) setServerKinEnvironment('Prod');
+          if (data?.env === 1) setServerKinNetwork('Test');
+          if (data?.env === 0) setServerKinNetwork('Prod');
 
           setServerRunning(status === 200);
           setServerAppIndex(data.appIndex);
@@ -59,7 +57,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
     return () => {};
   }, [shouldUpdate]);
-  const [kinEnvironment, setKinEnvironment] = useState('Test');
+  const [kinNetwork, setKinNetwork] = useState('Test');
 
   const [newUserName, setNewUserName] = useState('');
 
@@ -100,7 +98,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             {serverAppIndex ? (
               <>
                 <br />
-                App Index {serverAppIndex} on {serverKinEnvironment}
+                App Index {serverAppIndex} on {serverKinNetwork}
               </>
             ) : (
               <>
@@ -161,23 +159,23 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                         happy: false,
                       });
                     },
-                    kinEnvironment,
+                    kinNetwork,
                   });
                 },
               },
             ]}
             inputs={[
               {
-                name: 'Environment',
-                value: kinEnvironment,
+                name: 'Network',
+                value: kinNetwork,
                 options: ['Test', 'Prod'],
-                onChange: setKinEnvironment,
+                onChange: setKinNetwork,
               },
             ]}
           />
         </>
       ) : null}
-      {serverAppIndex && serverKinEnvironment ? (
+      {serverAppIndex && serverKinNetwork ? (
         <>
           <br />
           <hr />
@@ -267,7 +265,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                   const address = user?.publicKey;
                   openExplorer({
                     address,
-                    kinEnvironment,
+                    kinNetwork,
                   });
                 },
               },
@@ -308,7 +306,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             return null;
           })()}
 
-          {kinEnvironment === 'Test' ? (
+          {kinNetwork === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
@@ -560,7 +558,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onClick: () => {
                   const transaction =
                     inputTransaction || selectedTransaction || transactions[0];
-                  openExplorer({ transaction, kinEnvironment });
+                  openExplorer({ transaction, kinNetwork });
                 },
               },
             ]}
