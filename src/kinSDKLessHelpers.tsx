@@ -160,6 +160,7 @@ async function generateTransferInstruction({
 
     // Amount
     const quarks = kinToQuarks(amount);
+
     // Instruction
     return Token.createTransferInstruction(
       TOKEN_PROGRAM_ID,
@@ -243,8 +244,6 @@ interface HandleCreateTokenAccount {
   onFailure: (arg: any) => void;
 }
 
-// TODO create token account if not found
-// https://solanacookbook.com/references/token.html#associated-token-account-ata
 export async function handleCreateTokenAccount({
   connection,
   sendTransaction,
@@ -256,7 +255,6 @@ export async function handleCreateTokenAccount({
 }: HandleCreateTokenAccount) {
   console.log('🚀 ~ handleCreateTokenAccount', to);
   try {
-    let tokenAccount;
     if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
       const balances = await handleGetKinBalances({
         connection,
@@ -271,7 +269,7 @@ export async function handleCreateTokenAccount({
         solanaAddresses[solanaNetwork].kinMint
       );
       const toPublicKey = new PublicKey(to);
-      tokenAccount = await Token.getAssociatedTokenAddress(
+      const tokenAccount = await Token.getAssociatedTokenAddress(
         ASSOCIATED_TOKEN_PROGRAM_ID,
         TOKEN_PROGRAM_ID,
         mintPublicKey,
@@ -345,6 +343,9 @@ export async function handleCloseEmptyTokenAccount({
       );
       console.log('🚀 ~ tokenAccounts', tokenAccounts);
 
+      if (tokenAccounts.value.length === 0)
+        throw new Error('No Token Accounts found');
+
       const zeroBalanceTokenAccountsRaw = await Promise.all(
         tokenAccounts.value.map(async (tokenAccount) => {
           try {
@@ -366,6 +367,9 @@ export async function handleCloseEmptyTokenAccount({
         (pk) => pk
       );
       console.log('🚀 ~ zeroBalanceTokenAccounts', zeroBalanceTokenAccounts);
+
+      if (zeroBalanceTokenAccounts.length === 0)
+        throw new Error('No Zero Balance Token Accounts');
 
       const signatures = await Promise.all(
         zeroBalanceTokenAccounts.map(async (tokenAccountPublicKey) => {
@@ -401,6 +405,7 @@ export async function handleCloseEmptyTokenAccount({
       throw new Error('Missing Addresses for Kin on that Solana Network');
     }
   } catch (error) {
+    console.log('🚀 ~ error', error);
     onFailure(error);
   }
 }

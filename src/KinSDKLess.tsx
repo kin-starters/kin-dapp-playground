@@ -239,7 +239,7 @@ function KinSDKLessApp({
                   onSuccess: () => {
                     setLoading(false);
                     makeToast({
-                      text: 'Token Account Creation Successful!',
+                      text: 'Token Account Successfully Closed!',
                       happy: true,
                     });
                     setShouldUpdate(true);
@@ -248,14 +248,14 @@ function KinSDKLessApp({
                   onFailure: () => {
                     setLoading(false);
                     makeToast({
-                      text: 'Token Account Creation Failed!',
+                      text: 'Token Account Closing Failed!',
                       happy: false,
                     });
                   },
                 });
               } else {
                 makeToast({
-                  text: 'Token Account Creation Failed!',
+                  text: 'Token Account Closing Failed!',
                   happy: false,
                 });
                 setLoading(false);
