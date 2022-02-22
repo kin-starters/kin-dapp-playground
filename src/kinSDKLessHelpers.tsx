@@ -32,6 +32,8 @@ import {
   Transaction,
   Connection,
   TransactionInstruction,
+  // SystemProgram,
+  // Keypair,
 } from '@solana/web3.js';
 
 import { createKinMemo, TransactionType } from '@kin-tools/kin-memo';
@@ -276,6 +278,52 @@ export async function handleCreateTokenAccount({
         toPublicKey
       );
       console.log('🚀 ~ tokenAccount', tokenAccount);
+
+      // ********************************************************************
+      // Trying to make it possible to Garbage Collect users account
+      // Taken from https://github.com/kinecosystem/kin-node/blob/master/src/client/client.ts#L488-L528
+
+      // const tempKeypair = Keypair.generate();
+      // console.log('🚀 ~ tempKeypair', tempKeypair.publicKey.toBase58());
+
+      // const createInstructions = [
+      //   SystemProgram.createAccount({
+      //     fromPubkey: from,
+      //     newAccountPubkey: tempKeypair.publicKey,
+      //     lamports: 100,
+      //     space: 156,
+      //     programId: TOKEN_PROGRAM_ID,
+      //   }),
+      //   Token.createInitAccountInstruction(
+      //     TOKEN_PROGRAM_ID,
+      //     mintPublicKey,
+      //     tempKeypair.publicKey,
+      //     tempKeypair.publicKey
+      //   ),
+      //   Token.createSetAuthorityInstruction(
+      //     TOKEN_PROGRAM_ID,
+      //     tempKeypair.publicKey,
+      //     from,
+      //     'CloseAccount',
+      //     tempKeypair.publicKey,
+      //     []
+      //   ),
+      //   Token.createSetAuthorityInstruction(
+      //     TOKEN_PROGRAM_ID,
+      //     tempKeypair.publicKey,
+      //     toPublicKey,
+      //     'AccountOwner',
+      //     tempKeypair.publicKey,
+      //     []
+      //   ),
+      // ];
+      // console.log('🚀 ~ createInstructions', createInstructions);
+      // let transaction = new Transaction().add(...createInstructions);
+
+      // const signature = await connection.sendTransaction(transaction, [tempKeypair]);
+
+      // This fails due to Signature verification error
+      // ********************************************************************
 
       let transaction = new Transaction().add(
         Token.createAssociatedTokenAccountInstruction(

@@ -46,11 +46,18 @@ function KinSDKLessApp({
     setCreateTokenAccountSolanaWallet,
   ] = useState('');
 
-  // Garbage Collect Kin Token Account
+  // Close Kin Token Account
   const [
     closeEmptyTokenAccountSolanaWallet,
     setCloseEmptyTokenAccountSolanaWallet,
   ] = useState('');
+  useEffect(() => {
+    if (publicKey) {
+      setCloseEmptyTokenAccountSolanaWallet(publicKey.toBase58());
+    } else {
+      setCloseEmptyTokenAccountSolanaWallet('');
+    }
+  }, [publicKey]);
 
   // Balances
   const [balanceAddress, setBalanceAddress] = useState('');
@@ -220,9 +227,12 @@ function KinSDKLessApp({
           },
         ]}
       />
+      <br />
+      <hr />
+      <h4 className="Kin-section">{`Additional Kin Related Actions`}</h4>
       <KinAction
-        title="Garbage Collect Empty Kin Token Accounts"
-        subTitle="Reclaim your fees???"
+        title="Close your Empty Kin Token Account"
+        subTitle="Reclaim rent for your own account when it has a zero balance"
         linksTitle={kinLinks.serverCodeSamples.title}
         links={kinLinks.serverCodeSamples.methods.createAccount}
         actions={[
@@ -268,6 +278,7 @@ function KinSDKLessApp({
             name: 'Solana Wallet',
             value: closeEmptyTokenAccountSolanaWallet,
             onChange: setCloseEmptyTokenAccountSolanaWallet,
+            disabledInput: true,
           },
         ]}
       />
