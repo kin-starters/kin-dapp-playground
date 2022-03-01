@@ -1,12 +1,8 @@
-# Kin SDK Demo - Front End
+# Kin DApp Demo
 
-## This app demonstrates two ways of integrating with [Kin](https://developer.kin.org/)
+## This app demonstrates three ways of integrating with [Kin](https://developer.kin.org/)
 
-## Via the [Web SDK](https://github.com/kin-sdk/kin-sdk-web)
-
-or
-
-## Via a Back End Server
+## Via a Back End Server implementing a Kin Server SDK
 
 - e.g. [Node](https://github.com/kinecosystem/kin-node), [Go](https://github.com/kinecosystem/kin-go), [Python](https://github.com/kinecosystem/kin-python)
 
@@ -14,12 +10,19 @@ This app is designed to work with the following Kin Server Demos:
 
 - [Node](https://github.com/kinecosystem/node-sdk-demo-server)
 - More to come!
+  or
+
+## Via the [Kin Web SDK](https://github.com/kin-sdk/kin-sdk-web)
+
+or
+
+## Via Solana Directly / SDK-less
 
 ## Prep
 
 - Your App is registered on the [Kin Developer Portal](https://portal.kin.org/) so you can take advantage of the [Kin Rewards Engine](https://developer.kin.org/docs/the-kre-explained/) and get your App Index
 - Environment variable for your server URL (if testing a Back End Server)
-- Environment variable for your App Index (if testing a Client App)
+- Environment variable for your App Index (if testing a Client DApp or SDK-less DApp )
 
 `.env`
 

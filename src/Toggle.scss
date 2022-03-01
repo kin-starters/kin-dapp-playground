@@ -11,15 +11,20 @@
     width: 100%;
     transition: all 0.4s;
     border: 1px solid $kin_dark;
+    background-color: $background_dark;
     border-radius: 5px;
   }
 
   .Toggle-option {
     flex-grow: 1;
-    background-color: $background_dark;
+    box-sizing: border-box;
     transition: all 0.4s;
     padding: 20px;
     cursor: pointer;
+
+    &:not(:last-of-type) {
+      border-right: 1px solid $kin_dark;
+    }
 
     &.selected {
       background-color: $kin_dark;

@@ -2,6 +2,7 @@
 
 .Kin {
   margin: auto;
+  width: 100%;
   padding: 0;
   text-align: left;
 
@@ -116,7 +117,7 @@
 
   .Kin-action-display {
     margin: 20px 0 0;
-    font-size: calc(6px + 1vmin);
+    font-size: 14px;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
@@ -132,6 +133,19 @@
   input,
   select,
   option {
-    font-size: calc(6px + 1vmin);
+    font-size: 14px;
+  }
+
+  // @solana/wallet-adapter overrides
+
+  .wallet-adapter-dropdown {
+    width: 100%;
+  }
+  .wallet-adapter-button,
+  .wallet-adapter-button-trigger {
+    margin-bottom: 20px;
+    padding: 32px;
+    width: 100%;
+    text-align: center;
   }
 }

@@ -11,6 +11,8 @@ import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
 import { KinServerApp } from './KinServer';
 import { KinClientApp } from './KinClient';
+import { KinSDKlessAppWithWallet } from './KinSDKless';
+
 import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,11 +33,12 @@ const makeToast = ({ text, happy }: MakeToast) => {
 function App() {
   const [loading, setLoading] = useState(false);
 
-  const appTypes = ['Backend Server', 'Client App'];
+  const appTypes = ['Backend Server', 'Client DApp', 'SDK-less DApp'];
   const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
-  const [kinClientEnvironment, setKinClientEnvironment] = useState('Test');
+  const [kinClientNetwork, setKinClientNetwork] = useState('Test');
+  const [solanaNetwork, setSolanaNetwork] = useState('Mainnet');
 
   return (
     <div className="App">
@@ -56,7 +59,7 @@ function App() {
           <div className="App-logo-container">
             <img src={logo} className="App-logo" alt="logo" />
           </div>
-          <span>SDK Demo</span>
+          <span>DApp Demo</span>
           <span>
             <Links links={kinLinks.docs} />
           </span>
@@ -71,18 +74,37 @@ function App() {
             onChange={setSelectedAppType}
           />
 
-          {selectedAppType === appTypes[0] ? (
-            <KinServerApp makeToast={makeToast} setLoading={setLoading} />
-          ) : (
-            <KinClientApp
-              makeToast={makeToast}
-              setLoading={setLoading}
-              kinClient={kinClient}
-              setKinClient={setKinClient}
-              kinClientEnvironment={kinClientEnvironment}
-              setKinClientEnvironment={setKinClientEnvironment}
-            />
-          )}
+          {(() => {
+            if (selectedAppType === appTypes[0]) {
+              return (
+                <KinServerApp makeToast={makeToast} setLoading={setLoading} />
+              );
+            }
+            if (selectedAppType === appTypes[1]) {
+              return (
+                <KinClientApp
+                  makeToast={makeToast}
+                  setLoading={setLoading}
+                  kinClient={kinClient}
+                  setKinClient={setKinClient}
+                  kinClientNetwork={kinClientNetwork}
+                  setKinClientNetwork={setKinClientNetwork}
+                />
+              );
+            }
+            if (selectedAppType === appTypes[2]) {
+              return (
+                <KinSDKlessAppWithWallet
+                  makeToast={makeToast}
+                  setLoading={setLoading}
+                  solanaNetwork={solanaNetwork}
+                  setSolanaNetwork={setSolanaNetwork}
+                />
+              );
+            }
+
+            return null;
+          })()}
         </div>
       </main>
     </div>

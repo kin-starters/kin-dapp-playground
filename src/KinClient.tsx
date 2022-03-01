@@ -6,7 +6,14 @@ import { Links } from './Links';
 
 import { kinLinks } from './constants';
 
-import { MakeToast, openExplorer } from './helpers';
+import {
+  MakeToast,
+  openExplorer,
+  getUserAccounts,
+  getUserAccount,
+  getTransactions,
+  getPublicKey,
+} from './helpers';
 import {
   handleSetUpKinClient,
   handleCreateAccount,
@@ -14,10 +21,6 @@ import {
   handleRequestAirdrop,
   handleSendKin,
   HandleSendKin,
-  getUserAccounts,
-  getUserAccount,
-  getTransactions,
-  getPublicKey,
 } from './kinClientHelpers';
 
 import './Kin.scss';
@@ -27,32 +30,32 @@ interface KinClientAppProps {
   setLoading: (arg: boolean) => void;
   kinClient: KinClient | null;
   setKinClient: (client: KinClient) => void;
-  kinClientEnvironment: string;
-  setKinClientEnvironment: (environment: string) => void;
+  kinClientNetwork: string;
+  setKinClientNetwork: (network: string) => void;
 }
 export function KinClientApp({
   makeToast,
   setLoading,
   kinClient,
   setKinClient,
-  kinClientEnvironment,
-  setKinClientEnvironment,
+  kinClientNetwork,
+  setKinClientNetwork,
 }: KinClientAppProps) {
   const [userAccounts, setUserAccounts] = useState<string[]>(
-    getUserAccounts(kinClientEnvironment)
+    getUserAccounts(kinClientNetwork)
   );
   const [transactions, setTransactions] = useState<string[]>([]);
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
       // Get data from secure local storage
-      setUserAccounts(getUserAccounts(kinClientEnvironment));
+      setUserAccounts(getUserAccounts(kinClientNetwork));
       setTransactions(getTransactions());
 
       setShouldUpdate(false);
     }
   }, [shouldUpdate]);
-  const [kinEnvironment, setKinEnvironment] = useState('Test');
+  const [kinNetwork, setKinNetwork] = useState('Test');
 
   const [newUserName, setNewUserName] = useState('');
 
@@ -80,7 +83,7 @@ export function KinClientApp({
           <span>
             {`Client Initialised`}
             <br />
-            {`App Index ${process.env.REACT_APP_APP_INDEX} on ${kinClientEnvironment}`}
+            {`App Index ${process.env.REACT_APP_APP_INDEX} on ${kinClientNetwork}`}
           </span>
         ) : (
           <span>
@@ -104,10 +107,10 @@ export function KinClientApp({
             name: 'Setup',
             onClick: () => {
               handleSetUpKinClient({
-                kinEnvironment,
+                kinNetwork,
                 onSuccess: ({ client }) => {
                   setKinClient(client);
-                  setKinClientEnvironment(kinEnvironment);
+                  setKinClientNetwork(kinNetwork);
                   setShouldUpdate(true);
                   makeToast({
                     text: 'Client Initialisation Successful!',
@@ -126,10 +129,10 @@ export function KinClientApp({
         ]}
         inputs={[
           {
-            name: 'Environment',
-            value: kinEnvironment,
+            name: 'Network',
+            value: kinNetwork,
             options: ['Test', 'Prod'],
-            onChange: setKinEnvironment,
+            onChange: setKinNetwork,
           },
         ]}
       />
@@ -158,7 +161,7 @@ export function KinClientApp({
                     handleCreateAccount({
                       kinClient,
                       name: newUserName,
-                      kinEnvironment: kinClientEnvironment,
+                      kinNetwork: kinClientNetwork,
                       onSuccess: () => {
                         setLoading(false);
                         makeToast({
@@ -201,7 +204,7 @@ export function KinClientApp({
                   handleGetBalance({
                     kinClient,
                     user: balanceUser || userAccounts[0],
-                    kinEnvironment: kinClientEnvironment,
+                    kinNetwork: kinClientNetwork,
                     onSuccess: (balance) => {
                       setLoading(false);
                       setDisplayBalance(balance);
@@ -221,7 +224,7 @@ export function KinClientApp({
                 onClick: () => {
                   const address = getPublicKey(
                     balanceUser || userAccounts[0],
-                    kinClientEnvironment
+                    kinClientNetwork
                   );
                   if (!address) {
                     makeToast({
@@ -231,7 +234,7 @@ export function KinClientApp({
                   } else {
                     openExplorer({
                       address,
-                      kinEnvironment,
+                      kinNetwork,
                     });
                   }
                 },
@@ -267,7 +270,7 @@ export function KinClientApp({
 
             return null;
           })()}
-          {kinEnvironment === 'Test' ? (
+          {kinNetwork === 'Test' ? (
             <KinAction
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
@@ -283,7 +286,7 @@ export function KinClientApp({
                       to: airdropUser || userAccounts[0],
                       amount: airdropAmount,
                       kinClient,
-                      kinEnvironment: kinClientEnvironment,
+                      kinNetwork: kinClientNetwork,
                       onSuccess: () => {
                         setLoading(false);
                         makeToast({ text: 'Airdrop Successful!', happy: true });
@@ -331,7 +334,7 @@ export function KinClientApp({
 
                   const sendKinOptions: HandleSendKin = {
                     kinClient,
-                    kinEnvironment: kinClientEnvironment,
+                    kinNetwork: kinClientNetwork,
                     from: payFromUserP2P || userAccounts[0],
                     to: payToUserP2P || userAccounts[1],
                     amount: payAmountP2P,
@@ -404,7 +407,7 @@ export function KinClientApp({
                 onClick: () => {
                   const transaction =
                     inputTransaction || selectedTransaction || transactions[0];
-                  openExplorer({ transaction, kinEnvironment });
+                  openExplorer({ transaction, kinNetwork });
                 },
               },
             ]}
@@ -439,7 +442,7 @@ export function KinClientApp({
                 onClick: () => {
                   const wallet = getUserAccount(
                     seeWallet || userAccounts[0],
-                    kinClientEnvironment
+                    kinClientNetwork
                   );
                   setSeeWalletDetails(wallet);
                 },

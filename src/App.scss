@@ -8,7 +8,7 @@
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  font-size: calc(8px + 1vmin);
+  font-size: 16px;
 }
 
 .App-nav {
@@ -24,7 +24,7 @@
 
     .App-logo-container {
       padding-top: 3px;
-      height: calc(10px + 2vmin);
+      height: 30px;
       margin: auto 0;
     }
 
@@ -37,7 +37,7 @@
     span {
       margin: auto auto auto 10px;
       padding: none;
-      font-size: calc(10px + 2vmin);
+      font-size: 30px;
       color: $white;
     }
 
@@ -47,7 +47,7 @@
 
     a.link {
       text-decoration: none;
-      font-size: calc(8px + 1.2vmin);
+      font-size: 20px;
     }
   }
 }

@@ -15,6 +15,7 @@ interface Input {
 
 interface Action {
   name: string;
+  disabledAction?: boolean;
   onClick: () => void;
 }
 interface KinActionProps {
@@ -23,7 +24,6 @@ interface KinActionProps {
   subTitle?: string;
   subTitleLinks?: Link[];
   actions?: Action[];
-
   inputs?: Input[];
   displayValue?: string;
   disabled?: boolean;
@@ -144,13 +144,13 @@ export function KinAction({
 
         {actions.length ? (
           <div className="Kin-action-buttons">
-            {actions?.map(({ name, onClick }) => {
+            {actions?.map(({ name, onClick, disabledAction }) => {
               return (
                 <div key={name}>
                   <button
                     type="button"
                     className={`Kin-action-button ${
-                      disabled ? 'disabled' : 'enabled'
+                      disabled || disabledAction ? 'disabled' : 'enabled'
                     }`}
                     onClick={onClick}
                   >
@@ -165,6 +165,7 @@ export function KinAction({
         {displayValue ? (
           <p className="Kin-action-display">{displayValue}</p>
         ) : null}
+
         {displayOutput ? (
           <pre className="Kin-action-display">
             {JSON.stringify(displayOutput, null, 2)}

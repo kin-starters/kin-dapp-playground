@@ -51,19 +51,19 @@ export async function getServerStatus({
 interface HandleSetupKinClient {
   onSuccess: () => void;
   onFailure: () => void;
-  kinEnvironment: string;
+  kinNetwork: string;
 }
 export async function handleSetUpKinClient({
   onSuccess,
   onFailure,
-  kinEnvironment,
+  kinNetwork,
 }: HandleSetupKinClient) {
-  console.log('🚀 ~ handleSetUpKinClient', kinEnvironment);
+  console.log('🚀 ~ handleSetUpKinClient', kinNetwork);
   try {
     const baseUrl = process.env.REACT_APP_SERVER_URL;
     if (!baseUrl) throw new Error('No URL');
 
-    const url = `${baseUrl}/setup?env=${kinEnvironment}`;
+    const url = `${baseUrl}/setup?env=${kinNetwork}`;
     const response: Response = await axios.post(url);
 
     if (response.status === 201) {
