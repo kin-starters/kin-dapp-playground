@@ -9,7 +9,7 @@ import {
   handleCreateTokenAccount,
   handleCloseEmptyTokenAccount,
   handleGetKinBalances,
-} from './kinSDKLessHelpers';
+} from './kinSDKlessHelpers';
 import { MakeToast, getTransactions, openExplorer } from './helpers';
 
 import { KinAction } from './KinAction';
@@ -19,24 +19,22 @@ import { kinLinks } from './constants';
 
 import './Kin.scss';
 
-interface KinSDKLessAppProps {
+interface KinSDKlessAppProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
   solanaNetwork: string;
 }
-function KinSDKLessApp({
+function KinSDKlessApp({
   makeToast,
   setLoading,
   solanaNetwork,
-}: KinSDKLessAppProps) {
+}: KinSDKlessAppProps) {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
-  // Transfer Kin
-  const [payToUser, setPayToUser] = useState(
-    'EbYNd2MjmhdVLoffL1SiTYFJuxorAbs7urN2pYCbfpg1'
-  );
-  const [amount, setAmount] = useState('100');
+  // Transfer Kin EbYNd2MjmhdVLoffL1SiTYFJuxorAbs7urN2pYCbfpg1
+  const [payToUser, setPayToUser] = useState('');
+  const [amount, setAmount] = useState('');
   const [type, setType] = useState('Spend');
   const [memo, setMemo] = useState('');
 
@@ -104,8 +102,8 @@ function KinSDKLessApp({
       <KinAction
         title="Transfer Kin - Build and send transactions directly on Solana"
         subTitle="You'll need some SOL in your account to cover transaction fees"
-        linksTitle={kinLinks.clientCodeSamples.title}
-        links={kinLinks.SDKLessCodeSamples.methods.submitPayment}
+        linksTitle={kinLinks.SDKlessCodeSamples.title}
+        links={kinLinks.SDKlessCodeSamples.methods.submitPayment}
         actions={[
           {
             name: 'Transfer',
@@ -167,8 +165,8 @@ function KinSDKLessApp({
       <KinAction
         title="Subsidise Creating a Kin Token Account for a Solana Wallet"
         subTitle="You can't send Kin to a Solana wallet without a Kin Token Account"
-        linksTitle={kinLinks.serverCodeSamples.title}
-        links={kinLinks.serverCodeSamples.methods.createAccount}
+        linksTitle={kinLinks.SDKlessCodeSamples.title}
+        links={kinLinks.SDKlessCodeSamples.methods.createAccount}
         actions={[
           {
             name: 'Create',
@@ -231,13 +229,59 @@ function KinSDKLessApp({
       <hr />
       <h4 className="Kin-section">{`Additional Kin Related Actions`}</h4>
       <KinAction
+        title="View Balance"
+        subTitle="See how much Kin is in the Token Accounts for a Solana Wallet"
+        linksTitle={kinLinks.SDKlessCodeSamples.title}
+        links={kinLinks.SDKlessCodeSamples.methods.getBalance}
+        disabled={!balanceAddress}
+        actions={[
+          {
+            name: 'Get Balance',
+            onClick: () => {
+              setLoading(true);
+              setBalances(null);
+              handleGetKinBalances({
+                connection,
+                address: balanceAddress,
+                solanaNetwork,
+
+                onSuccess: (data: Balance[]) => {
+                  setBalances(data);
+                  setLoading(false);
+                },
+                onFailure: () => {
+                  setLoading(false);
+                  makeToast({
+                    text: "Couldn't get balances...",
+                    happy: false,
+                  });
+                },
+              });
+            },
+          },
+          {
+            name: 'View in Explorer',
+            onClick: () => {
+              openExplorer({ address: balanceAddress, solanaNetwork });
+            },
+          },
+        ]}
+        inputs={[
+          {
+            name: 'Solana Wallet Address',
+            value: balanceAddress,
+            onChange: setBalanceAddress,
+          },
+        ]}
+        displayOutput={balances && { balances }}
+      />
+      <KinAction
         title="Close your Empty Kin Token Account"
         subTitle="Reclaim rent for your own account when it has a zero balance"
-        linksTitle={kinLinks.serverCodeSamples.title}
-        links={kinLinks.serverCodeSamples.methods.createAccount}
         actions={[
           {
             name: 'Close Account',
+            disabledAction: !publicKey,
             onClick: () => {
               if (publicKey) {
                 setLoading(true);
@@ -283,51 +327,6 @@ function KinSDKLessApp({
         ]}
       />
       <KinAction
-        title="View Balance"
-        subTitle="See how much Kin is in the Token Accounts for a Solana Wallet"
-        disabled={!balanceAddress}
-        actions={[
-          {
-            name: 'Get Balance',
-            onClick: () => {
-              setLoading(true);
-              setBalances(null);
-              handleGetKinBalances({
-                connection,
-                address: balanceAddress,
-                solanaNetwork,
-
-                onSuccess: (data: Balance[]) => {
-                  setBalances(data);
-                  setLoading(false);
-                },
-                onFailure: () => {
-                  setLoading(false);
-                  makeToast({
-                    text: "Couldn't get balances...",
-                    happy: false,
-                  });
-                },
-              });
-            },
-          },
-          {
-            name: 'View in Explorer',
-            onClick: () => {
-              openExplorer({ address: balanceAddress, solanaNetwork });
-            },
-          },
-        ]}
-        inputs={[
-          {
-            name: 'Solana Wallet Address',
-            value: balanceAddress,
-            onChange: setBalanceAddress,
-          },
-        ]}
-        displayOutput={balances && { balances }}
-      />
-      <KinAction
         title="View Transaction Details"
         subTitle="See the details of your transactions on the Solana Explorer"
         disabled={!transactions.length && !inputTransaction}
@@ -365,18 +364,18 @@ function KinSDKLessApp({
   );
 }
 
-interface KinSDKLessAppWithWalletProps {
+interface KinSDKlessAppWithWalletProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
   solanaNetwork: string;
   setSolanaNetwork: (network: string) => void;
 }
-export function KinSDKLessAppWithWallet({
+export function KinSDKlessAppWithWallet({
   makeToast,
   setLoading,
   solanaNetwork,
   setSolanaNetwork,
-}: KinSDKLessAppWithWalletProps) {
+}: KinSDKlessAppWithWalletProps) {
   return (
     <div className="Kin">
       <h4 className="Kin-section">
@@ -393,7 +392,11 @@ export function KinSDKLessAppWithWallet({
           {
             name: 'Network',
             value: solanaNetwork,
-            options: ['Mainnet', 'Testnet', 'Devnet'],
+            options: [
+              'Mainnet',
+              // 'Testnet',
+              'Devnet',
+            ],
             onChange: setSolanaNetwork,
           },
         ]}
@@ -403,7 +406,7 @@ export function KinSDKLessAppWithWallet({
         <Links links={kinLinks.walletAdapter} darkMode />
       </p>
       <Wallet solanaNetwork={solanaNetwork}>
-        <KinSDKLessApp
+        <KinSDKlessApp
           makeToast={makeToast}
           setLoading={setLoading}
           solanaNetwork={solanaNetwork}

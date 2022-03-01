@@ -117,7 +117,7 @@
 
   .Kin-action-display {
     margin: 20px 0 0;
-    font-size: calc(6px + 1vmin);
+    font-size: 14px;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
@@ -133,7 +133,7 @@
   input,
   select,
   option {
-    font-size: calc(6px + 1vmin);
+    font-size: 14px;
   }
 
   // @solana/wallet-adapter overrides

@@ -11,7 +11,7 @@ import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
 import { KinServerApp } from './KinServer';
 import { KinClientApp } from './KinClient';
-import { KinSDKLessAppWithWallet } from './KinSDKLess';
+import { KinSDKlessAppWithWallet } from './KinSDKless';
 
 import { Links } from './Links';
 
@@ -33,8 +33,8 @@ const makeToast = ({ text, happy }: MakeToast) => {
 function App() {
   const [loading, setLoading] = useState(false);
 
-  const appTypes = ['Backend Server', 'Client App', 'SDKLess App'];
-  const [selectedAppType, setSelectedAppType] = useState(appTypes[2]);
+  const appTypes = ['Backend Server', 'Client DApp', 'SDK-less DApp'];
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
   const [kinClientNetwork, setKinClientNetwork] = useState('Test');
@@ -59,7 +59,7 @@ function App() {
           <div className="App-logo-container">
             <img src={logo} className="App-logo" alt="logo" />
           </div>
-          <span>SDK Demo</span>
+          <span>DApp Demo</span>
           <span>
             <Links links={kinLinks.docs} />
           </span>
@@ -94,7 +94,7 @@ function App() {
             }
             if (selectedAppType === appTypes[2]) {
               return (
-                <KinSDKLessAppWithWallet
+                <KinSDKlessAppWithWallet
                   makeToast={makeToast}
                   setLoading={setLoading}
                   solanaNetwork={solanaNetwork}

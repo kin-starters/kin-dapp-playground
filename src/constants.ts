@@ -126,7 +126,7 @@ const kinLinks = {
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L79-L100',
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L21-L41',
         },
       ],
       createAccount: [
@@ -134,69 +134,55 @@ const kinLinks = {
           name: 'Web SDK',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L116-L158',
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L57-L99',
         },
       ],
       getBalance: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L167-L209',
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L108-L150',
         },
       ],
       requestAirdrop: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L220-L241',
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L161-L182',
         },
       ],
       submitPayment: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L286-L335',
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L227-L276',
         },
       ],
     },
   },
-  SDKLessCodeSamples: {
+  SDKlessCodeSamples: {
     title: 'Sample Code: ',
     methods: {
-      // setUpKinClient: [
-      //   {
-      //     name: 'Web SDK',
-      //     link:
-      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L79-L100',
-      //   },
-      // ],
-      // createAccount: [
-      //   {
-      //     name: 'Web SDK',
-      //     sdk: 'https://github.com/kinecosystem/kin-node',
-      //     link:
-      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L116-L158',
-      //   },
-      // ],
-      // getBalance: [
-      //   {
-      //     name: 'Web SDK',
-      //     link:
-      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L167-L209',
-      //   },
-      // ],
-      // requestAirdrop: [
-      //   {
-      //     name: 'Web SDK',
-      //     link:
-      //       'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinClientHelpers.ts#L220-L241',
-      //   },
-      // ],
+      createAccount: [
+        {
+          name: 'Solana Web Packages',
+          link:
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinSDKlessHelpers.ts#L249-L355',
+        },
+      ],
+      getBalance: [
+        {
+          name: 'Solana Web Packages',
+          link:
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinSDKlessHelpers.ts#L192-L234',
+        },
+      ],
+
       submitPayment: [
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-demo-web-sdk-and-server-fe/blob/master/src/kinSDKLessHelpers.ts#L135-L245',
+            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinSDKlessHelpers.ts#L477-L558',
         },
       ],
     },

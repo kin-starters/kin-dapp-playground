@@ -52,10 +52,9 @@ interface WalletProps {
 }
 export const Wallet: FC<WalletProps> = ({ children, solanaNetwork }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  // const network = WalletAdapterNetwork.Devnet;
   let network = WalletAdapterNetwork.Mainnet;
   if (solanaNetwork === 'Devnet') network = WalletAdapterNetwork.Devnet;
-  if (solanaNetwork === 'Testnet') network = WalletAdapterNetwork.Testnet;
+  // if (solanaNetwork === 'Testnet') network = WalletAdapterNetwork.Testnet;
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
@@ -110,8 +109,9 @@ function generateMemoInstruction({
   solanaNetwork,
   memoVersion = 1,
 }: GenerateMemoInstruction): TransactionInstruction {
+  console.log('🚀 ~ generateMemoInstruction', memoContent, memoVersion);
   let memoProgramId;
-  if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
+  if (solanaNetwork === 'Mainnet') {
     memoProgramId =
       memoVersion === 1
         ? solanaAddresses[solanaNetwork].memoV1ProgramId
@@ -119,7 +119,6 @@ function generateMemoInstruction({
   } else {
     throw new Error('Missing Addresses for Kin on that Solana Network');
   }
-  console.log('🚀 ~ memoProgramId', memoProgramId);
 
   return new TransactionInstruction({
     keys: [],
@@ -366,7 +365,6 @@ interface HandleCloseEmptyTokenAccount {
   onFailure: (arg: any) => void;
 }
 
-// TODO create token account if not found
 // https://solanacookbook.com/references/token.html#associated-token-account-ata
 export async function handleCloseEmptyTokenAccount({
   connection,
@@ -376,6 +374,7 @@ export async function handleCloseEmptyTokenAccount({
   onSuccess,
   onFailure,
 }: HandleCloseEmptyTokenAccount) {
+  console.log('🚀 ~ handleCloseEmptyTokenAccount', to);
   try {
     if (solanaNetwork === 'Mainnet' || solanaNetwork === 'Devnet') {
       const mintPublicKey = new PublicKey(
