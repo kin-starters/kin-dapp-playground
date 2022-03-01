@@ -126,7 +126,7 @@ const kinLinks = {
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L21-L41',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L21-L41',
         },
       ],
       createAccount: [
@@ -134,28 +134,28 @@ const kinLinks = {
           name: 'Web SDK',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L57-L99',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L57-L99',
         },
       ],
       getBalance: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L108-L150',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L108-L150',
         },
       ],
       requestAirdrop: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L161-L182',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L161-L182',
         },
       ],
       submitPayment: [
         {
           name: 'Web SDK',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinClientHelpers.ts#L227-L276',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L227-L276',
         },
       ],
     },
@@ -167,14 +167,14 @@ const kinLinks = {
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinSDKlessHelpers.ts#L249-L355',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.ts#L249-L355',
         },
       ],
       getBalance: [
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinSDKlessHelpers.ts#L192-L234',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.ts#L192-L234',
         },
       ],
 
@@ -182,7 +182,7 @@ const kinLinks = {
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-demo-dapp/blob/master/src/kinSDKlessHelpers.ts#L477-L558',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.ts#L477-L558',
         },
       ],
     },
