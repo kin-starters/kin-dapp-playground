@@ -167,14 +167,14 @@ const kinLinks = {
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.ts#L249-L355',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.tsx#L248-L355',
         },
       ],
       getBalance: [
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.ts#L192-L234',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.tsx#L191-L234',
         },
       ],
 
@@ -182,7 +182,7 @@ const kinLinks = {
         {
           name: 'Solana Web Packages',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.ts#L477-L558',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.tsx#L476-L558',
         },
       ],
     },
