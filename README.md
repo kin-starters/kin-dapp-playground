@@ -1,4 +1,4 @@
-# Kin DApp Demo - Front End
+# Kin DApp Demo
 
 ## This app demonstrates three ways of integrating with [Kin](https://developer.kin.org/)
 
