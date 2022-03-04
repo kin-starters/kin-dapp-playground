@@ -374,6 +374,9 @@ export function KinSDKlessAppWithWallet({
   solanaNetwork,
   setSolanaNetwork,
 }: KinSDKlessAppWithWalletProps) {
+  const [selectedSolanaNetwork, setSelectedSolanaNetwork] = useState(
+    solanaNetwork
+  );
   return (
     <div className="Kin">
       <h4 className="Kin-section">
@@ -396,16 +399,24 @@ export function KinSDKlessAppWithWallet({
         title="Set your Solana Network then Connect to a Wallet"
         subTitle="Make sure your wallet is connected to the same network  | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
+        actions={[
+          {
+            name: 'Set Network',
+            onClick: () => {
+              setSolanaNetwork(selectedSolanaNetwork);
+            },
+          },
+        ]}
         inputs={[
           {
             name: 'Network',
-            value: solanaNetwork,
+            value: selectedSolanaNetwork,
             options: [
               'Mainnet',
               // 'Testnet',
               'Devnet',
             ],
-            onChange: setSolanaNetwork,
+            onChange: setSelectedSolanaNetwork,
           },
         ]}
       />

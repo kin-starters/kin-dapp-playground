@@ -10,8 +10,8 @@ import { MakeToast } from './helpers';
 import logo from './kin-white.svg';
 import { Toggle } from './Toggle';
 import { KinServerApp } from './KinServer';
-import { KinClientApp } from './KinClient';
-import { KinSDKlessAppWithWallet } from './KinSDKless';
+import { KinClientApp } from './KinWebSDKClient';
+import { KinSDKlessAppWithWallet } from './KinSDKlessClient';
 
 import { Links } from './Links';
 
