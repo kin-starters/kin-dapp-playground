@@ -123,9 +123,13 @@ export function KinAction({
       trigger={
         <div className="Kin-action-trigger">
           <div className="Kin-action-title">{title}</div>
-          {subTitle ? (
-            <div className="Kin-action-subTitle">{subTitle}</div>
-          ) : null}
+          {subTitle
+            ? subTitle.split('|').map((sub) => (
+                <div key={sub} className="Kin-action-subTitle">
+                  {sub}
+                </div>
+              ))
+            : null}
           {subTitleLinks ? (
             <div className="Kin-action-subTitle">
               <Links links={subTitleLinks} darkMode />

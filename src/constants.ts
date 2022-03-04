@@ -39,8 +39,34 @@ const kinLinks = {
       link: 'https://discord.com/invite/kdRyUNmHDn',
     },
   ],
-  sdkRepos: [
-    { name: 'Node SDK', link: 'https://github.com/kinecosystem/kin-node' },
+  serverSDKRepos: [
+    { name: 'Node', link: 'https://github.com/kinecosystem/kin-node' },
+    { name: 'Python', link: 'https://github.com/kinecosystem/kin-python' },
+    { name: 'Go', link: 'https://github.com/kinecosystem/kin-go' },
+  ],
+  serverSDKTutorials: [
+    { name: 'Node', link: 'https://developer.kin.org/tutorials/node/' },
+    { name: 'Python', link: 'https://developer.kin.org/tutorials/python/' },
+    { name: 'Go', link: 'https://developer.kin.org/tutorials/go/' },
+  ],
+  webSDK: [
+    { name: 'Web SDK Repo', link: 'https://github.com/kin-sdk/kin-sdk-web' },
+    {
+      name: 'Web SDK Tutorial',
+      link: 'https://developer.kin.org/tutorials/web/',
+    },
+  ],
+  SDKless: [
+    {
+      name: 'Blog - Introducing Kin SDK-Less Transactions',
+      link: 'https://kin.org/introducing-kin-sdk-less-transactions/',
+    },
+  ],
+  agora: [
+    {
+      name: 'Agora',
+      link: 'https://developer.kin.org/docs/architecture-overview/',
+    },
   ],
   KRE: [
     {
@@ -57,6 +83,11 @@ const kinLinks = {
       name: '@solana/wallet-adapter',
       link: 'https://github.com/solana-labs/wallet-adapter',
     },
+    {
+      name: 'Implementation in this project',
+      link:
+        'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/SolanaWallets.tsx',
+    },
   ],
   devPortal: [
     { name: 'Kin Developer Portal', link: 'https://portal.kin.org/' },
@@ -65,25 +96,31 @@ const kinLinks = {
       link: 'https://developer.kin.org/tutorials/#why-register-your-app',
     },
   ],
-  serverRepos: [
+  solanaRent: [
+    {
+      name: 'What is Rent?',
+      link: 'https://docs.solana.com/implemented-proposals/rent',
+    },
+  ],
+  demoServers: [
     {
       name: 'Node',
       link: 'https://github.com/kin-labs/kin-demo-node-sdk',
     },
   ],
   serverCodeSamples: {
-    title: 'Sample SDK Code: ',
+    title: 'See the Code: ',
     methods: {
       setUpKinClient: [
         {
-          name: 'Node',
+          name: 'Node Demo',
           link:
             'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L108-L141',
         },
       ],
       createAccount: [
         {
-          name: 'Node',
+          name: 'Node Demo',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
             'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L148-L173',
@@ -91,28 +128,28 @@ const kinLinks = {
       ],
       getBalance: [
         {
-          name: 'Node',
+          name: 'Node Demo',
           link:
             'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L180-L208',
         },
       ],
       requestAirdrop: [
         {
-          name: 'Node',
+          name: 'Node Demo',
           link:
             'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L215-L257',
         },
       ],
       getTransaction: [
         {
-          name: 'Node',
+          name: 'Node Demo',
           link:
             'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L264-L302',
         },
       ],
       submitPayment: [
         {
-          name: 'Node',
+          name: 'Node Demo',
           link:
             'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L324-L367',
         },
@@ -120,69 +157,73 @@ const kinLinks = {
     },
   },
   clientCodeSamples: {
-    title: 'Sample Code: ',
     methods: {
       setUpKinClient: [
         {
-          name: 'Web SDK',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L21-L41',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/webSDK/handleSetUpKinClient.ts',
         },
       ],
       createAccount: [
         {
-          name: 'Web SDK',
+          name: 'See the Code',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L57-L99',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/webSDK/handleCreateAccount.ts',
         },
       ],
       getBalance: [
         {
-          name: 'Web SDK',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L108-L150',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/webSDK/handleGetBalance.ts',
         },
       ],
       requestAirdrop: [
         {
-          name: 'Web SDK',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L161-L182',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/webSDK/handleRequestAirdrop.ts',
         },
       ],
       submitPayment: [
         {
-          name: 'Web SDK',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinClientHelpers.ts#L227-L276',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/webSDK/handleSendKin.ts',
         },
       ],
     },
   },
   SDKlessCodeSamples: {
-    title: 'Sample Code: ',
     methods: {
       createAccount: [
         {
-          name: 'Solana Web Packages',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.tsx#L248-L355',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/SDKless/handleCreateTokenAccount.ts',
         },
       ],
       getBalance: [
         {
-          name: 'Solana Web Packages',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.tsx#L191-L234',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/SDKless/handleGetKinBalances.ts',
         },
       ],
-
       submitPayment: [
         {
-          name: 'Solana Web Packages',
+          name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/kinSDKlessHelpers.tsx#L476-L558',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/SDKless/handleSendKin.ts',
+        },
+      ],
+      closeEmptyTokenAccount: [
+        {
+          name: 'See the Code',
+          link:
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/SDKless/handleCloseEmptyTokenAccounts.ts',
         },
       ],
     },

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import Wallet from './SolanaWallets';
 
-import {
-  Wallet,
-  Balance,
-  handleSendKin,
-  HandleSendKin,
-  handleCreateTokenAccount,
-  handleCloseEmptyTokenAccount,
-  handleGetKinBalances,
-} from './kinSDKlessHelpers';
 import { MakeToast, getTransactions, openExplorer } from './helpers';
+import { handleSendKin, HandleSendKin } from './helpers/SDKless/handleSendKin';
+import { handleCreateTokenAccount } from './helpers/SDKless/handleCreateTokenAccount';
+import { handleCloseEmptyTokenAccount } from './helpers/SDKless/handleCloseEmptyTokenAccount';
+import {
+  handleGetKinBalances,
+  Balance,
+} from './helpers/SDKless/handleGetKinBalances';
 
 import { KinAction } from './KinAction';
 import { Links } from './Links';
@@ -95,14 +94,13 @@ function KinSDKlessApp({
       </div>
       <br />
       <hr />
-      <h4 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h4>
-      <p className="KRELinks">
-        <Links links={kinLinks.KRE} darkMode />
-      </p>{' '}
+      <h3 className="Kin-section">
+        {`Make payments and earn Kin via the KRE`}
+      </h3>
+
       <KinAction
         title="Transfer Kin - Build and send transactions directly on Solana"
         subTitle="You'll need some SOL in your account to cover transaction fees"
-        linksTitle={kinLinks.SDKlessCodeSamples.title}
         links={kinLinks.SDKlessCodeSamples.methods.submitPayment}
         actions={[
           {
@@ -165,7 +163,6 @@ function KinSDKlessApp({
       <KinAction
         title="Subsidise Creating a Kin Token Account for a Solana Wallet"
         subTitle="You can't send Kin to a Solana wallet without a Kin Token Account"
-        linksTitle={kinLinks.SDKlessCodeSamples.title}
         links={kinLinks.SDKlessCodeSamples.methods.createAccount}
         actions={[
           {
@@ -227,11 +224,10 @@ function KinSDKlessApp({
       />
       <br />
       <hr />
-      <h4 className="Kin-section">{`Additional Kin Related Actions`}</h4>
+      <h3 className="Kin-section">{`Additional Kin Related Actions`}</h3>
       <KinAction
         title="View Balance"
         subTitle="See how much Kin is in the Token Accounts for a Solana Wallet"
-        linksTitle={kinLinks.SDKlessCodeSamples.title}
         links={kinLinks.SDKlessCodeSamples.methods.getBalance}
         disabled={!balanceAddress}
         actions={[
@@ -278,6 +274,8 @@ function KinSDKlessApp({
       <KinAction
         title="Close your Empty Kin Token Account"
         subTitle="Reclaim rent for your own account when it has a zero balance"
+        subTitleLinks={kinLinks.solanaRent}
+        links={kinLinks.SDKlessCodeSamples.methods.closeEmptyTokenAccount}
         actions={[
           {
             name: 'Close Account',
@@ -382,12 +380,22 @@ export function KinSDKlessAppWithWallet({
         {`Create and send transactions directly on Solana`}
         <br />
         {`Use a Solana Wallet to sign your transactions (e.g. Phantom, Solflare, etc)`}
+        <br />
+        <br />
+        {`SDK-less bypasses `}
+        <Links links={kinLinks.agora} />
+        {` so you'll have to subsidise your transactions with SOL but you can still take advantage of the Kin Rewards Engine`}
+        <br />
+        <br />
+        <Links links={kinLinks.SDKless} />
+        <br />
+        <Links links={kinLinks.KRE} />
       </h4>
-      <h4 className="Kin-section"></h4>
       <KinAction
         open
-        title="Set your Solana Network"
-        subTitle="Make sure your wallet is connected to the same network"
+        title="Set your Solana Network then Connect to a Wallet"
+        subTitle="Make sure your wallet is connected to the same network  | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
+        subTitleLinks={kinLinks.devPortal}
         inputs={[
           {
             name: 'Network',
@@ -401,6 +409,7 @@ export function KinSDKlessAppWithWallet({
           },
         ]}
       />
+
       <h4 className="Kin-section">{`Connect to Solana Wallet`}</h4>
       <p className="KRELinks">
         <Links links={kinLinks.walletAdapter} darkMode />

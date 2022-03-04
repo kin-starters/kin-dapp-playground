@@ -3,6 +3,9 @@
 .Links {
   .link {
     color: $white;
+    cursor: pointer;
+    text-decoration: underline;
+    color: inherit;
 
     &:visited {
       color: $white;

@@ -14,14 +14,12 @@ import {
   getTransactions,
   getPublicKey,
 } from './helpers';
-import {
-  handleSetUpKinClient,
-  handleCreateAccount,
-  handleGetBalance,
-  handleRequestAirdrop,
-  handleSendKin,
-  HandleSendKin,
-} from './kinClientHelpers';
+
+import { handleSetUpKinClient } from './helpers/webSDK/handleSetUpKinClient';
+import { handleCreateAccount } from './helpers/webSDK/handleCreateAccount';
+import { handleGetBalance } from './helpers/webSDK/handleGetBalance';
+import { handleRequestAirdrop } from './helpers/webSDK/handleRequestAirdrop';
+import { handleSendKin, HandleSendKin } from './helpers/webSDK/handleSendKin';
 
 import './Kin.scss';
 
@@ -78,6 +76,20 @@ export function KinClientApp({
 
   return (
     <div className="Kin">
+      <h4 className="Kin-section">
+        {`Create and send transactions via the Kin Web SDK`}
+        <br />
+        <br />
+        <Links links={kinLinks.webSDK} />
+        <br />
+        <br />
+        {`Transactions made via Kin SDKs use `}
+        <Links links={kinLinks.agora} />
+        {` so you can easily take advantage of the Kin Rewards Engine, get subisided transactions, etc`}
+        <br />
+        <br />
+        <Links links={kinLinks.KRE} />
+      </h4>
       <div className={`Kin-status ${kinClient ? 'hasAppIndex' : 'noAppIndex'}`}>
         {kinClient ? (
           <span>
@@ -97,9 +109,8 @@ export function KinClientApp({
       <KinAction
         open
         title="Initialise Your Kin Client with your App Index"
-        subTitle="Make sure you've added your environment variable for your App Index"
+        subTitle="Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
-        linksTitle={kinLinks.clientCodeSamples.title}
         links={kinLinks.clientCodeSamples.methods.setUpKinClient}
         disabled={!process.env.REACT_APP_APP_INDEX}
         actions={[
@@ -141,10 +152,9 @@ export function KinClientApp({
         <>
           <br />
           <hr />
-          <h4 className="Kin-section">{`Manage Kin Accounts`}</h4>
+          <h3 className="Kin-section">{`Manage Kin Accounts`}</h3>
           <KinAction
             title="Create a Kin Account for a User"
-            linksTitle={kinLinks.clientCodeSamples.title}
             links={kinLinks.clientCodeSamples.methods.createAccount}
             actions={[
               {
@@ -193,7 +203,6 @@ export function KinClientApp({
           />{' '}
           <KinAction
             title="Get an Account Balance"
-            linksTitle={kinLinks.clientCodeSamples.title}
             links={kinLinks.clientCodeSamples.methods.getBalance}
             disabled={!userAccounts.length}
             actions={[
@@ -259,10 +268,7 @@ export function KinClientApp({
           />
           <br />
           <hr />
-          <h4 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h4>
-          <p className="KRELinks">
-            <Links links={kinLinks.KRE} darkMode />
-          </p>
+          <h3 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h3>
           {(() => {
             if (!userAccounts || userAccounts.length < 2) {
               return <h4>Why not add some users?</h4>;
@@ -274,7 +280,6 @@ export function KinClientApp({
             <KinAction
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
-              linksTitle={kinLinks.clientCodeSamples.title}
               links={kinLinks.clientCodeSamples.methods.requestAirdrop}
               disabled={!userAccounts.length}
               actions={[
@@ -323,7 +328,6 @@ export function KinClientApp({
           ) : null}
           <KinAction
             title="Send Kin from User to User -  P2P Transaction"
-            linksTitle={kinLinks.clientCodeSamples.title}
             links={kinLinks.clientCodeSamples.methods.submitPayment}
             subTitle="If you've added a Transactions Webhook URL on the Kin Developer Portal, make sure your server is running so that it can validate this transaction."
             actions={[
@@ -396,7 +400,7 @@ export function KinClientApp({
           />
           <br />
           <hr />
-          <h4 className="Kin-section">{`Additional actions not using Kin SDK`}</h4>
+          <h3 className="Kin-section">{`Additional actions not using Kin SDK`}</h3>
           <KinAction
             title="View Transaction"
             subTitle="See the details of your transactions on the Solana Explorer"

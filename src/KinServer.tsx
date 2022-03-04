@@ -17,7 +17,7 @@ import {
   Transaction,
   User,
   HandleSendKin,
-} from './kinServerHelpers';
+} from './helpers/serverSDK';
 
 import './Kin.scss';
 
@@ -87,6 +87,31 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
   return (
     <div className="Kin">
+      <h4 className="Kin-section">
+        {`Create and send transactions via a Kin Server SDK`}
+        <br />
+        <br />
+        <span>
+          <Links links={kinLinks.serverSDKRepos} linksTitle="Server SDKs: " />
+          <br />
+          <Links
+            links={kinLinks.serverSDKTutorials}
+            linksTitle="Server SDK Tutorials: "
+          />
+          <br />
+          <Links links={kinLinks.demoServers} linksTitle="Demo Servers: " />
+          <br />
+          {`Coming soon: Python, Go`}
+        </span>
+        <br />
+        <br />
+        {`Transactions made via Kin SDKs use `}
+        <Links links={kinLinks.agora} />
+        {` so you can easily take advantage of the Kin Rewards Engine, get subisided transactions, etc`}
+        <br />
+        <br />
+        <Links links={kinLinks.KRE} />
+      </h4>
       <div
         className={`Kin-status ${
           serverRunning && serverAppIndex ? 'up' : 'down'
@@ -112,17 +137,19 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
         ) : (
           <span>
             {!serverRunning
-              ? `Server not running`
+              ? `Can't connect to server`
               : `Server running but Kin Client not initialised`}
             <br />
 
             {!serverRunning ? (
-              <Links
-                links={kinLinks.serverRepos}
-                linksTitle="Example Servers: "
-              />
+              <span>
+                <br />
+                {`Make sure you're running your server on the port you set in your .env file`}
+                <br />
+                {`Checkout the README for details`}
+              </span>
             ) : (
-              `Click Setup Below`
+              ''
             )}
           </span>
         )}
@@ -179,7 +206,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
         <>
           <br />
           <hr />
-          <h4 className="Kin-section">{`Manage Kin Accounts`}</h4>
+          <h3 className="Kin-section">{`Manage Kin Accounts`}</h3>
 
           <KinAction
             title="Create a Kin Account for a User"
@@ -231,7 +258,6 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
           <KinAction
             title="Get an Account Balance"
-            subTitle="Explorer links to the App require your Public"
             linksTitle={kinLinks.serverCodeSamples.title}
             links={kinLinks.serverCodeSamples.methods.getBalance}
             actions={[
@@ -293,10 +319,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <br />
           <hr />
 
-          <h4 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h4>
-          <p className="KRELinks">
-            <Links links={kinLinks.KRE} darkMode />
-          </p>
+          <h3 className="Kin-section">{`Make payments and earn Kin via the KRE`}</h3>
 
           {(() => {
             if (!userAccountNames.length) {

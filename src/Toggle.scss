@@ -16,11 +16,12 @@
   }
 
   .Toggle-option {
-    flex-grow: 1;
     box-sizing: border-box;
     transition: all 0.4s;
     padding: 20px;
     cursor: pointer;
+    text-align: center;
+    width: 100%;
 
     &:not(:last-of-type) {
       border-right: 1px solid $kin_dark;

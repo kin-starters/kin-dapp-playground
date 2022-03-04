@@ -17,15 +17,16 @@ export function Links({ links, linksTitle, darkMode }: LinkProps) {
         {links.map(({ name, link }, index) => (
           <span key={name}>
             {index > 0 ? ' | ' : ''}
-            <a
+            <span
               key={name}
               className={`link ${darkMode ? 'darkMode' : ''}`}
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => {
+                const newTab = window.open(link, '_blank');
+                if (newTab) newTab.focus();
+              }}
             >
               {name}
-            </a>
+            </span>
           </span>
         ))}
       </span>

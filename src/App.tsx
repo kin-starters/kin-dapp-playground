@@ -33,7 +33,11 @@ const makeToast = ({ text, happy }: MakeToast) => {
 function App() {
   const [loading, setLoading] = useState(false);
 
-  const appTypes = ['Backend Server', 'Client DApp', 'SDK-less DApp'];
+  const appTypes = [
+    'Backend Server - Kin SDK',
+    'DApp - Kin Web SDK',
+    'DApp - SDK-less',
+  ];
   const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
