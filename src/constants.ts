@@ -223,7 +223,7 @@ const kinLinks = {
         {
           name: 'See the Code',
           link:
-            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/SDKless/handleCloseEmptyTokenAccounts.ts',
+            'https://github.com/kin-labs/kin-dapp-demo/blob/master/src/helpers/SDKless/handleCloseEmptyTokenAccount.ts',
         },
       ],
     },
