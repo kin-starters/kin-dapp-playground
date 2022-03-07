@@ -281,7 +281,7 @@ export function KinClientApp({
               title="Request Airdrop (Test Network Only)"
               subTitle="Get some kin so you can start testing your transaction code"
               links={kinLinks.clientCodeSamples.methods.requestAirdrop}
-              disabled={!userAccounts.length}
+              disabled={!userAccounts.length || !airdropAmount}
               actions={[
                 {
                   name: 'Request',

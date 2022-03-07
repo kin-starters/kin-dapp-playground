@@ -335,6 +335,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
               subTitle="Get some kin so you can start testing your transaction code"
               linksTitle={kinLinks.serverCodeSamples.title}
               links={kinLinks.serverCodeSamples.methods.requestAirdrop}
+              disabled={!airdropAmount}
               actions={[
                 {
                   name: 'Request',
