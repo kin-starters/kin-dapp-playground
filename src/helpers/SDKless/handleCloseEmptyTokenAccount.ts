@@ -1,4 +1,7 @@
-import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  createCloseAccountInstruction,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 import { PublicKey, Transaction, Connection } from '@solana/web3.js';
 
 import { solanaAddresses } from '../../constants';
@@ -73,12 +76,12 @@ export async function handleCloseEmptyTokenAccount({
         zeroBalanceTokenAccounts.map(async (tokenAccountPublicKey) => {
           if (tokenAccountPublicKey) {
             const transaction = new Transaction().add(
-              Token.createCloseAccountInstruction(
-                TOKEN_PROGRAM_ID,
+              createCloseAccountInstruction(
                 tokenAccountPublicKey,
                 toPublicKey,
                 toPublicKey,
-                []
+                [],
+                TOKEN_PROGRAM_ID
               )
             );
             console.log('🚀 ~ transaction', transaction);

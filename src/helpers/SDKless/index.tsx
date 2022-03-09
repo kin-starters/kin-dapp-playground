@@ -1,7 +1,7 @@
 import SecureLS from 'secure-ls';
 import BigNumber from 'bignumber.js';
 
-import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, createTransferInstruction } from '@solana/spl-token';
 import { PublicKey, Connection, TransactionInstruction } from '@solana/web3.js';
 
 import { solanaAddresses } from '../../constants';
@@ -85,13 +85,13 @@ export async function generateTransferInstruction({
     const quarks = kinToQuarks(amount);
 
     // Instruction
-    return Token.createTransferInstruction(
-      TOKEN_PROGRAM_ID,
+    return createTransferInstruction(
       fromTokenAccount,
       toTokenAccount,
       from,
+      Number(quarks),
       [],
-      Number(quarks)
+      TOKEN_PROGRAM_ID
     );
   } else {
     throw new Error('Solana network not supported');

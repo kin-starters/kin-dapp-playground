@@ -1,4 +1,4 @@
-# Kin DApp Demo
+# Kin DApp Playground
 
 ## This app demonstrates three ways of integrating with [Kin](https://developer.kin.org/)
 

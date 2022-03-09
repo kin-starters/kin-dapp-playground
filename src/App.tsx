@@ -63,7 +63,7 @@ function App() {
           <div className="App-logo-container">
             <img src={logo} className="App-logo" alt="logo" />
           </div>
-          <span>DApp Demo</span>
+          <span>DApp Playground</span>
           <span>
             <Links links={kinLinks.docs} />
           </span>

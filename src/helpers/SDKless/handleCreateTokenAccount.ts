@@ -1,5 +1,6 @@
 import {
-  Token,
+  getAssociatedTokenAddress,
+  createAssociatedTokenAccountInstruction,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
@@ -47,22 +48,23 @@ export async function handleCreateTokenAccount({
         solanaAddresses[solanaNetwork].kinMint
       );
       const toPublicKey = new PublicKey(to);
-      const tokenAccount = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
+      const tokenAccount = await getAssociatedTokenAddress(
         mintPublicKey,
-        toPublicKey
+        toPublicKey,
+        false,
+        TOKEN_PROGRAM_ID,
+        ASSOCIATED_TOKEN_PROGRAM_ID
       );
       console.log('🚀 ~ tokenAccount', tokenAccount);
 
       let transaction = new Transaction().add(
-        Token.createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
-          TOKEN_PROGRAM_ID,
-          mintPublicKey,
+        createAssociatedTokenAccountInstruction(
+          from,
           tokenAccount,
           toPublicKey,
-          from
+          mintPublicKey,
+          TOKEN_PROGRAM_ID,
+          ASSOCIATED_TOKEN_PROGRAM_ID
         )
       );
 
