@@ -1,9 +1,13 @@
 import { PublicKey, Transaction, Connection } from '@solana/web3.js';
 
-import { createKinMemo, TransactionType } from '@kin-tools/kin-memo';
-
 import { saveTransaction } from '..';
-import { generateMemoInstruction, generateTransferInstruction } from './';
+import {
+  generateKRETransactionInstructions,
+  generateMemoInstruction,
+  TransactionTypeName,
+  SolanaNetwork,
+  solanaAddresses,
+} from '../../@kin-tools/kin-transaction';
 
 export interface HandleSendKin {
   connection: Connection;
@@ -15,8 +19,8 @@ export interface HandleSendKin {
   to: string;
   amount: string;
   memo: string;
-  type: string;
-  solanaNetwork: string;
+  type: TransactionTypeName;
+  solanaNetwork: SolanaNetwork;
   onSuccess: () => void;
   onFailure: (arg: any) => void;
 }
@@ -35,54 +39,62 @@ export async function handleSendKin({
 }: HandleSendKin) {
   console.log('🚀 ~ handleSendKin', from, to, type, amount, solanaNetwork);
   try {
-    // App Index
+    // App Index **************************************************************
+    // Your appIndex so you can qualify for rewards via the KRE
     const appIndex = Number(process.env.REACT_APP_APP_INDEX);
+    console.log('🚀 ~ appIndex', appIndex);
     if (!appIndex) throw new Error('No App Index!');
 
-    console.log('🚀 ~ appIndex', appIndex);
+    const mint = new PublicKey(solanaAddresses[solanaNetwork].kinMint);
+    console.log('🚀 ~ mint', mint);
 
-    // Transaction Type
-    let transactionType = TransactionType.None;
-    if (type === 'Earn') transactionType = TransactionType.Earn;
-    if (type === 'Spend') transactionType = TransactionType.Spend;
-    if (type === 'P2P') transactionType = TransactionType.P2P;
-
-    // Create correctly formatted memo string, including your App Index
-    const appIndexMemo = createKinMemo({
-      appIndex,
-      type: transactionType,
-    });
-    console.log('🚀 ~ appIndexMemo', appIndexMemo);
-    // Create Memo Instruction for KRE Ingestion - Must be Memo Program v1, not v2
-    const appIndexMemoInstruction = generateMemoInstruction({
-      memoContent: appIndexMemo,
-      solanaNetwork,
-      memoVersion: 1,
-    });
-    console.log('🚀 ~ appIndexMemoInstruction', appIndexMemoInstruction);
-
-    // Create Transfer Instruction
-    const transferInstruction = await generateTransferInstruction({
-      connection,
+    // from tokenAccount ******************************************************
+    const fromTokenAccounts = await connection.getParsedTokenAccountsByOwner(
       from,
-      to,
+      { mint }
+    );
+    // Here we are going to assume the first tokenAccount is the one we want
+    // You could implement a check to make sure it has sufficient balance
+    const fromTokenAccount = fromTokenAccounts?.value[0]?.pubkey;
+    if (!fromTokenAccount) throw new Error('No From Token Account!');
+    console.log('🚀 ~ fromTokenAccount', fromTokenAccount.toBase58());
+
+    // to tokenAccount ********************************************************
+    const toPublicKey = new PublicKey(to);
+    const toTokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      toPublicKey,
+      { mint }
+    );
+    // Again, we are going to assume the first one is the one we want.
+    // You could do a balance check and choose the one with the largest balance if necessary
+    const toTokenAccount = toTokenAccounts?.value[0]?.pubkey;
+    if (!toTokenAccount) throw new Error('No destination Token Account!');
+    console.log('🚀 ~ toTokenAccount', toTokenAccount.toBase58());
+
+    // Transaction Instructions *********************************************
+    // 1 - Memo Program Instruction containing appIndex and transaction type formatted to be picked up by the KRE
+    // 2 - Token Program Instruction for transferring Kin
+    const instructionsWithKRE = await generateKRETransactionInstructions({
+      type,
+      appIndex,
+      from,
+      fromTokenAccount,
+      toTokenAccount,
       amount,
       solanaNetwork,
     });
 
-    // Build Transaction -
-    const transaction = new Transaction()
-      .add(appIndexMemoInstruction) // Must be the first instruction
-      .add(transferInstruction);
+    // Transaction ************************************************************
+    const transaction = new Transaction().add(...instructionsWithKRE); // Must be the first two instructions in order
 
     // Add additional memo, e.g. for SKU if present. Here we are using Memo Program v2
     if (memo) {
-      const memoInstruction = generateMemoInstruction({
+      const additionalMemoInstruction = generateMemoInstruction({
         memoContent: memo,
         solanaNetwork,
         memoVersion: 2,
       });
-      transaction.add(memoInstruction);
+      transaction.add(additionalMemoInstruction);
     }
 
     // Final Transaction
@@ -91,11 +103,10 @@ export async function handleSendKin({
     // Send Transaction
     const signature = await sendTransaction(transaction, connection);
     console.log('🚀 ~ signature', signature);
+    saveTransaction(signature, solanaNetwork);
 
     // Check Transaction has been completed
     await connection.confirmTransaction(signature, 'processed');
-
-    saveTransaction(signature);
 
     onSuccess();
   } catch (error) {

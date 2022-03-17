@@ -85,7 +85,7 @@ export async function handleSendKin({
       console.log('🚀 ~ transaction', transaction);
       console.log('🚀 ~ error', error);
       if (transaction) {
-        saveTransaction(transaction);
+        saveTransaction(transaction, kinNetwork);
         onSuccess();
       }
 

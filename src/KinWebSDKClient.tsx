@@ -48,7 +48,7 @@ export function KinClientApp({
     if (shouldUpdate) {
       // Get data from secure local storage
       setUserAccounts(getUserAccounts(kinClientNetwork));
-      setTransactions(getTransactions());
+      setTransactions(getTransactions(kinClientNetwork));
 
       setShouldUpdate(false);
     }

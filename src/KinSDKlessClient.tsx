@@ -3,6 +3,12 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import Wallet from './SolanaWallets';
 
 import { MakeToast, getTransactions, openExplorer } from './helpers';
+import {
+  TransactionTypeName,
+  solanaNetworks,
+  transactionTypeNames,
+  SolanaNetwork,
+} from './@kin-tools/kin-transaction';
 import { handleSendKin, HandleSendKin } from './helpers/SDKless/handleSendKin';
 import { handleCreateTokenAccount } from './helpers/SDKless/handleCreateTokenAccount';
 import { handleCloseEmptyTokenAccount } from './helpers/SDKless/handleCloseEmptyTokenAccount';
@@ -21,7 +27,7 @@ import './Kin.scss';
 interface KinSDKlessAppProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
-  solanaNetwork: string;
+  solanaNetwork: SolanaNetwork;
 }
 function KinSDKlessApp({
   makeToast,
@@ -31,10 +37,9 @@ function KinSDKlessApp({
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
-  // Transfer Kin EbYNd2MjmhdVLoffL1SiTYFJuxorAbs7urN2pYCbfpg1
   const [payToUser, setPayToUser] = useState('');
   const [amount, setAmount] = useState('');
-  const [type, setType] = useState('Spend');
+  const [type, setType] = useState<TransactionTypeName>('Spend');
   const [memo, setMemo] = useState('');
 
   // Create Kin Token Account
@@ -61,12 +66,14 @@ function KinSDKlessApp({
   const [balances, setBalances] = useState<Balance[] | null>(null);
 
   // Transactions
-  const [transactions, setTransactions] = useState<string[]>(getTransactions());
+  const [transactions, setTransactions] = useState<string[]>(
+    getTransactions(solanaNetwork)
+  );
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
       // Get data from secure local storage
-      setTransactions(getTransactions());
+      setTransactions(getTransactions(solanaNetwork));
       setShouldUpdate(false);
     }
   }, [shouldUpdate]);
@@ -128,7 +135,11 @@ function KinSDKlessApp({
                   },
                   onFailure: () => {
                     setLoading(false);
-                    makeToast({ text: 'Send Failed!', happy: false });
+                    setShouldUpdate(true);
+                    makeToast({
+                      text: 'Send Failed / Not Confirmed!',
+                      happy: false,
+                    });
                   },
                 };
                 handleSendKin(sendKinOptions);
@@ -154,8 +165,8 @@ function KinSDKlessApp({
           {
             name: 'Transaction Type',
             value: type,
-            options: ['Spend', 'Earn', 'P2P'],
-            onChange: setType,
+            options: transactionTypeNames,
+            onChangeTransactionType: setType,
           },
           { name: 'Memo', value: memo, onChange: setMemo },
         ]}
@@ -365,8 +376,8 @@ function KinSDKlessApp({
 interface KinSDKlessAppWithWalletProps {
   makeToast: (arg: MakeToast) => void;
   setLoading: (arg: boolean) => void;
-  solanaNetwork: string;
-  setSolanaNetwork: (network: string) => void;
+  solanaNetwork: SolanaNetwork;
+  setSolanaNetwork: (network: SolanaNetwork) => void;
 }
 export function KinSDKlessAppWithWallet({
   makeToast,
@@ -377,6 +388,7 @@ export function KinSDKlessAppWithWallet({
   const [selectedSolanaNetwork, setSelectedSolanaNetwork] = useState(
     solanaNetwork
   );
+  console.log('🚀 ~ selectedSolanaNetwork', selectedSolanaNetwork);
   return (
     <div className="Kin">
       <h4 className="Kin-section">
@@ -397,7 +409,7 @@ export function KinSDKlessAppWithWallet({
       <KinAction
         open
         title="Set your Solana Network then Connect to a Wallet"
-        subTitle="Make sure your wallet is connected to the same network  | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
+        subTitle="Make sure your wallet is connected to the same network  | *** Devnet coming soon! *** | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
         actions={[
           {
@@ -411,12 +423,9 @@ export function KinSDKlessAppWithWallet({
           {
             name: 'Network',
             value: selectedSolanaNetwork,
-            options: [
-              'Mainnet',
-              // 'Testnet',
-              'Devnet',
-            ],
-            onChange: setSelectedSolanaNetwork,
+            options: solanaNetworks,
+            onChangeSolanaNetwork: setSelectedSolanaNetwork,
+            disabledInput: true,
           },
         ]}
       />
