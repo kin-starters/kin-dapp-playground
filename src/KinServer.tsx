@@ -39,20 +39,37 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
+      setLoading(true);
       getServerStatus({
         onSuccess: ({ status, data }) => {
           if (data?.env === 1) setServerKinNetwork('Test');
           if (data?.env === 0) setServerKinNetwork('Prod');
 
-          setServerRunning(status === 200);
           setServerAppIndex(data.appIndex);
           setUserAccounts(data.users);
           setTransactions(data.transactions);
-        },
-        onFailure: () => setServerRunning(false),
-      });
+          if (!serverRunning)
+            makeToast({
+              text: `Server Running!`,
+              happy: true,
+            });
 
-      setShouldUpdate(false);
+          setServerRunning(status === 200);
+          setLoading(false);
+          setShouldUpdate(false);
+        },
+        onFailure: () => {
+          setServerRunning(false);
+          setShouldUpdate(false);
+          setServerAppIndex(0);
+          setServerKinNetwork(null);
+          setLoading(false);
+          makeToast({
+            text: `Can't find Server!`,
+            happy: false,
+          });
+        },
+      });
     }
 
     return () => {};
@@ -154,6 +171,26 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           </span>
         )}
       </div>
+
+      <KinAction
+        open
+        title="Server Check"
+        subTitle="Check again if your server is running"
+        actions={[
+          {
+            name: 'Check',
+            onClick: () => {
+              setServerRunning(false);
+              setServerAppIndex(0);
+              setServerKinNetwork(null);
+              setLoading(true);
+              setTimeout(() => {
+                setShouldUpdate(true);
+              }, 1000);
+            },
+          },
+        ]}
+      />
 
       {serverRunning ? (
         <>

@@ -1,14 +1,9 @@
-import SecureLS from 'secure-ls';
 import BigNumber from 'bignumber.js';
 
 import { TOKEN_PROGRAM_ID, createTransferInstruction } from '@solana/spl-token';
 import { PublicKey, Connection, TransactionInstruction } from '@solana/web3.js';
 
 import { solanaAddresses } from '../../constants';
-
-// https://github.com/softvar/secure-ls
-export const secureLocalStorage = new SecureLS();
-console.log('🚀 ~ secureLocalStorage', secureLocalStorage);
 
 declare global {
   interface Window {

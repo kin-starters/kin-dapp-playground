@@ -38,7 +38,7 @@ function App() {
     'DApp - Kin Web SDK',
     'DApp - SDK-less',
   ];
-  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[1]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
   const [kinClientNetwork, setKinClientNetwork] = useState('Test');

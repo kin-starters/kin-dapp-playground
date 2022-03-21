@@ -31,7 +31,7 @@ function KinSDKlessApp({
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
-  // Transfer Kin EbYNd2MjmhdVLoffL1SiTYFJuxorAbs7urN2pYCbfpg1
+  // Transfer Kin
   const [payToUser, setPayToUser] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState('Spend');
@@ -397,8 +397,9 @@ export function KinSDKlessAppWithWallet({
       <KinAction
         open
         title="Set your Solana Network then Connect to a Wallet"
-        subTitle="Make sure your wallet is connected to the same network  | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
+        subTitle="Make sure your wallet is connected to the same network  | ** Devnet Coming Soon ** | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
+        disabled
         actions={[
           {
             name: 'Set Network',
@@ -411,12 +412,9 @@ export function KinSDKlessAppWithWallet({
           {
             name: 'Network',
             value: selectedSolanaNetwork,
-            options: [
-              'Mainnet',
-              // 'Testnet',
-              'Devnet',
-            ],
+            options: ['Mainnet', 'Devnet'],
             onChange: setSelectedSolanaNetwork,
+            disabledInput: true,
           },
         ]}
       />
