@@ -330,6 +330,7 @@ export function KinClientApp({
             title="Send Kin from User to User -  P2P Transaction"
             links={kinLinks.clientCodeSamples.methods.submitPayment}
             subTitle="If you've added a Transactions Webhook URL on the Kin Developer Portal, make sure your server is running so that it can validate this transaction."
+            subTitleLinks={kinLinks.webhooks}
             actions={[
               {
                 name: 'Send',

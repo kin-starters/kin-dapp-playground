@@ -68,6 +68,12 @@ const kinLinks = {
       link: 'https://developer.kin.org/docs/architecture-overview/',
     },
   ],
+  webhooks: [
+    {
+      name: 'Agora Webhooks',
+      link: 'https://developer.kin.org/docs/agora-webhook-reference/',
+    },
+  ],
   KRE: [
     {
       name: 'Kin Rewards Engine Explained',

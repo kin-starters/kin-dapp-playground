@@ -470,6 +470,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             linksTitle={kinLinks.serverCodeSamples.title}
             links={kinLinks.serverCodeSamples.methods.submitPayment}
             subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
+            subTitleLinks={kinLinks.webhooks}
             actions={[
               {
                 name: 'Pay',
@@ -520,6 +521,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             linksTitle={kinLinks.serverCodeSamples.title}
             links={kinLinks.serverCodeSamples.methods.submitPayment}
             subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
+            subTitleLinks={kinLinks.webhooks}
             actions={[
               {
                 name: 'Send',
