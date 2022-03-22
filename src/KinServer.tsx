@@ -112,6 +112,13 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
         {`Additionally, they allow developers to make use of webhooks, which assist with transaction monitoring and validation`}
         <br />
         <br />
+        {`Private keys created by Server SDKs are generated on a custodial basis.`}
+        <br />
+        {`Make sure you understand the implications of this - `}
+        <Links links={kinLinks.custodialWallets} />
+
+        <br />
+        <br />
         {`Supports `}
         <Links links={kinLinks.agora} />
         {` - account creation and transaction fees can be subsidized to make it simple for a new user to get on board and transact Kin`}
