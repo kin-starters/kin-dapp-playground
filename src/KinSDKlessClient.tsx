@@ -5,10 +5,10 @@ import Wallet from './SolanaWallets';
 import { MakeToast, getTransactions, openExplorer } from './helpers';
 import {
   TransactionTypeName,
-  solanaNetworks,
   transactionTypeNames,
   SolanaNetwork,
-} from './@kin-tools/kin-transaction';
+  solanaNetworks,
+} from './helpers/SDKless';
 import { handleSendKin, HandleSendKin } from './helpers/SDKless/handleSendKin';
 import { handleCreateTokenAccount } from './helpers/SDKless/handleCreateTokenAccount';
 import { handleCloseEmptyTokenAccount } from './helpers/SDKless/handleCloseEmptyTokenAccount';

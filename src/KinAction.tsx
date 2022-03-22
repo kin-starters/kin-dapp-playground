@@ -4,7 +4,7 @@ import {
   solanaNetworks,
   TransactionTypeName,
   transactionTypeNames,
-} from './@kin-tools/kin-transaction';
+} from './helpers/SDKless';
 
 import { Links, Link } from './Links';
 

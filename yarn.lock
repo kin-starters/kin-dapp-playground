@@ -1504,6 +1504,11 @@
   resolved "https://registry.yarnpkg.com/@kin-tools/kin-memo/-/kin-memo-1.2.2.tgz#a4e4eeda2d111a1585350ab5185b40d16a619f80"
   integrity sha512-VTEWAM6eAyKKvapeWlFPSDOgrI/sng7nS+3WQ1WsiovN5Ozr/b3VKAkn4hnycQb0dD5BhexY4mkOV6SxelD9RQ==
 
+"@kin-tools/kin-transaction@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@kin-tools/kin-transaction/-/kin-transaction-1.3.1.tgz#c9cd095e59f32490550e0243f42ee91a9926ab38"
+  integrity sha512-eMA3AaD1IFPDXq2O3pdCihlk8rbyX36eFZxPmEppJMtyvfDfJdATvHx3/FUp77UEHlXvki5K1tHiVPMpLljJXA==
+
 "@kintegrate/google-protobuf@^3.15.7":
   version "3.15.7"
   resolved "https://registry.yarnpkg.com/@kintegrate/google-protobuf/-/google-protobuf-3.15.7.tgz#c855ada0c86ce2ae24ca24e784b8057533ab3b1f"

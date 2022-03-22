@@ -6,10 +6,7 @@ import {
 } from '@solana/spl-token';
 import { PublicKey, Transaction, Connection } from '@solana/web3.js';
 
-import {
-  solanaAddresses,
-  SolanaNetwork,
-} from '../../@kin-tools/kin-transaction';
+import { solanaAddresses, SolanaNetwork } from '.';
 import { saveTransaction } from '..';
 import { handleGetKinBalances } from './handleGetKinBalances';
 

@@ -1,13 +1,17 @@
-import { PublicKey, Transaction, Connection } from '@solana/web3.js';
+import {
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+  Connection,
+} from '@solana/web3.js';
+import {
+  generateKreTransactionInstructions,
+  TransactionType,
+} from '@kin-tools/kin-transaction';
 
 import { saveTransaction } from '..';
-import {
-  generateKRETransactionInstructions,
-  generateMemoInstruction,
-  TransactionTypeName,
-  SolanaNetwork,
-  solanaAddresses,
-} from '../../@kin-tools/kin-transaction';
+
+import { TransactionTypeName, SolanaNetwork, solanaAddresses } from '.';
 
 export interface HandleSendKin {
   connection: Connection;
@@ -74,25 +78,26 @@ export async function handleSendKin({
     // Transaction Instructions *********************************************
     // 1 - Memo Program Instruction containing appIndex and transaction type formatted to be picked up by the KRE
     // 2 - Token Program Instruction for transferring Kin
-    const instructionsWithKRE = await generateKRETransactionInstructions({
-      type,
+    const instructionsWithKRE = await generateKreTransactionInstructions({
+      type: TransactionType[type],
       appIndex,
       from,
       fromTokenAccount,
       toTokenAccount,
       amount,
-      solanaNetwork,
     });
 
     // Transaction ************************************************************
-    const transaction = new Transaction().add(...instructionsWithKRE); // Must be the first two instructions in order
+    const transaction = new Transaction().add(
+      ...instructionsWithKRE // Must be the first two instructions in order
+    );
 
-    // Add additional memo, e.g. for SKU if present. Here we are using Memo Program v2
+    // Add additional memo, e.g. for SKU if present.
     if (memo) {
-      const additionalMemoInstruction = generateMemoInstruction({
-        memoContent: memo,
-        solanaNetwork,
-        memoVersion: 2,
+      const additionalMemoInstruction = new TransactionInstruction({
+        keys: [],
+        programId: new PublicKey('Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'),
+        data: Buffer.from(memo),
       });
       transaction.add(additionalMemoInstruction);
     }

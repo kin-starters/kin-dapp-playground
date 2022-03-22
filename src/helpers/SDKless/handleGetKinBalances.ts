@@ -1,8 +1,5 @@
 import { PublicKey, Connection } from '@solana/web3.js';
-import {
-  solanaAddresses,
-  SolanaNetwork,
-} from '../../@kin-tools/kin-transaction';
+import { solanaAddresses, SolanaNetwork } from '.';
 
 export interface Balance {
   [tokenAccountId: string]: string;

@@ -17,7 +17,7 @@ import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
-import { SolanaNetwork } from './@kin-tools/kin-transaction';
+import { SolanaNetwork } from './helpers/SDKless';
 
 const makeToast = ({ text, happy }: MakeToast) => {
   const options = {
