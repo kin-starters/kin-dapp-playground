@@ -1,4 +1,10 @@
 import Collapsible from 'react-collapsible';
+import {
+  SolanaNetwork,
+  solanaNetworks,
+  TransactionTypeName,
+  transactionTypeNames,
+} from './helpers/SDKless';
 
 import { Links, Link } from './Links';
 
@@ -10,6 +16,8 @@ interface Input {
   invoice?: boolean;
   disabledInput?: boolean;
   onChange?: (arg: string) => void;
+  onChangeTransactionType?: (arg: TransactionTypeName) => void;
+  onChangeSolanaNetwork?: (arg: SolanaNetwork) => void;
   inputs?: Input[];
 }
 
@@ -52,8 +60,9 @@ export function KinAction({
         value,
         options,
         onChange,
+        onChangeSolanaNetwork,
+        onChangeTransactionType,
         disabledInput,
-        inputs: nestedInputs,
       }) => (
         <div
           key={name}
@@ -68,21 +77,29 @@ export function KinAction({
             {name}
           </label>
           {(() => {
-            if (name === 'Invoice' && nestedInputs?.length) {
-              return (
-                <div className="Kin-action-input-nested">
-                  {generateInputs(nestedInputs)}
-                </div>
-              );
-            }
-
             if (options?.length) {
               return (
                 <select
                   id={`Kin-action-for-${name}`}
                   className="Kin-action-input"
                   value={value}
-                  onChange={(event) => onChange && onChange(event.target.value)}
+                  onChange={(event) => {
+                    if (onChange) {
+                      onChange(event.target.value);
+                    } else if (onChangeTransactionType) {
+                      const transactionTypeValue = transactionTypeNames.find(
+                        (nm) => nm === event.target.value
+                      );
+                      if (transactionTypeValue)
+                        onChangeTransactionType(transactionTypeValue);
+                    } else if (onChangeSolanaNetwork) {
+                      const transactionTypeValue = solanaNetworks.find(
+                        (nm) => nm === event.target.value
+                      );
+                      if (transactionTypeValue)
+                        onChangeSolanaNetwork(transactionTypeValue);
+                    }
+                  }}
                 >
                   {options.map((option) => {
                     return (

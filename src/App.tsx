@@ -17,6 +17,7 @@ import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
+import { SolanaNetwork } from './helpers/SDKless';
 
 const makeToast = ({ text, happy }: MakeToast) => {
   const options = {
@@ -42,7 +43,7 @@ function App() {
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
   const [kinClientNetwork, setKinClientNetwork] = useState('Test');
-  const [solanaNetwork, setSolanaNetwork] = useState('Mainnet');
+  const [solanaNetwork, setSolanaNetwork] = useState<SolanaNetwork>('Mainnet');
 
   return (
     <div className="App">

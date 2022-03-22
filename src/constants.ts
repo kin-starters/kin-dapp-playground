@@ -15,19 +15,6 @@ const breakpoints = {
   smallScreenBreakpoint: '1440px',
 };
 
-const solanaAddresses = {
-  Mainnet: {
-    kinMint: 'kinXdEcpDQeHPEuQnqmUgtYykqKGVFq6CeVX5iAHJq6',
-    memoV1ProgramId: 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo',
-    memoV2ProgramId: 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
-  },
-  Devnet: {
-    kinMint: '',
-    memoV1ProgramId: '',
-    memoV2ProgramId: '',
-  },
-};
-
 const kinLinks = {
   docs: [
     {
@@ -243,4 +230,4 @@ const kinLinks = {
   },
 };
 
-export { colors, breakpoints, kinLinks, solanaAddresses };
+export { colors, breakpoints, kinLinks };

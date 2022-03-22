@@ -51,15 +51,25 @@ export function getPublicKey(user: string, kinNetwork: string): string {
   return account?.publicKey || '';
 }
 
-export function saveTransaction(transaction: string) {
-  const transactions = secureLocalStorage.get('transactions') || [];
-  secureLocalStorage.set('transactions', [...transactions, transaction]);
+interface Transaction {
+  id: string;
+  network: string;
 }
 
-export function getTransactions() {
+export function saveTransaction(transaction: string, network: string) {
+  const transactions = secureLocalStorage.get('transactions') || [];
+  secureLocalStorage.set('transactions', [
+    ...transactions,
+    { id: transaction, network },
+  ]);
+}
+
+export function getTransactions(network: string) {
   try {
     const transactions = secureLocalStorage.get('transactions') || [];
-    return transactions;
+    return transactions
+      .filter((trn: Transaction) => trn.network === network)
+      .map((trn: Transaction) => trn.id);
   } catch (error) {
     console.log('🚀 ~ error', error);
     return [];
