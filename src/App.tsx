@@ -39,7 +39,7 @@ function App() {
     'DApp - Kin Web SDK',
     'DApp - SDK-less',
   ];
-  const [selectedAppType, setSelectedAppType] = useState(appTypes[0]);
+  const [selectedAppType, setSelectedAppType] = useState(appTypes[1]);
 
   const [kinClient, setKinClient] = useState<KinClient | null>(null);
   const [kinClientNetwork, setKinClientNetwork] = useState('Test');
@@ -78,6 +78,18 @@ function App() {
             selected={selectedAppType}
             onChange={setSelectedAppType}
           />
+          <span>
+            {`If you're not sure, you might want to have a look at `}
+            <Links
+              links={[
+                {
+                  name: 'this',
+                  link:
+                    'https://developer.kin.org/docs/architecture-overview/#architecture-overview',
+                },
+              ]}
+            />
+          </span>
 
           {(() => {
             if (selectedAppType === appTypes[0]) {

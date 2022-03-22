@@ -23,6 +23,11 @@
     text-align: center;
     width: 100%;
 
+    &:hover {
+      background-color: $kin_light;
+      color: white;
+    }
+
     &:not(:last-of-type) {
       border-right: 1px solid $kin_dark;
     }

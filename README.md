@@ -31,6 +31,18 @@ REACT_APP_SERVER_URL=Your Server URL e.g. http://localhost:3001
 REACT_APP_APP_INDEX=Your App Index e.g. 123
 ```
 
+## Install Packages
+
+```
+npm i
+```
+
+or
+
+```
+yarn
+```
+
 ## Start
 
 ```

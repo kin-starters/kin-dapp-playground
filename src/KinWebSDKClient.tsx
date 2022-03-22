@@ -76,20 +76,31 @@ export function KinClientApp({
 
   return (
     <div className="Kin">
-      <h4 className="Kin-section">
-        {`Create and send transactions via the Kin Web SDK`}
+      <div className="Kin-explanation">
+        <span className="bold">{`Perfect for building Kin web experiences`}</span>
+
         <br />
+        <br />
+        {`Create and send transactions via the Kin Web SDK`}
         <br />
         <Links links={kinLinks.webSDK} />
         <br />
         <br />
-        {`Transactions made via Kin SDKs use `}
-        <Links links={kinLinks.agora} />
-        {` so you can easily take advantage of the Kin Rewards Engine, get subisided transactions, etc`}
+
+        {`Private keys are generated on a non-custodial basis and stored in the user's browser`}
         <br />
+        <br />
+
+        {`Supports `}
+        <Links links={kinLinks.agora} />
+        {` - account creation and transaction fees can be subsidized to make it simple for a new user to get on board and transact with Kin`}
+        <br />
+        <br />
+        {`Transactions will be eligible for reward via the Kin Rewards Engine`}
         <br />
         <Links links={kinLinks.KRE} />
-      </h4>
+      </div>
+
       <div className={`Kin-status ${kinClient ? 'hasAppIndex' : 'noAppIndex'}`}>
         {kinClient ? (
           <span>
@@ -330,6 +341,7 @@ export function KinClientApp({
             title="Send Kin from User to User -  P2P Transaction"
             links={kinLinks.clientCodeSamples.methods.submitPayment}
             subTitle="If you've added a Transactions Webhook URL on the Kin Developer Portal, make sure your server is running so that it can validate this transaction."
+            subTitleLinks={kinLinks.webhooks}
             actions={[
               {
                 name: 'Send',

@@ -55,6 +55,19 @@ const kinLinks = {
       link: 'https://developer.kin.org/docs/architecture-overview/',
     },
   ],
+  webhooks: [
+    {
+      name: 'Agora Webhooks',
+      link: 'https://developer.kin.org/docs/agora-webhook-reference/',
+    },
+  ],
+  custodialWallets: [
+    {
+      name: 'Non-Custodial vs Custodial Wallets',
+      link:
+        'https://developer.kin.org/docs/best-practices/#non-custodial-vs-custodial-wallets-and-private-key-storage',
+    },
+  ],
   KRE: [
     {
       name: 'Kin Rewards Engine Explained',

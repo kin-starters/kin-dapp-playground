@@ -37,6 +37,7 @@ function KinSDKlessApp({
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
+  // Transfer Kin
   const [payToUser, setPayToUser] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<TransactionTypeName>('Spend');
@@ -391,17 +392,25 @@ export function KinSDKlessAppWithWallet({
   console.log('🚀 ~ selectedSolanaNetwork', selectedSolanaNetwork);
   return (
     <div className="Kin">
-      <h4 className="Kin-section">
-        {`Create and send transactions directly on Solana`}
+      <h4 className="Kin-explanation">
+        <span className="bold">
+          {`For apps already connected to the Solana blockchain looking to integrate with Kin and be eligible for the Kin Rewards Engine`}
+        </span>
+
         <br />
-        {`Use a Solana Wallet to sign your transactions (e.g. Phantom, Solflare, etc)`}
         <br />
+        {`As there is no SDK, apps may wish to rely on external wallet apps such as Phantom, Solfare and Ledger for signing transactions`}
         <br />
-        {`SDK-less bypasses `}
+
+        <br />
+        {`Doesn't support `}
         <Links links={kinLinks.agora} />
-        {` so you'll have to subsidise your transactions with SOL but you can still take advantage of the Kin Rewards Engine`}
+        {` - you'll have to subsidise your transactions with SOL`}
         <br />
         <br />
+        {`Transactions are still eligible for reward via the Kin Rewards Engine`}
+        <br />
+        {`See how here: `}
         <Links links={kinLinks.SDKless} />
         <br />
         <Links links={kinLinks.KRE} />
@@ -409,8 +418,9 @@ export function KinSDKlessAppWithWallet({
       <KinAction
         open
         title="Set your Solana Network then Connect to a Wallet"
-        subTitle="Make sure your wallet is connected to the same network  | *** Devnet coming soon! *** | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
+        subTitle="Make sure your wallet is connected to the same network  | ** Devnet Coming Soon ** | Make sure you've registered your App on the Kin Developer Portal | Remember to add your environment variable for your App Index"
         subTitleLinks={kinLinks.devPortal}
+        disabled
         actions={[
           {
             name: 'Set Network',

@@ -39,20 +39,37 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   const [shouldUpdate, setShouldUpdate] = useState(true);
   useEffect(() => {
     if (shouldUpdate) {
+      setLoading(true);
       getServerStatus({
         onSuccess: ({ status, data }) => {
           if (data?.env === 1) setServerKinNetwork('Test');
           if (data?.env === 0) setServerKinNetwork('Prod');
 
-          setServerRunning(status === 200);
           setServerAppIndex(data.appIndex);
           setUserAccounts(data.users);
           setTransactions(data.transactions);
-        },
-        onFailure: () => setServerRunning(false),
-      });
+          if (!serverRunning)
+            makeToast({
+              text: `Server Running!`,
+              happy: true,
+            });
 
-      setShouldUpdate(false);
+          setServerRunning(status === 200);
+          setLoading(false);
+          setShouldUpdate(false);
+        },
+        onFailure: () => {
+          setServerRunning(false);
+          setShouldUpdate(false);
+          setServerAppIndex(0);
+          setServerKinNetwork(null);
+          setLoading(false);
+          makeToast({
+            text: `Can't find Server!`,
+            happy: false,
+          });
+        },
+      });
     }
 
     return () => {};
@@ -87,8 +104,29 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
   return (
     <div className="Kin">
-      <h4 className="Kin-section">
-        {`Create and send transactions via a Kin Server SDK`}
+      <h4 className="Kin-explanation">
+        <span className="bold">{`Great for mobile and consumer apps`}</span>
+        <br />
+        <br />
+        {`Kin Server SDKs allow apps to create and submit transactions from their backend server (for example, to send Kin to their users). `}
+        {`Additionally, they allow developers to make use of webhooks, which assist with transaction monitoring and validation`}
+        <br />
+        <br />
+        {`Private keys created by Server SDKs are generated on a custodial basis.`}
+        <br />
+        {`Make sure you understand the implications of this - `}
+        <Links links={kinLinks.custodialWallets} />
+
+        <br />
+        <br />
+        {`Supports `}
+        <Links links={kinLinks.agora} />
+        {` - account creation and transaction fees can be subsidized to make it simple for a new user to get on board and transact Kin`}
+        <br />
+        <br />
+        {`Transactions will be eligible for reward via the Kin Rewards Engine`}
+        <br />
+        <Links links={kinLinks.KRE} />
         <br />
         <br />
         <span>
@@ -103,14 +141,6 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <br />
           {`Coming soon: Python, Go`}
         </span>
-        <br />
-        <br />
-        {`Transactions made via Kin SDKs use `}
-        <Links links={kinLinks.agora} />
-        {` so you can easily take advantage of the Kin Rewards Engine, get subisided transactions, etc`}
-        <br />
-        <br />
-        <Links links={kinLinks.KRE} />
       </h4>
       <div
         className={`Kin-status ${
@@ -154,6 +184,26 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           </span>
         )}
       </div>
+
+      <KinAction
+        open
+        title="Server Check"
+        subTitle="Check again if your server is running"
+        actions={[
+          {
+            name: 'Check',
+            onClick: () => {
+              setServerRunning(false);
+              setServerAppIndex(0);
+              setServerKinNetwork(null);
+              setLoading(true);
+              setTimeout(() => {
+                setShouldUpdate(true);
+              }, 1000);
+            },
+          },
+        ]}
+      />
 
       {serverRunning ? (
         <>
@@ -433,6 +483,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             linksTitle={kinLinks.serverCodeSamples.title}
             links={kinLinks.serverCodeSamples.methods.submitPayment}
             subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
+            subTitleLinks={kinLinks.webhooks}
             actions={[
               {
                 name: 'Pay',
@@ -483,6 +534,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
             linksTitle={kinLinks.serverCodeSamples.title}
             links={kinLinks.serverCodeSamples.methods.submitPayment}
             subTitle="Requires 'sign_transaction' Webhook if you've added it on the Kin Developer Portal"
+            subTitleLinks={kinLinks.webhooks}
             actions={[
               {
                 name: 'Send',
