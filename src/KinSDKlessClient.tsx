@@ -379,17 +379,25 @@ export function KinSDKlessAppWithWallet({
   );
   return (
     <div className="Kin">
-      <h4 className="Kin-section">
-        {`Create and send transactions directly on Solana`}
+      <h4 className="Kin-explanation">
+        <span className="bold">
+          {`For apps already connected to the Solana blockchain looking to integrate with Kin and be eligible for the Kin Rewards Engine`}
+        </span>
+
         <br />
-        {`Use a Solana Wallet to sign your transactions (e.g. Phantom, Solflare, etc)`}
         <br />
+        {`As there is no SDK, apps may wish to rely on external wallet apps such as Phantom, Solfare and Ledger for signing transactions`}
         <br />
-        {`SDK-less bypasses `}
+
+        <br />
+        {`Doesn't support `}
         <Links links={kinLinks.agora} />
-        {` so you'll have to subsidise your transactions with SOL but you can still take advantage of the Kin Rewards Engine`}
+        {` - you'll have to subsidise your transactions with SOL`}
         <br />
         <br />
+        {`Transactions are still eligible for reward via the Kin Rewards Engine`}
+        <br />
+        {`See how here: `}
         <Links links={kinLinks.SDKless} />
         <br />
         <Links links={kinLinks.KRE} />

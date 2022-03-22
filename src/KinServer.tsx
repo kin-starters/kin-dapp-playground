@@ -104,8 +104,22 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
 
   return (
     <div className="Kin">
-      <h4 className="Kin-section">
-        {`Create and send transactions via a Kin Server SDK`}
+      <h4 className="Kin-explanation">
+        <span className="bold">{`Great for mobile and consumer apps`}</span>
+        <br />
+        <br />
+        {`Kin Server SDKs allow apps to create and submit transactions from their backend server (for example, to send Kin to their users). `}
+        {`Additionally, they allow developers to make use of webhooks, which assist with transaction monitoring and validation`}
+        <br />
+        <br />
+        {`Supports `}
+        <Links links={kinLinks.agora} />
+        {` - account creation and transaction fees can be subsidized to make it simple for a new user to get on board and transact Kin`}
+        <br />
+        <br />
+        {`Transactions will be eligible for reward via the Kin Rewards Engine`}
+        <br />
+        <Links links={kinLinks.KRE} />
         <br />
         <br />
         <span>
@@ -120,14 +134,6 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <br />
           {`Coming soon: Python, Go`}
         </span>
-        <br />
-        <br />
-        {`Transactions made via Kin SDKs use `}
-        <Links links={kinLinks.agora} />
-        {` so you can easily take advantage of the Kin Rewards Engine, get subisided transactions, etc`}
-        <br />
-        <br />
-        <Links links={kinLinks.KRE} />
       </h4>
       <div
         className={`Kin-status ${

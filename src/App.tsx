@@ -77,6 +77,18 @@ function App() {
             selected={selectedAppType}
             onChange={setSelectedAppType}
           />
+          <span>
+            {`If you're not sure, you might want to have a look at `}
+            <Links
+              links={[
+                {
+                  name: 'this',
+                  link:
+                    'https://developer.kin.org/docs/architecture-overview/#architecture-overview',
+                },
+              ]}
+            />
+          </span>
 
           {(() => {
             if (selectedAppType === appTypes[0]) {
