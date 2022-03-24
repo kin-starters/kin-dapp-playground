@@ -8,7 +8,8 @@ import {
   transactionTypeNames,
   SolanaNetwork,
   solanaNetworks,
-} from './helpers/SDKless';
+  kinLinks,
+} from './constants';
 import { handleSendKin, HandleSendKin } from './helpers/SDKless/handleSendKin';
 import { handleCreateTokenAccount } from './helpers/SDKless/handleCreateTokenAccount';
 import { handleCloseEmptyTokenAccount } from './helpers/SDKless/handleCloseEmptyTokenAccount';
@@ -19,8 +20,6 @@ import {
 
 import { KinAction } from './KinAction';
 import { Links } from './Links';
-
-import { kinLinks } from './constants';
 
 import './Kin.scss';
 

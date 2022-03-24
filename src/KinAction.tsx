@@ -4,7 +4,7 @@ import {
   solanaNetworks,
   TransactionTypeName,
   transactionTypeNames,
-} from './helpers/SDKless';
+} from './constants';
 
 import { Links, Link } from './Links';
 

@@ -1,5 +1,5 @@
 import { PublicKey, Connection } from '@solana/web3.js';
-import { solanaAddresses, SolanaNetwork } from '.';
+import { solanaAddresses, SolanaNetwork } from '../../constants';
 
 export interface Balance {
   [tokenAccountId: string]: string;

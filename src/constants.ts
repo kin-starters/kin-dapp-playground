@@ -1,4 +1,4 @@
-const colors = {
+export const colors = {
   white: '#FFFFFF',
   white_dark: '#dbdbdb',
   black: '#2c3e50',
@@ -10,12 +10,12 @@ const colors = {
   green: 'green',
 };
 
-const breakpoints = {
+export const breakpoints = {
   mobileBreakpoint: '770px',
   smallScreenBreakpoint: '1440px',
 };
 
-const kinLinks = {
+export const kinLinks = {
   docs: [
     {
       name: 'Docs',
@@ -230,4 +230,21 @@ const kinLinks = {
   },
 };
 
-export { colors, breakpoints, kinLinks };
+export type TransactionTypeName = 'Earn' | 'Spend' | 'P2P' | 'None';
+export const transactionTypeNames: TransactionTypeName[] = [
+  'Earn',
+  'Spend',
+  'P2P',
+  'None',
+];
+export type SolanaNetwork = 'Mainnet' | 'Devnet';
+export const solanaNetworks: SolanaNetwork[] = ['Mainnet', 'Devnet'];
+
+export const solanaAddresses = {
+  Mainnet: {
+    kinMint: 'kinXdEcpDQeHPEuQnqmUgtYykqKGVFq6CeVX5iAHJq6',
+  },
+  Devnet: {
+    kinMint: '',
+  },
+};

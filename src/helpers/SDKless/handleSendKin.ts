@@ -11,7 +11,11 @@ import {
 
 import { saveTransaction } from '..';
 
-import { TransactionTypeName, SolanaNetwork, solanaAddresses } from '.';
+import {
+  TransactionTypeName,
+  SolanaNetwork,
+  solanaAddresses,
+} from '../../constants';
 
 export interface HandleSendKin {
   connection: Connection;

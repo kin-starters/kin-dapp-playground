@@ -4,7 +4,7 @@ import { KinClient } from '@kin-sdk/client';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
 
-import { colors, kinLinks } from './constants';
+import { colors, kinLinks, SolanaNetwork } from './constants';
 import { MakeToast } from './helpers';
 
 import logo from './kin-white.svg';
@@ -17,7 +17,6 @@ import { Links } from './Links';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
-import { SolanaNetwork } from './helpers/SDKless';
 
 const makeToast = ({ text, happy }: MakeToast) => {
   const options = {
