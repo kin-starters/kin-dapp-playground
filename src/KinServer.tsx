@@ -117,7 +117,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
         {`Make sure you understand the implications of this - `}
         <Links links={kinLinks.custodialWallets} />
         <br />
-        {`A common use case would be to use a Client SDK (Web / Mobile) for non-custodial account creation, and the Server SDK to provide additional functionality, e.g. payouts to Users, etc`}
+        {`A common use case would be to use a Client SDK (Web / Mobile) for non-custodial private key creation, and the Server SDK to provide additional functionality, e.g. payouts to users, etc`}
         <br />
         <br />
         {`Supports `}
