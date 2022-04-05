@@ -140,7 +140,7 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
           <br />
           <Links links={kinLinks.demoServers} linksTitle="Demo Servers: " />
           <br />
-          {`Coming soon: Python, Go`}
+          {`Coming soon: Go`}
         </span>
       </h4>
       <div

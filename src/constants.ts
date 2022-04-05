@@ -105,7 +105,11 @@ export const kinLinks = {
   demoServers: [
     {
       name: 'Node',
-      link: 'https://github.com/kin-labs/kin-demo-node-sdk',
+      link: 'https://github.com/kin-starters/kin-demo-node-sdk',
+    },
+    {
+      name: 'Python',
+      link: 'https://github.com/kin-starters/kin-demo-python-sdk',
     },
   ],
   serverCodeSamples: {
@@ -115,7 +119,12 @@ export const kinLinks = {
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L108-L141',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L111-L153',
+        },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L155-L210',
         },
       ],
       createAccount: [
@@ -123,35 +132,60 @@ export const kinLinks = {
           name: 'Node Demo',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L148-L173',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L155-L189',
+        },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L213-L242',
         },
       ],
       getBalance: [
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L180-L208',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L191-L228',
+        },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L245-L272',
         },
       ],
       requestAirdrop: [
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L215-L257',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L230-L286',
+        },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L275-L313',
         },
       ],
       getTransaction: [
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L264-L302',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L288-L339',
+        },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L388-L415',
         },
       ],
       submitPayment: [
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-labs/kin-demo-node-sdk/blob/master/src/index.ts#L324-L367',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L356-L412',
+        },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L326-L375',
         },
       ],
     },
