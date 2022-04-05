@@ -66,7 +66,7 @@ export async function handleSetUpKinClient({
     const url = `${baseUrl}/setup?env=${kinNetwork}`;
     const response: Response = await axios.post(url);
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       onSuccess();
     } else {
       throw new Error('No appIndex');
@@ -228,7 +228,7 @@ export async function handleGetTransaction({
     if (!baseUrl) throw new Error('No URL');
     console.log('🚀 ~ handleGetTransaction', transaction);
 
-    const url = `${baseUrl}/transaction?transaction=${encodeURIComponent(
+    const url = `${baseUrl}/transaction?transaction_id=${encodeURIComponent(
       transaction
     )}`;
     const { data }: TransactionResponse = await axios.get(url);
