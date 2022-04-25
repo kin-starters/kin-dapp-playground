@@ -1465,12 +1465,13 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@kin-sdk/client@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@kin-sdk/client/-/client-0.7.0.tgz#4517ceb0f9c6288b02e1879e7c7db87eaada3b14"
-  integrity sha512-HIg6JGzXvuW9vzypauxMCgxLVa6ubR8EUyhSJsccsBQcxM1pbQgFuTO7esGCs/lOSEwavYXx+haXDUG0AUn5zg==
+"@kin-sdk/client@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@kin-sdk/client/-/client-0.8.0.tgz#c93e203bbb0edc894aeaaca4666ab71dba629b5a"
+  integrity sha512-czj34fCkqizG7dFysri2mI+h6EXL+Lkr/BT47G2HDkBPuz5l5LCqmhWfRn5/Aehr6OAjEhkOc3iCz04QBtB0JA==
   dependencies:
-    "@kin-sdk/core" "0.7.0"
+    "@kin-sdk/core" "0.8.0"
+    "@kin-tools/kin-memo" "^1.3.0"
     "@kintegrate/google-protobuf" "^3.15.7"
     "@ledgerhq/hw-transport-webusb" "^5.48.0"
     "@solana/web3.js" "^1.2.5"
@@ -1483,11 +1484,12 @@
     ts-retry-promise "^0.6.0"
     tweetnacl "^1.0.3"
 
-"@kin-sdk/core@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@kin-sdk/core/-/core-0.7.0.tgz#b2e1859aba8e9375830f4db70157f35137f0ee79"
-  integrity sha512-4Ny+CxYHx5dnPxZzmW9gvFJyV3SkWOyRkBNmXW56dK4GTw9DFMR6Ug+JZluwsc/a88siDD9Tpxm1yarIdjV3Nw==
+"@kin-sdk/core@0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@kin-sdk/core/-/core-0.8.0.tgz#762110deedb96697e1278faaf3cb5961d751cb1e"
+  integrity sha512-WcOEla4qoDAAjjluo6kABOkjAueeDacCrVqmu/COImHmTTMer36c9m1/MXGC/Pz2Bimy/QJLuNt9HQYZZi2e0Q==
   dependencies:
+    "@kin-tools/kin-memo" "^1.3.0"
     "@kintegrate/google-protobuf" "^3.15.7"
     "@ledgerhq/hw-transport-webusb" "^5.48.0"
     "@solana/web3.js" "^1.2.5"
@@ -1503,6 +1505,11 @@
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@kin-tools/kin-memo/-/kin-memo-1.2.2.tgz#a4e4eeda2d111a1585350ab5185b40d16a619f80"
   integrity sha512-VTEWAM6eAyKKvapeWlFPSDOgrI/sng7nS+3WQ1WsiovN5Ozr/b3VKAkn4hnycQb0dD5BhexY4mkOV6SxelD9RQ==
+
+"@kin-tools/kin-memo@^1.3.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@kin-tools/kin-memo/-/kin-memo-1.4.0.tgz#517ef3cb03744648727861eed78c5f15dc1b2633"
+  integrity sha512-eI1GdPG0rAFUEjSMeOX8AVpSkvRfdKn01o1vtW5GZZzJ7PVVT/UKeQr8SxF8j31N4zAi6fawPYy3kB22rcx70g==
 
 "@kin-tools/kin-transaction@^1.3.1":
   version "1.3.1"
