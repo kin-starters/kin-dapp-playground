@@ -279,6 +279,6 @@ export const solanaAddresses = {
     kinMint: 'kinXdEcpDQeHPEuQnqmUgtYykqKGVFq6CeVX5iAHJq6',
   },
   Devnet: {
-    kinMint: '',
+    kinMint: 'KinD3xAzuqX3LJbxUG13peGnqjpV5dRcHV8tsdsrbeZ',
   },
 };

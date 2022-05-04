@@ -1,4 +1,4 @@
-import { KinClient, TransactionType } from '@kin-sdk/client';
+import { KinClient, TransactionType, Memo } from '@kin-sdk/client';
 
 import { saveTransaction, getPublicKey, getPrivateKey } from '..';
 
@@ -72,12 +72,29 @@ export async function handleSendKin({
     if (type === 'P2P') transactionType = TransactionType.P2P;
 
     if (secret && tokenAccount && destination) {
+      // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      const string = 'Str must be 29 chars or less.';
+      let foreignKey = Buffer.alloc(29);
+      if (string) {
+        foreignKey = Buffer.from(string);
+      }
+      console.log('🚀 ~ foreignKey length', foreignKey.toString().length);
+
+      const memo = Memo.new(
+        1,
+        transactionType,
+        360,
+        foreignKey
+      ).buffer.toString('base64');
+      // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
       const options = {
         secret,
         tokenAccount,
         destination,
         amount,
         type: transactionType,
+        memo,
       };
       console.log('🚀 ~ options', options);
 
