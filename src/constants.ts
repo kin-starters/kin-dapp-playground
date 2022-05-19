@@ -111,6 +111,10 @@ export const kinLinks = {
       name: 'Python',
       link: 'https://github.com/kin-starters/kin-demo-python-sdk',
     },
+    {
+      name: 'Go',
+      link: 'https://github.com/kin-starters/kin-demo-go-sdk',
+    },
   ],
   serverCodeSamples: {
     title: 'See the Code: ',
@@ -126,6 +130,11 @@ export const kinLinks = {
           link:
             'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L155-L210',
         },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L188-L221',
+        },
       ],
       createAccount: [
         {
@@ -139,6 +148,11 @@ export const kinLinks = {
           link:
             'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L213-L242',
         },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L256-L281',
+        },
       ],
       getBalance: [
         {
@@ -150,6 +164,11 @@ export const kinLinks = {
           name: 'Python Demo',
           link:
             'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L245-L272',
+        },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L223-L254',
         },
       ],
       requestAirdrop: [
@@ -163,6 +182,11 @@ export const kinLinks = {
           link:
             'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L275-L313',
         },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L283-L321',
+        },
       ],
       getTransaction: [
         {
@@ -173,7 +197,12 @@ export const kinLinks = {
         {
           name: 'Python Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L388-L415',
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L389-L416',
+        },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L417-L447',
         },
       ],
       submitPayment: [
@@ -186,6 +215,11 @@ export const kinLinks = {
           name: 'Python Demo',
           link:
             'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L326-L375',
+        },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L330-L390',
         },
       ],
     },
