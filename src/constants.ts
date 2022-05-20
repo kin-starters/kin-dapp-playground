@@ -185,7 +185,7 @@ export const kinLinks = {
         {
           name: 'Go Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L283-L321',
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L283-L319',
         },
       ],
       getTransaction: [
@@ -202,7 +202,7 @@ export const kinLinks = {
         {
           name: 'Go Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L417-L447',
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L415-L445',
         },
       ],
       submitPayment: [
@@ -219,7 +219,7 @@ export const kinLinks = {
         {
           name: 'Go Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L330-L390',
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L328-L388',
         },
       ],
     },
