@@ -197,12 +197,12 @@ export const kinLinks = {
         {
           name: 'Python Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L389-L416',
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L438-L465',
         },
         {
           name: 'Go Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L415-L445',
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L494-L524',
         },
       ],
       submitPayment: [
@@ -228,16 +228,16 @@ export const kinLinks = {
           link:
             'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L415-L465',
         },
-        // {
-        //   name: 'Python Demo',
-        //   link:
-        //     'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L326-L375',
-        // },
-        // {
-        //   name: 'Go Demo',
-        //   link:
-        //     'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L328-L388',
-        // },
+        {
+          name: 'Python Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L386-L424',
+        },
+        {
+          name: 'Go Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L416-L467',
+        },
       ],
     },
   },
