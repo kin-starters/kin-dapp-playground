@@ -13,10 +13,14 @@ import {
   handleGetBalance,
   handleRequestAirdrop,
   handleSendKin,
+  getSanitisedBatch,
+  handleSendBatch,
   handleGetTransaction,
   Transaction,
   User,
+  BatchPayment,
   HandleSendKin,
+  HandleSendBatch,
 } from './helpers/serverSDK';
 
 import './Kin.scss';
@@ -95,6 +99,10 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
   );
   const [payToUserP2P, setPayToUserP2P] = useState(userAccountNames[1] || '');
   const [payAmountP2P, setPayAmountP2P] = useState('');
+
+  const [batchPayments, setBatchPayments] = useState<BatchPayment[]>([
+    { to: '', amount: '' },
+  ]);
 
   const [payFromUserSpend, setPayFromUserSpend] = useState('');
   const [payAmountSpend, setPayAmountSpend] = useState('');
@@ -475,6 +483,78 @@ export function KinServerApp({ makeToast, setLoading }: KinServerAppProps) {
                 onChange: setPayAmountEarn,
               },
             ]}
+            disabled={!serverAppIndex || userAccountNames.length < 1}
+          />
+          <KinAction
+            title="Send Batch of Earn Transactions"
+            linksTitle={kinLinks.serverCodeSamples.title}
+            links={kinLinks.serverCodeSamples.methods.submitBatch}
+            actions={[
+              {
+                name: 'Pay',
+                onClick: () => {
+                  setLoading(true);
+
+                  const sendKinBatchOptions: HandleSendBatch = {
+                    from: 'App',
+                    batch: getSanitisedBatch(
+                      batchPayments,
+                      userAccountNames[0]
+                    ),
+                    onSuccess: () => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Successful!', happy: true });
+                      setPayAmountEarn('');
+
+                      setShouldUpdate(true);
+                    },
+                    onFailure: () => {
+                      setLoading(false);
+                      makeToast({ text: 'Send Failed!', happy: false });
+                    },
+                  };
+
+                  handleSendBatch(sendKinBatchOptions);
+                },
+              },
+            ]}
+            inputs={[
+              {
+                name: 'Batch Earns',
+                inputs: batchPayments
+                  .map((_, index) => {
+                    return [
+                      {
+                        name: 'To',
+                        value: batchPayments[index].to || userAccountNames[0],
+                        options: userAccountNames,
+                        index,
+                        onChange: (user: string) => {
+                          const updatedBatchPayments = [...batchPayments];
+                          updatedBatchPayments[index].to = user;
+                          setBatchPayments(updatedBatchPayments);
+                        },
+                      },
+                      {
+                        name: 'Amount to Pay',
+                        value: batchPayments[index].amount,
+                        type: 'number',
+                        index,
+                        onChange: (amount: string) => {
+                          const updatedBatchPayments = [...batchPayments];
+                          updatedBatchPayments[index].amount = amount;
+                          setBatchPayments(updatedBatchPayments);
+                        },
+                      },
+                    ];
+                  })
+                  .flat(),
+              },
+            ]}
+            addInput={() => {
+              const blankPayment: BatchPayment = { to: '', amount: '' };
+              setBatchPayments([...batchPayments, blankPayment]);
+            }}
             disabled={!serverAppIndex || userAccountNames.length < 1}
           />
           <KinAction

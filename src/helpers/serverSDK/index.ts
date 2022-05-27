@@ -238,3 +238,66 @@ export async function handleGetTransaction({
     onFailure();
   }
 }
+
+export interface BatchPayment {
+  to: string;
+  amount: string;
+}
+export interface HandleSendBatch {
+  from: string;
+  batch: BatchPayment[];
+  onSuccess: () => void;
+  onFailure: () => void;
+}
+
+export async function handleSendBatch({
+  onSuccess,
+  onFailure,
+  from,
+  batch,
+}: HandleSendBatch) {
+  console.log('🚀 ~ handleSendBatch', from, batch);
+  try {
+    const baseUrl = process.env.REACT_APP_SERVER_URL;
+    if (!baseUrl) throw new Error('No URL');
+
+    const data: {
+      from: string;
+      batch: BatchPayment[];
+    } = {
+      from,
+      batch,
+    };
+
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const url = `${baseUrl}/earn_batch`;
+    await axios.post(url, data, options);
+    onSuccess();
+  } catch (error) {
+    console.log('🚀 ~ error', error);
+    onFailure();
+  }
+}
+
+export function getSanitisedBatch(
+  payments: BatchPayment[],
+  defaultUser: string
+) {
+  return payments
+    .map((payment) => {
+      const sanitised = { ...payment };
+      if (!payment.to) {
+        sanitised.to = defaultUser;
+      }
+      if (!payment.amount) {
+        sanitised.amount = '0';
+      }
+      return sanitised;
+    })
+    .filter((payment) => payment.amount !== '0');
+}

@@ -123,7 +123,7 @@ export const kinLinks = {
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L111-L153',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L112-L154',
         },
         {
           name: 'Python Demo',
@@ -141,7 +141,7 @@ export const kinLinks = {
           name: 'Node Demo',
           sdk: 'https://github.com/kinecosystem/kin-node',
           link:
-            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L155-L189',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L156-L190',
         },
         {
           name: 'Python Demo',
@@ -158,7 +158,7 @@ export const kinLinks = {
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L191-L228',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L192-L229',
         },
         {
           name: 'Python Demo',
@@ -175,7 +175,7 @@ export const kinLinks = {
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L230-L286',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L231-L287',
         },
         {
           name: 'Python Demo',
@@ -192,7 +192,7 @@ export const kinLinks = {
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L288-L339',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L289-L340',
         },
         {
           name: 'Python Demo',
@@ -209,7 +209,7 @@ export const kinLinks = {
         {
           name: 'Node Demo',
           link:
-            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L356-L412',
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L357-L413',
         },
         {
           name: 'Python Demo',
@@ -221,6 +221,23 @@ export const kinLinks = {
           link:
             'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L328-L388',
         },
+      ],
+      submitBatch: [
+        {
+          name: 'Node Demo',
+          link:
+            'https://github.com/kin-starters/kin-demo-node-sdk/blob/master/src/index.ts#L415-L465',
+        },
+        // {
+        //   name: 'Python Demo',
+        //   link:
+        //     'https://github.com/kin-starters/kin-demo-python-sdk/blob/master/api.py#L326-L375',
+        // },
+        // {
+        //   name: 'Go Demo',
+        //   link:
+        //     'https://github.com/kin-starters/kin-demo-go-sdk/blob/master/main.go#L328-L388',
+        // },
       ],
     },
   },

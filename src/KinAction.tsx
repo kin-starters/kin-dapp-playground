@@ -19,6 +19,7 @@ interface Input {
   onChangeTransactionType?: (arg: TransactionTypeName) => void;
   onChangeSolanaNetwork?: (arg: SolanaNetwork) => void;
   inputs?: Input[];
+  index?: number;
 }
 
 interface Action {
@@ -38,6 +39,7 @@ interface KinActionProps {
   links?: Link[];
   linksTitle?: string;
   displayOutput?: object | null;
+  addInput?: () => void;
 }
 export function KinAction({
   open = false,
@@ -51,6 +53,7 @@ export function KinAction({
   links = [],
   linksTitle = '',
   displayOutput,
+  addInput,
 }: KinActionProps) {
   function generateInputs(inputsToGenerate: Input[]) {
     return inputsToGenerate.map(
@@ -63,9 +66,11 @@ export function KinAction({
         onChangeSolanaNetwork,
         onChangeTransactionType,
         disabledInput,
+        inputs: nestedInputs,
+        index,
       }) => (
         <div
-          key={name}
+          key={`${name}${index ? `-${index}` : ''}`}
           className={`Kin-action-input-container ${
             disabledInput ? 'disabled' : ''
           }`}
@@ -77,6 +82,13 @@ export function KinAction({
             {name}
           </label>
           {(() => {
+            if (nestedInputs && nestedInputs.length > 0) {
+              return (
+                <div className="Kin-action-input-nested">
+                  {generateInputs(nestedInputs)}
+                </div>
+              );
+            }
             if (options?.length) {
               return (
                 <select
@@ -162,6 +174,12 @@ export function KinAction({
           </p>
         ) : null}
         {inputs?.length ? generateInputs(inputs) : null}
+
+        {addInput ? (
+          <div className="Kin-action-add-input" onClick={addInput}>
+            Add Transaction
+          </div>
+        ) : null}
 
         {actions.length ? (
           <div className="Kin-action-buttons">
